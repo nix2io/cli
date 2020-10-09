@@ -10,10 +10,12 @@ program
 
 
 // Apply all the functions to the program
-let funcs = Object.values(cmds);
-for (const func of funcs) func(program);
+for (const func of Object.values(cmds)) func(program);
 
 
-// Show the help screen if no commands given
+// Show the info screen if no commands given
 if (!process.argv.length) program.parse(['info']);
+
+
+// Parse args
 program.parse(process.argv);
