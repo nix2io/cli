@@ -6,6 +6,7 @@
   "repository": "git@github.com:nix2io/cli.git",
   "author": "Max Koon <theakman96@gmail.com>",
   "license": "CC-BY-1.0",
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "dependencies": {
     "chalk": "^4.1.0",
     "commander": "^6.1.0",
