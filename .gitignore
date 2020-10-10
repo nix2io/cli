@@ -122,3 +122,6 @@ dist
 *.code-workspace
 
 # End of https://www.toptal.com/developers/gitignore/api/node,vscode
+
+# Included for testing reasons
+service.yaml
