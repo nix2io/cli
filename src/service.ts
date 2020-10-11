@@ -29,14 +29,14 @@ const getServiceObject = (file: File): object => {
 
 // parse the object into a ServiceContext instance
 // TODO: change any to a "shape of" thing that describes the service context shape
-const parseServiceObject = (serviceObject: any): ServiceContext => {
+const parseServiceObject = (serviceFilePath: string, serviceObject: any): ServiceContext => {
     const infoObj = serviceObject.info;
     let authors: Author[] = [];
     for (let authorObj of infoObj.authors) {
         authors.push(
             new Author(
-                authorObj.name,
                 authorObj.email,
+                authorObj.name,
                 authorObj.publicEmail,
                 authorObj.url,
                 authorObj.alert,
@@ -45,6 +45,7 @@ const parseServiceObject = (serviceObject: any): ServiceContext => {
         )
     }
     return new ServiceContext(
+        serviceFilePath,
         new Info(
             infoObj.identifier,
             infoObj.label,
@@ -68,6 +69,6 @@ export const getServiceContext = (): ServiceContext|null => {
     // get the service object
     const obj = getServiceObject(file);
     // parse and return the service context 
-    return parseServiceObject(obj);
+    return parseServiceObject(serviceFilePath, obj);
     
 }

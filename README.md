@@ -29,7 +29,6 @@ local data from service.yaml
 |  The blog service
 |  v1.0.0  -  1 dev
 |
-
 ```
 
 

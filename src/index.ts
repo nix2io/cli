@@ -1,3 +1,4 @@
+require('./initalize').default();
 import * as program from 'commander';
 import * as cmds from './cmds';
 import { VERSION } from './constants';
