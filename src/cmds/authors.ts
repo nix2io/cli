@@ -79,7 +79,7 @@ export default (program: CommanderStatic) => {
         .option('-D, --ldev', 'lead dev flag')
         .option('-s, --support', 'support flag')
         // confirm add flag
-        .option('-y, --yes', 'confirm add')
+        .option('-y, --yes', 'skip the confirmation screen')
         .action((email: string, options) => {
 
             let name = options.authorName || null,
@@ -192,7 +192,7 @@ export default (program: CommanderStatic) => {
         })
 
     authors.command('remove <email>')
-        .option('-y, --yes', 'confirm you want to delete the author')
+        .option('-y, --yes', 'skip the confirmation screen')
         .action((email: string, options) => {
             const serviceContext = getServiceContext();
             if (serviceContext == null) { console.error(colors.red('No service context')); return; }
