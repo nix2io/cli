@@ -1,7 +1,9 @@
 import { CommanderStatic } from "commander";
-import { VERSION } from "../constants";
+import { VERSION, SERVICE_DISPLAY_TEMPLATE } from "../constants";
 import { getServiceContext } from "../service";
-const chalk = require('chalk');
+import { formatString } from "../util";
+const colors = require('colors');
+// const ora = require('ora');
 
 
 export default (program: CommanderStatic) => {
@@ -9,18 +11,29 @@ export default (program: CommanderStatic) => {
     program
         .command('info')
         .action(() => {
-            console.log(chalk.bold('Nix2 CLI version ' + VERSION));
+            console.log(colors.bold('Nix2 CLI version ' + VERSION));
             // get the service
             try {
                 let service = getServiceContext();
-                console.log(service);
-                
                 if (service == null) {
-                    console.log(chalk.gray('No service in this directory'));
+                    console.log(colors.gray('No service in this directory'));
                     return;
                 }
+                const info = service.info;
+                const devCount = service.info.getDevs().length;
+                
+                console.log(formatString(SERVICE_DISPLAY_TEMPLATE, {
+                    label:       info.label,
+                    identifier:  info.identifier,
+                    description: info.description,
+                    version:     info.version,
+                    authorText:  `${devCount} dev${devCount != 1 ? 's' : ''}`
+                }));
+
+                
+
             } catch (err) {
-                console.error(chalk.red(`ERR: ${err.message}`));
+                console.error(colors.red(`ERR: ${err.message}`));
             }
 
         });

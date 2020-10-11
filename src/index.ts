@@ -10,7 +10,7 @@ program
 
 
 // Apply all the functions to the program
-for (const func of Object.values(cmds)) func(program);
+for (let func of Object.values(cmds)) func(program);
 
 
 // Show the info screen if no commands given
