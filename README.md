@@ -22,10 +22,13 @@ The info command will give you basic info on your current Service Context.
 ```sh
 $ dev info
 
-Nix2 CLI Version:  1.0.1
-Service:           main-bridge
-Type:              gateway
-Status:            in dev
+Nix2 CLI version 1.0.1
+local data from service.yaml
+|
+|  Blog (blog)
+|  The blog service
+|  v1.0.0  -  1 dev
+|
 
 ```
 
