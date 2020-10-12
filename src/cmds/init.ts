@@ -3,6 +3,8 @@ import inquirer = require('inquirer');
 import { ERRORS, SERVICE_FILE_NAME } from '../constants';
 import { getServiceContext } from '../service';
 import { titleCase } from '../util';
+const yaml = require('js-yaml');
+const fs = require('fs');
 const path = require('path');
 const colors = require('colors');
 
@@ -34,8 +36,8 @@ export default (program: CommanderStatic) => {
             }
 
             const initialize = () => {
-                // let newServiceFilePath = path.join(servicePath, SERVICE_FILE_NAME);
-                // fs.writeFileSync(newServiceFilePath, yaml.safeDump(data));
+                let newServiceFilePath = path.join(servicePath, SERVICE_FILE_NAME);
+                fs.writeFileSync(newServiceFilePath, yaml.safeDump(data));
                 console.log(colors.green('✔ Service initialized'));
             }
             
