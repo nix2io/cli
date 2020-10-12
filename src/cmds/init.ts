@@ -4,8 +4,6 @@ import { ERRORS, SERVICE_FILE_NAME } from '../constants';
 import { getServiceContext } from '../service';
 import { titleCase } from '../util';
 const path = require('path');
-const yaml = require('js-yaml');
-const fs = require('fs');
 const colors = require('colors');
 
 
