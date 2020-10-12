@@ -1,6 +1,6 @@
 {
   "name": "@nix2/nix-cli",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Command line interface for common tasks for Nix2 Infrastructure",
   "main": "./dist/index.js",
   "repository": "git@github.com:nix2io/cli.git",
