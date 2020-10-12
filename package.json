@@ -1,8 +1,8 @@
 {
   "name": "@nix2/nix-cli",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Command line interface for common tasks for Nix2 Infrastructure",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "repository": "git@github.com:nix2io/cli.git",
   "author": "Max Koon <maxk@nix2.io>",
   "license": "CC-BY-1.0",
@@ -22,9 +22,13 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts",
-    "publish": "tsc & npm publish"
+    "prepublish": "tsc",
+    "publish": "npm publish"
   },
   "bin": {
     "nix-cli": "./dist/index.js"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }
