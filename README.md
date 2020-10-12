@@ -15,6 +15,30 @@ The rest of the documentation uses `dev` but should be the same for `nix-cli`.
 
 When running the command with no arguments, it will default to `dev info`.
 
+### Help
+
+This CLI is built with commander.js, which generates help screens based off the structure of the application. 
+To get help on any commands, just run `dev help`.
+
+```sh
+$ dev help
+
+Usage: nix-cli [options] [command]
+
+Options:
+  -v                        output cli version
+  -h, --help                display help for command
+
+Commands:
+  auth                      authenticate to a user account
+  info                      display service context info
+  init [options] [dirname]  initialize a service
+  make                      make things related to your service
+  authors                   manage your authors
+  cache                     manage your cache
+  help [command]            display help for command
+```
+
 ### Info
 
 The info command will give you basic info on your current Service Context.

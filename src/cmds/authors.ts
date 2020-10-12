@@ -17,10 +17,6 @@ const getAuthorData = (authorData: { [key: string]: any; }, callback: Function) 
     let email = authorData.email;
     if (Object.keys(cachedAuthors).indexOf(email) != -1) {
         let cachedAuthor = cachedAuthors[email]
-        
-        console.log(authorData);
-        console.log(cachedAuthor);
-        
         authorData = {
             email:       authorData.email       || cachedAuthor.email,
             name:        authorData.name        || cachedAuthor.name        || null,
@@ -28,7 +24,7 @@ const getAuthorData = (authorData: { [key: string]: any; }, callback: Function) 
             url:         authorData.url         || cachedAuthor.url         || null,
             alert:       authorData.alert       || cachedAuthor.alert       || null,
             flags:       authorData.flags       || cachedAuthor.flags
-            };
+        };
     }
     callback(authorData);
 } 
@@ -60,15 +56,19 @@ const displayAuthors = () => {
 
 export default (program: CommanderStatic) => {
     
-    let authors = program.command('authors')
+    let authors = program
+        .command('authors')
+        .description('manage your authors');
 
     authors.action(displayAuthors);
 
     authors.command('list')
+        .description('list the service authors')
         .action(displayAuthors);
 
     // TODO: refactor the same way as remove author
     authors.command('add <email>')
+        .description('add an author')
         .option('-n, --authorName [name]', 'name of the author')
         .option('-E, --publicEmail [publicEmail]', 'email to use for the public')
         .option('-u, --url [url]', 'author url')
@@ -192,6 +192,7 @@ export default (program: CommanderStatic) => {
         })
 
     authors.command('remove <email>')
+        .description('remove an author')
         .option('-y, --yes', 'skip the confirmation screen')
         .action((email: string, options) => {
             const serviceContext = getServiceContext();

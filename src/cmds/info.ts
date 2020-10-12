@@ -10,6 +10,7 @@ export default (program: CommanderStatic) => {
     
     program
         .command('info')
+        .description('display service context info')
         .action(() => {
             console.log(colors.bold('Nix2 CLI version ' + VERSION));
             // get the service

@@ -6,9 +6,11 @@ const ora = require('ora');
 
 export default (program: CommanderStatic) => {
     
-    let cacheCommand = program.command('cache')
+    let cacheCommand = program
+        .command('cache')
+        .description('manage your cache');
 
-    cacheCommand.command('clear')
+    cacheCommand.command('clearr', 'clear your cache')
         .action(() => {
             const spinner = ora("Clearing cache").start();
             cache.clear();

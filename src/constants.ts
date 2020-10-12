@@ -26,5 +26,6 @@ export const ERRORS = {
     NO_OPEN_FILE: "Could not read service.yaml",
     INVALID_YAML: "Could not parse yaml",
     NO_FILE_ACCESS: "Could access the file system",
+    SERVICE_EXISTS: colors.red(`${SERVICE_FILE_NAME} already exists in this directory`),
     ABORT: colors.red("\nAborted")
 }

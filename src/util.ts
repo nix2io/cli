@@ -19,3 +19,10 @@ export const formatString = (string: string, obj: { [key: string]: any; }): stri
     }
     return string;
 }
+
+export const titleCase = (str: string) => str.replace(
+    /\w\S*/g,
+    function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    }
+);
