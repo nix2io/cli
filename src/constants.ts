@@ -14,10 +14,13 @@ export const CONFIG_FILE_PATH = path.join(CONFIG_PATH, 'config.json');
 export const CACHE_PATH = path.join(CONFIG_PATH, "cache/");
 
 // template 
-export const SERVICE_DISPLAY_TEMPLATE =`Local data ${colors.grey(`from ${SERVICE_FILE_NAME}`)}
-    - ${colors.bold('{label}')} ${colors.grey.italic('({identifier})')}
-    - {description}
-    - v${colors.cyan('{version}')}  -  {authorText}
+export const SERVICE_DISPLAY_TEMPLATE =`
+📄 Local data ${colors.grey(`from ${SERVICE_FILE_NAME}`)}
+ - ${colors.bold('{label}')} ${colors.grey.italic('({identifier})')}
+ - {description}
+ - v${colors.cyan('{version}')}  -  {authorText}
+ - modified {modified}
+ - created {created}
 `
 
 // error messages

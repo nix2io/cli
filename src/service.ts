@@ -1,5 +1,6 @@
 import { SERVICE_FILE_NAME, ERRORS } from "./constants";
 import { ServiceContext, Info, Author } from './classes';
+import { info } from "console";
 const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
@@ -52,6 +53,8 @@ const parseServiceObject = (serviceFilePath: string, serviceObject: any): Servic
             infoObj.description,
             infoObj.version,
             authors,
+            infoObj.created,
+            infoObj.modified,
             infoObj.license,
             infoObj.termsOfServiceURL
         ),

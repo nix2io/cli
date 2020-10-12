@@ -9,9 +9,19 @@ export default class Info {
         public description: string,
         public version: string,
         public authors: Author[],
+        private createdTimestamp: number,
+        private modifiedTimestamp: number,
         public license: string,
         public termsOfServiceURL: string
     ) {}
+
+    get created() {
+        return new Date(this.createdTimestamp * 1000);
+    }
+
+    get modified() {
+        return new Date(this.modifiedTimestamp * 1000);
+    }
 
     serialize() {
         return {
@@ -20,6 +30,8 @@ export default class Info {
             description:       this.description,
             version:           this.version,
             authors:           this.authors.map(a => a.serialize()),
+            created:           this.createdTimestamp,
+            modfiied:          this.modifiedTimestamp,
             license:           this.license,
             termsOfServiceURL: this.termsOfServiceURL
         }

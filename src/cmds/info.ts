@@ -5,6 +5,7 @@ import { formatString } from "../util";
 import { authed, user } from '../user';
 const colors = require('colors');
 const emoji = require('node-emoji');
+const friendlyTime = require('friendly-time');
 // const ora = require('ora');
 
 
@@ -14,11 +15,11 @@ export default (program: CommanderStatic) => {
         .command('info')
         .description('display service context info')
         .action(() => {
-            console.log(colors.bold('Nix2 CLI') + colors.grey(` v${VERSION}`));
+            console.log('🤖 ' + colors.bold('Nix2 CLI') + colors.grey(` v${VERSION}`));
             if (authed) {
-                console.log(colors.cyan(`    ℹ Authed as ${user?.name}`))
+                console.log(colors.cyan(` ℹ Authed as ${user?.name}`))
             } else {
-                console.log(colors.yellow('    ⚠ No user authed'))
+                console.log(colors.yellow(` ⚠ No user authed`))
             }
             // get the service
             try {
@@ -35,7 +36,9 @@ export default (program: CommanderStatic) => {
                     identifier:  info.identifier,
                     description: info.description,
                     version:     info.version,
-                    authorText:  `${devCount} dev${devCount != 1 ? 's' : ''}`
+                    authorText:  `${devCount} dev${devCount != 1 ? 's' : ''}`,
+                    created:     friendlyTime(info.created),
+                    modified:    friendlyTime(info.modified)
                 }));
 
                 

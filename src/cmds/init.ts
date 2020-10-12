@@ -36,14 +36,17 @@ export default (program: CommanderStatic) => {
             options.userLeadDev = authed;
 
             const createServiceObject = (options: any) => {
+                const currentTimestamp = Math.floor(new Date().getTime() / 1000);
                 let info: { [key: string]: any } = {
-                    identifier:  options.identifier,
-                    label:       options.label,
-                    description: options.description,
-                    version:     '1.0.0',
-                    license:     'CC',
-                    termsOfServiceURL: 'nix2.io/tos',
-                    authors: []
+                    identifier:        options.identifier,
+                    label:             options.label,
+                    description:       options.description,
+                    version:           '1.0.0',
+                    authors:           [],
+                    created:           currentTimestamp,
+                    modified:          currentTimestamp,
+                    license:           'CC',
+                    termsOfServiceURL: 'nix2.io/tos'
                 }
                 // add the authed user as a main dev
                 if (options.userLeadDev) info.authors.push({

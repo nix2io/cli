@@ -155,6 +155,11 @@ figures@^3.0.0:
   dependencies:
     escape-string-regexp "^1.0.5"
 
+friendly-time@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/friendly-time/-/friendly-time-1.1.1.tgz#919bdbef1a1b540f3f881dcfcdeed92c56c2361a"
+  integrity sha512-1hTb4ga36uONG3RKY3eWdxp3/rTAfhcmEBtyKtjOdzdMAHwb94rul5WGkLvBjy0U1jelOrt/UM4ZAxRKfSM8SA==
+
 has-flag@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/has-flag/-/has-flag-4.0.0.tgz#944771fd9c81c81265c4d6941860da06bb59479b"
