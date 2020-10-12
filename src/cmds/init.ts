@@ -1,6 +1,5 @@
 import { CommanderStatic } from 'commander';
 import inquirer = require('inquirer');
-import { init } from '.';
 import { ERRORS, SERVICE_FILE_NAME } from '../constants';
 import { getServiceContext } from '../service';
 import { titleCase } from '../util';
