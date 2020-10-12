@@ -3,6 +3,7 @@ import inquirer = require('inquirer');
 import { ERRORS, SERVICE_FILE_NAME } from '../constants';
 import { getServiceContext } from '../service';
 import { titleCase } from '../util';
+import { authed, user } from '../user';
 const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
@@ -15,45 +16,68 @@ export default (program: CommanderStatic) => {
         .command('init [dirname]')
         .description('initialize a service')
         .option('-y, --yes', 'skip the confirm message')
-        .action((dirname: string, options) => {
+        .action((dirname: string, commandOptions) => {
             // check if a service context exists
             if (getServiceContext() != null) return console.error(ERRORS.SERVICE_EXISTS);
-            const skipConfirm = options.yes;
+            const skipConfirm = commandOptions.yes;
             // get the name of the service
             if (dirname == null) dirname = '.';
             let servicePath       = path.join(process.cwd(), dirname),
                 serviceIdentifier = path.basename(servicePath),
                 serviceLabel      = titleCase(serviceIdentifier.replace(/-/g, ' ')); 
             // create the questions
-            let theData = {
+            const defaults = {
                 identifier: serviceIdentifier,
                 label: serviceLabel,
                 description: 'A Nix² Service',
-                version: '1.0.0',
-                license: 'CC',
-                termsOfServiceURL: 'nix2.io',
-                authors: []
+            }
+            // let the options be defaults
+            let options: { [key: string]: any } = Object.assign({}, defaults);
+            options.userLeadDev = authed;
+
+            const createServiceObject = (options: any) => {
+                let info: { [key: string]: any } = {
+                    identifier:  options.identifier,
+                    label:       options.label,
+                    description: options.description,
+                    version:     '1.0.0',
+                    license:     'CC',
+                    termsOfServiceURL: 'nix2.io/tos',
+                    authors: []
+                }
+                // add the authed user as a main dev
+                if (options.userLeadDev) info.authors.push({
+                    email: user?.email,
+                    name: user?.name,
+                    publicEmail: null,
+                    url: null,
+                    flags: ['leadDev']  // using an array bc yaml dump
+                });
+                let type = 'app',
+                    data = {
+                    info,
+                    type
+                };
+
+                return data;
             }
 
+            // TODO: create better types
             const initialize = () => {
                 let newServiceFilePath = path.join(servicePath, SERVICE_FILE_NAME);
-                fs.writeFileSync(newServiceFilePath, yaml.safeDump(data));
+                fs.writeFileSync(newServiceFilePath, yaml.safeDump(createServiceObject(options)));
                 console.log(colors.green('✔ Service initialized'));
             }
-            
+
             if (skipConfirm) return initialize(); 
 
-            let excudedPrompts = new Set([
-                'license',
-                'termsOfServiceURL',
-                'authors'
-            ]);
             // create the questions for inquirer
+            
             let questions: {}[] = [];
-            let k: keyof typeof theData;
-            for (k in theData) {
-                if (excudedPrompts.has(k)) continue;
-                let value = theData[k];
+
+            let k: keyof typeof defaults;
+            for (k in defaults) {
+                let value = defaults[k];
                 questions.push({
                     type: 'input',
                     message: titleCase(k),
@@ -61,26 +85,23 @@ export default (program: CommanderStatic) => {
                     default: value
                 });
             }
+            if (authed) questions.push({
+                type: 'confirm',
+                message: 'Make you the lead dev?',
+                name: 'userLeadDev'
+            });
+
+            console.log(questions);
             
-            // questions.push({
-            //     type: 'input',
-                
-            // })
-
-
             inquirer
                 .prompt(questions)
                 .then((info: any) => {
-                    const confirmCreate = options.yes;
-                    info = {...theData, ...info};
-
-                    let data = {
-                        info: info,
-                        type: 'app'
-                    }
-
-                    if (confirmCreate) return initialize();
+                    // merge the current options
+                    options = {...options, ...info};
                     
+                    let data = createServiceObject(options);
+                    
+
                     console.log(data);
 
                     // confirm user to create

@@ -12,6 +12,11 @@ export default (program: CommanderStatic) => {
                 .prompt([
                     {
                         type: 'input',
+                        name: 'name',
+                        message: 'Enter name'
+                    },
+                    {
+                        type: 'input',
                         name: 'email',
                         message: 'Enter email',
                         validate: inpt => {
@@ -21,9 +26,13 @@ export default (program: CommanderStatic) => {
                     }
                 ])
                 .then(response => {
+                    const name = response.name;
                     const email = response.email;
-                    config.set('email', email);
-                    console.log(colors.green(`\n✔ Authenticated as ${email}`));
+                    config.set('user', {
+                        name,
+                        email
+                    });
+                    console.log(colors.green(`\n✔ Authenticated as ${name} <${email}>`));
                 })
         })
 }

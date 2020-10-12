@@ -1,6 +1,7 @@
 const { version } = require('../package.json');
 const path = require('path')
 const colors = require('colors');
+let emoji = require('node-emoji');
 // package version
 export const VERSION = version;
 
@@ -13,12 +14,11 @@ export const CONFIG_FILE_PATH = path.join(CONFIG_PATH, 'config.json');
 export const CACHE_PATH = path.join(CONFIG_PATH, "cache/");
 
 // template 
-export const SERVICE_DISPLAY_TEMPLATE =`${colors.underline('local data')} ${colors.grey(`from ${SERVICE_FILE_NAME}`)}
-|
-|  ${colors.bold('{label}')} ${colors.grey.italic('({identifier})')}
-|  {description}
-|  v${colors.cyan('{version}')}  -  {authorText}
-|`
+export const SERVICE_DISPLAY_TEMPLATE =`Local data ${colors.grey(`from ${SERVICE_FILE_NAME}`)}
+    - ${colors.bold('{label}')} ${colors.grey.italic('({identifier})')}
+    - {description}
+    - v${colors.cyan('{version}')}  -  {authorText}
+`
 
 // error messages
 export const ERRORS = {
