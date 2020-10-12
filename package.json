@@ -4,7 +4,7 @@
   "description": "Command line interface for common tasks for Nix2 Infrastructure",
   "main": "index.js",
   "repository": "git@github.com:nix2io/cli.git",
-  "author": "Max Koon <theakman96@gmail.com>",
+  "author": "Max Koon <maxk@nix2.io>",
   "license": "CC-BY-1.0",
   "dependencies": {
     "cli-table": "^0.3.1",
