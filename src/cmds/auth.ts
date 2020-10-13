@@ -1,6 +1,7 @@
 import { CommanderStatic } from "commander";
 import config from '../config';
 import inquirer = require('inquirer');
+import { SYMBOLS } from "../constants";
 const colors = require('colors');
 
 export default (program: CommanderStatic) => {
@@ -32,7 +33,7 @@ export default (program: CommanderStatic) => {
                         name,
                         email
                     });
-                    console.log(colors.green(`\n✔ Authenticated as ${name} <${email}>`));
+                    console.log(colors.green(`\n${SYMBOLS.CHECK} Authenticated as ${name} <${email}>`));
                 })
         })
 }

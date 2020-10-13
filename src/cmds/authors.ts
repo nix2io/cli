@@ -1,16 +1,11 @@
 import { CommanderStatic } from "commander";
 import { prettyPrint } from 'koontil';
-import { ERRORS } from '../constants';
+import { ERRORS, SYMBOLS } from '../constants';
 import cache from '../cache';
 import { getServiceContext } from "../service";
 const inquirer = require('inquirer');
 const colors = require('colors');
 const Table = require('cli-table');
-
-// const emptyAuthor = {
-//     name: null,
-//     alert: null
-// }
 
 
 const getAuthorData = (authorData: { [key: string]: any; }, callback: Function) => {
@@ -139,7 +134,7 @@ export default (program: CommanderStatic) => {
                     // try to write the service.yaml
                     try {
                         serviceContext.write();
-                        console.log(colors.green(`✔ Author ${author.email} added`));
+                        console.log(colors.green(`${SYMBOLS.CHECK} Author ${author.email} added`));
                     } catch (err) {
                         console.error(colors.red('Error saving service.yaml: ' + err.message));
                         return;
@@ -158,7 +153,7 @@ export default (program: CommanderStatic) => {
                     return;
                 }
 
-                console.log(colors.yellow("⚠  About to write to service.yaml\n"));
+                console.log(colors.yellow(`${SYMBOLS.WARNING}  About to write to service.yaml\n`));
     
                 prettyPrint(author.serialize());
                 console.log("\n");
@@ -207,12 +202,12 @@ export default (program: CommanderStatic) => {
             const removeAuthor = () => {
                 serviceContext.info.removeAuthor(email);
                 serviceContext.write();
-                console.log(colors.green(`✔ Author ${email} removed`));
+                console.log(colors.green(`${SYMBOLS.CHECK} Author ${email} removed`));
             }
 
             if (confirmRemove) { removeAuthor(); return } 
             // prompt the user for confirmation
-            console.log(colors.yellow("⚠  About to write to service.yaml\n"));
+            console.log(colors.yellow(`${SYMBOLS.WARNING}  About to write to service.yaml\n`));
 
 
             prettyPrint(author.serialize());
