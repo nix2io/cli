@@ -1,4 +1,5 @@
 import { CommanderStatic } from "commander";
+import { prettyPrint } from 'koontil';
 import { ERRORS } from '../constants';
 import cache from '../cache';
 import { getServiceContext } from "../service";
@@ -159,7 +160,8 @@ export default (program: CommanderStatic) => {
 
                 console.log(colors.yellow("⚠  About to write to service.yaml\n"));
     
-                console.log(author, "\n");
+                prettyPrint(author.serialize());
+                console.log("\n");
     
                 inquirer
                     .prompt([
@@ -212,7 +214,11 @@ export default (program: CommanderStatic) => {
             // prompt the user for confirmation
             console.log(colors.yellow("⚠  About to write to service.yaml\n"));
 
-            console.log(author.serialize(), "\n");
+
+            prettyPrint(author.serialize());
+            console.log("\n");
+            
+            
             
             inquirer
                 .prompt([

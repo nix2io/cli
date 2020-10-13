@@ -1,7 +1,7 @@
 import { CommanderStatic } from "commander";
+import { formatString } from 'koontil';
 import { VERSION, SERVICE_DISPLAY_TEMPLATE } from "../constants";
 import { getServiceContext } from "../service";
-import { formatString } from "../util";
 import { authed, user } from '../user';
 const colors = require('colors');
 const emoji = require('node-emoji');
