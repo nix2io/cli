@@ -1,6 +1,8 @@
 import { SERVICE_FILE_NAME, ERRORS } from "./constants";
 import { ServiceContext, Info, Author } from './classes';
-import { info } from "console";
+import Schema from "./classes/Schema";
+import Field from "./classes/Field";
+import { description } from "commander";
 const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
@@ -32,6 +34,7 @@ const getServiceObject = (file: File): object => {
 // TODO: change any to a "shape of" thing that describes the service context shape
 const parseServiceObject = (serviceFilePath: string, serviceObject: any): ServiceContext => {
     const infoObj = serviceObject.info;
+    // authors
     let authors: Author[] = [];
     for (let authorObj of infoObj.authors) {
         authors.push(
@@ -44,6 +47,34 @@ const parseServiceObject = (serviceFilePath: string, serviceObject: any): Servic
                 new Set(authorObj.flags)
             )
         )
+    }
+    // schemas
+    let schemas: Schema[] = [];
+    for (let schemaObj of serviceObject.schemas || []) {
+        let fields: {[id: string]: Field} = {};
+        for (let id in schemaObj.fields) {
+            let fieldObj = schemaObj.fields[id],
+                defaultValue = fieldObj.default || null,
+                required = fieldObj.required || false
+            if (typeof fieldObj.type == "undefined") throw new Error("type not given in field");
+            if (required && defaultValue == null) throw new Error("a required field can't have a default value of null");
+
+            fields[id] = new Field(
+                fieldObj.label || null,
+                fieldObj.description || null,
+                fieldObj.type,
+                required,
+                defaultValue,
+                new Set(fieldObj.flags)
+            )
+        }
+        schemas.push(new Schema(
+            schemaObj.identifier,
+            schemaObj.label,
+            schemaObj.description,
+            schemaObj.pluralName,
+            fields
+        ))
     }
     return new ServiceContext(
         serviceFilePath,
@@ -58,7 +89,8 @@ const parseServiceObject = (serviceFilePath: string, serviceObject: any): Servic
             infoObj.license || null,
             infoObj.termsOfServiceURL || null
         ),
-        serviceObject.type
+        serviceObject.type,
+        schemas
     )
 }
 

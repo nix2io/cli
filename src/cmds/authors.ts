@@ -81,9 +81,9 @@ export default (program: CommanderStatic) => {
     
     let authors = program
         .command('authors')
-        .description('manage your authors');
-
-    authors.action(displayAuthors);
+        .alias('author')
+        .description('manage your authors')
+        .action(displayAuthors);
 
     authors.command('list')
         .description('list the service authors')
@@ -106,11 +106,11 @@ export default (program: CommanderStatic) => {
         .action((email: string, options) => {
             // check if there is a service context
             const serviceContext = getServiceContext();
+            if (serviceContext == null) return console.error(colors.red('No service context'));
             const confirmAdd = options.yes;
-            if (serviceContext == null) { console.error(colors.red('No service context')); return; }
             
             // check if the author already exists
-            if (serviceContext.info.getAuthor(email) != null) { console.error(colors.red('An author with the same email exists')); return; }
+            if (serviceContext.info.getAuthor(email) != null) return console.error(colors.red('An author with the same email exists'));
             
             // define the author object
             const author = createAuthorObject(email, options)
@@ -183,12 +183,12 @@ export default (program: CommanderStatic) => {
         .action((email: string, options) => {
             // check if there is a service context
             const serviceContext = getServiceContext();
-            if (serviceContext == null) { console.error(colors.red('No service context')); return; }
+            if (serviceContext == null) return console.error(colors.red('No service context'));
             const confirmRemove = options.yes;
             
             // check if the author exists
             const author = serviceContext.info.getAuthor(email);
-            if (author == null) { console.error(colors.red('Author does not exists')); return; }
+            if (author == null) return console.error(colors.red('Author does not exists'));
             
             // logic for author removal
             const removeAuthor = () => {
@@ -217,10 +217,7 @@ export default (program: CommanderStatic) => {
                 ])
                 .then((answer: any) => {
                     let confirm = answer.confirm;
-                    if (!confirm) {
-                        console.log(ERRORS.ABORT);
-                        return;
-                    }
+                    if (!confirm) return console.log(ERRORS.ABORT);
                     removeAuthor();
                 });
         });
