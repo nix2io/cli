@@ -37,10 +37,10 @@ const parseServiceObject = (serviceFilePath: string, serviceObject: any): Servic
         authors.push(
             new Author(
                 authorObj.email,
-                authorObj.name,
-                authorObj.publicEmail,
-                authorObj.url,
-                authorObj.alert,
+                authorObj.name || null,
+                authorObj.publicEmail || null,
+                authorObj.url || null,
+                authorObj.alert || 'none',
                 new Set(authorObj.flags)
             )
         )
@@ -49,14 +49,14 @@ const parseServiceObject = (serviceFilePath: string, serviceObject: any): Servic
         serviceFilePath,
         new Info(
             infoObj.identifier,
-            infoObj.label,
-            infoObj.description,
+            infoObj.label || null,
+            infoObj.description || null,
             infoObj.version,
             authors,
             infoObj.created,
             infoObj.modified,
-            infoObj.license,
-            infoObj.termsOfServiceURL
+            infoObj.license || null,
+            infoObj.termsOfServiceURL || null
         ),
         serviceObject.type
     )
