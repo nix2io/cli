@@ -1,7 +1,6 @@
 const { version } = require('../package.json');
 const path = require('path')
 const colors = require('colors');
-let emoji = require('node-emoji');
 // package version
 export const VERSION = version;
 
@@ -13,9 +12,25 @@ export const CONFIG_PATH = path.join(require('os').homedir(), ".nix-cli/");
 export const CONFIG_FILE_PATH = path.join(CONFIG_PATH, 'config.json');
 export const CACHE_PATH = path.join(CONFIG_PATH, "cache/");
 
+export const IS_WINDOWS = process.platform == "win32";
+// make a better options for this
+export const SUPPORT_SYMBOLS = !IS_WINDOWS || Object.keys(process.env).indexOf('VSCODE_GIT_IPC_HANDLE') != -1;
+export const SUPPORT_EMOJI = SUPPORT_SYMBOLS && !IS_WINDOWS;
+
+export const SYMBOLS = {
+    // emojis
+    ROBOT: SUPPORT_EMOJI ? '🤖' : ' ',
+    PAPER: SUPPORT_EMOJI ? '📄' : ' ',
+    // symbols
+    INFO:    SUPPORT_SYMBOLS ? 'ℹ' : ' ',
+    WARNING: SUPPORT_SYMBOLS ? '⚠' : ' ',
+    CHECK:   SUPPORT_SYMBOLS ? '✔' : ' ',
+    FAIL:    SUPPORT_SYMBOLS ? '' : ' '
+}
+
 // template 
 export const SERVICE_DISPLAY_TEMPLATE =`
-📄 Local data ${colors.grey(`from ${SERVICE_FILE_NAME}`)}
+${SYMBOLS.PAPER} Local data ${colors.grey(`from ${SERVICE_FILE_NAME}`)}
  - ${colors.bold('{label}')} ${colors.grey.italic('({identifier})')}
  - {description}
  - v${colors.cyan('{version}')}  -  {authorText}

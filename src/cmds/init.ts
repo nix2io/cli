@@ -1,7 +1,7 @@
 import { CommanderStatic } from 'commander';
 import { titleCase, prettyPrint } from 'koontil';
 import inquirer = require('inquirer');
-import { ERRORS, SERVICE_FILE_NAME } from '../constants';
+import { ERRORS, SERVICE_FILE_NAME, SYMBOLS } from '../constants';
 import { getServiceContext } from '../service';
 import { authed, user } from '../user';
 const yaml = require('js-yaml');
@@ -67,13 +67,9 @@ export default (program: CommanderStatic) => {
 
             // TODO: create better types
             const initialize = () => {
-
-                prettyPrint(createServiceObject(options));
-                return;
-
                 let newServiceFilePath = path.join(servicePath, SERVICE_FILE_NAME);
                 fs.writeFileSync(newServiceFilePath, yaml.safeDump(createServiceObject(options)));
-                console.log(colors.green('✔ Service initialized'));
+                console.log(colors.green(`${SYMBOLS.CHECK} Service initialized`));
             }
 
             if (skipConfirm) return initialize(); 
@@ -98,7 +94,7 @@ export default (program: CommanderStatic) => {
                 name: 'userLeadDev'
             });
 
-            console.log(questions);
+            // console.log(questions);
             
             inquirer
                 .prompt(questions)

@@ -1,10 +1,9 @@
 import { CommanderStatic } from "commander";
 import { formatString } from 'koontil';
-import { VERSION, SERVICE_DISPLAY_TEMPLATE } from "../constants";
+import { VERSION, SERVICE_DISPLAY_TEMPLATE, SYMBOLS } from "../constants";
 import { getServiceContext } from "../service";
 import { authed, user } from '../user';
 const colors = require('colors');
-const emoji = require('node-emoji');
 const friendlyTime = require('friendly-time');
 // const ora = require('ora');
 
@@ -15,11 +14,11 @@ export default (program: CommanderStatic) => {
         .command('info')
         .description('display service context info')
         .action(() => {
-            console.log('🤖 ' + colors.bold('Nix2 CLI') + colors.grey(` v${VERSION}`));
+            console.log(SYMBOLS.ROBOT+ " " + colors.bold('Nix2 CLI') + colors.grey(` v${VERSION}`));
             if (authed) {
-                console.log(colors.cyan(` ℹ Authed as ${user?.name}`))
+                console.log(colors.cyan(` ${SYMBOLS.INFO} Authed as ${user?.name}`))
             } else {
-                console.log(colors.yellow(` ⚠ No user authed`))
+                console.log(colors.yellow(` ${SYMBOLS.WARNING} No user authed`))
             }
             // get the service
             try {
