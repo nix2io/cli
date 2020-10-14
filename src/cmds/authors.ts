@@ -1,6 +1,6 @@
 import { CommanderStatic } from "commander";
 import { prettyPrint } from 'koontil';
-import { ERRORS } from '../constants';
+import { ERRORS, NONE } from '../constants';
 import cache from '../cache';
 import { getServiceContext } from "../service";
 const inquirer = require('inquirer');
@@ -68,7 +68,7 @@ const displayAuthors = () => {
 
     let table = new Table({ head: ['Email', 'Name', 'Flags'], style: { head: ['cyan', 'bold'] } });
     for (let author of serviceContext.info.authors) {
-        table.push([ author.email, author.name, Array.from(author.flags).join(", ") ]);
+        table.push([ author.email, author.name || NONE, Array.from(author.flags).join(", ") || NONE ]);
     }
     let authorCount = serviceContext.info.authors.length;
 
@@ -119,7 +119,7 @@ export default (program: CommanderStatic) => {
             const addAuthor = () => {
                 // try to add the author to the local service context
                 try {
-                    serviceContext.info.addAuthor(
+                    serviceContext.info.createAndAddAuthor(
                         author.email,
                         author.name,
                         author.publicEmail,
@@ -127,19 +127,13 @@ export default (program: CommanderStatic) => {
                         author.alert,
                         author.flags
                     );
-                } catch (err) {
-                    console.error(err);
-                    return;
-                }
+                } catch (err) { return console.error(err) };
 
                 // try to write the service.yaml
                 try {
                     serviceContext.write();
                     console.log(colors.green(`✔ Author ${author.email} added`));
-                } catch (err) {
-                    console.error(colors.red('Error saving service.yaml: ' + err.message));
-                    return;
-                }
+                } catch (err) { return console.error(colors.red('Error saving service.yaml: ' + err.message)); }
 
                 // save the author into cache
                 let cachedAuthors = cache.get('authors'),

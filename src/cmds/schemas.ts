@@ -1,8 +1,9 @@
 import { CommanderStatic } from "commander";
 import { getServiceContext } from "../service";
-import { ERRORS } from "../constants";
+import { ERRORS, NONE } from "../constants";
 import inquirer = require("inquirer");
 import { prettyPrint, titleCase } from "koontil";
+import Schema from "../classes/Schema";
 const colors = require('colors');
 const Table = require('cli-table');
 const pluralize = require('pluralize');
@@ -14,7 +15,7 @@ const displaySchemas = () => {
 
     let table = new Table({ head: ['ID', 'Label', 'Description'], style: { head: ['cyan', 'bold'] } });
     for (let schema of serviceContext.schemas) {
-        table.push([ schema.identifier, schema.label, schema.description ]);
+        table.push([ schema.identifier, schema.label || NONE, schema.description || NONE ]);
     }
     let schemaCount = serviceContext.schemas.length;
 
@@ -49,24 +50,48 @@ export default (program: CommanderStatic) => {
         .option('-y, --yes', 'skip the confirmation message')
         .option('-d, --desc [description]', 'description of the schema')
         .action((identifier: string, options: any) => {
+
+
+            // TODO: implement something like this
+            
+            // dev schema add artist,page
+            
+            // dev schema add artist->album->song
+            // will create artist
+            // album will have artistId
+            // song will have songId
+            // these will be links
+
+
+            // dev schema add user->page,otherThing
+
             // check if there is a service context
             const serviceContext = getServiceContext();
             if (serviceContext == null) return console.error(colors.red('No service context'));
             const confirmAdd = options.yes;
             
-            // check if the author already exists
+            // check if the schema already exists
             if (serviceContext.getSchema(identifier) != null) return console.error(colors.red('A schema with the same identifier exists'));
             
-            // define the author object
+            // define the schema object
             const schema = createSchemaObject(identifier, options);
 
             // logic for adding schemas
             const addSchema = () => {
-                console.log('schema added!');
-                
+                // try to add the schema to the local service context
+                try {
+                    let newSchema = new Schema(schema.identifier, schema.label, schema.description, schema.pluralName, {});
+                    serviceContext.addSchema(newSchema);
+                } catch (err) { return console.error(colors.red(`Error creating schema: ${err.message}`)) };
+
+                // try to write the service.yaml
+                try {
+                    serviceContext.write();
+                    console.log(colors.green(`✔ Schema ${schema.identifier} added`));
+                } catch (err) { return console.error(colors.red('Error saving service.yaml: ' + err.message)); }
             }
 
-            // remove the author if confirm
+            // add the schema if confirm
             if (confirmAdd) return addSchema(); 
             
             // prompt the user for confirmation
@@ -104,8 +129,9 @@ export default (program: CommanderStatic) => {
             
             // logic for schema removal
             const removeSchema = () => {
-                // TODO: implement logic
-                console.log('schema removed!');
+                serviceContext.removeSchema(identifier);
+                serviceContext.write();
+                console.log(colors.green(`✔ Schema ${identifier} removed`));
             }
             
             // remove the schema if confirm
@@ -121,7 +147,7 @@ export default (program: CommanderStatic) => {
                 .prompt([
                     {
                         type: 'confirm',
-                        message: 'Proceed with removing author?',
+                        message: 'Proceed with removing schema?',
                         name: 'confirm',
                         default: false
                     }

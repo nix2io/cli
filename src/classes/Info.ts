@@ -31,7 +31,7 @@ export default class Info {
             version:           this.version,
             authors:           this.authors.map(a => a.serialize()),
             created:           this.createdTimestamp,
-            modfiied:          this.modifiedTimestamp,
+            modified:          this.modifiedTimestamp,
             license:           this.license,
             termsOfServiceURL: this.termsOfServiceURL
         }
@@ -59,13 +59,15 @@ export default class Info {
         return match[0];
     }
 
-    addAuthor(email: string, name: string, publicEmail: string, url: string, alert: string, flags: Set<string>) {
+    createAndAddAuthor(email: string, name: string, publicEmail: string, url: string, alert: string, flags: Set<string>): Author {
+        return this.addAuthor(new Author(email, name, publicEmail, url, alert, flags)); 
+    }
+
+    addAuthor(author: Author): Author {
         // throw an error if an author w the same email
-        let a = this.getAuthor(email);
-        if (a != null) throw new Error("An author with the same email exists");
-        let newAuthor = new Author(email, name, publicEmail, url, alert, flags);
-        this.authors.push(newAuthor);
-        return newAuthor;
+        if (this.getAuthor(author.email) != null) throw new Error("An author with the same email exists");
+        this.authors.push(author);
+        return author;
     }
 
     removeAuthor(email: string) {

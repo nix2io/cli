@@ -33,4 +33,17 @@ export default class ServiceContext {
         return match[0];
     }
 
+    addSchema(schema: Schema) {
+        if (this.getSchema(schema.identifier) != null) throw new Error("Schema with the same identifier already exists");
+        this.schemas.push(schema);
+        return schema;
+    }
+
+    removeSchema(identifier: string): boolean {
+        let schema = this.getSchema(identifier);
+        if (schema == null) return false;
+        this.schemas.splice(this.schemas.indexOf(schema), 1);
+        return true;
+    }
+
 }

@@ -28,6 +28,8 @@ export const SYMBOLS = {
     FAIL:    SUPPORT_SYMBOLS ? '' : ' '
 }
 
+export const NONE = colors.grey('none');
+
 // template 
 export const SERVICE_DISPLAY_TEMPLATE =`
 ${SYMBOLS.PAPER} Local data ${colors.grey(`from ${SERVICE_FILE_NAME}`)}
