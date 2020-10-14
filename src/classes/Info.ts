@@ -63,8 +63,9 @@ export default class Info {
         // throw an error if an author w the same email
         let a = this.getAuthor(email);
         if (a != null) throw new Error("An author with the same email exists");
-        this.authors.push(new Author(email, name, publicEmail, url, alert, flags));
-        return true;
+        let newAuthor = new Author(email, name, publicEmail, url, alert, flags);
+        this.authors.push(newAuthor);
+        return newAuthor;
     }
 
     removeAuthor(email: string) {
