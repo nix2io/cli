@@ -5,9 +5,9 @@ export default class Info {
     
     constructor(
         public identifier: string,
-        public label: string,
-        public description: string,
-        public version: string,
+        public label: string|null,
+        public description: string|null,
+        public version: string|null,
         public authors: Author[],
         private createdTimestamp: number,
         private modifiedTimestamp: number,
@@ -21,6 +21,20 @@ export default class Info {
 
     get modified() {
         return new Date(this.modifiedTimestamp * 1000);
+    }
+
+    static deserialize(data: {[key: string]: any}) {
+        return new Info(
+            data.identifier,
+            data.label || null,
+            data.description || null,
+            data.version,
+            Object.values(data.authors).map((auth: any) => Author.deserialize(auth)),
+            data.created,
+            data.modified,
+            data.license || null,
+            data.termsOfServiceURL || null
+        )
     }
 
     serialize() {

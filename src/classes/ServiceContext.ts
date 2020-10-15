@@ -3,8 +3,7 @@ import Schema from './Schema';
 const yaml = require('js-yaml');
 const fs   = require('fs');
 
-
-export default class ServiceContext {
+export default abstract class ServiceContext {
     constructor(
         private filePath: string,
         public  info:     Info,
@@ -12,16 +11,21 @@ export default class ServiceContext {
         public  schemas:  Schema[]
     ) {};
 
+    // @ts-ignore
+    static deserialize(serviceFilePath: string, data: { [key: string]: any }): ServiceContext {
+        throw Error("NOT IMPLEMENTED");
+    };
+
     serialize() {
         return {
-            info: this.info.serialize(),
+            info:    this.info.serialize(),
             type:    this.type,
             schemas: this.schemas.map(s => s.serialize())
         }
     }
 
     write() {
-        let s = this.serialize();
+        let s       = this.serialize();
         let content = yaml.safeDump(s);
         fs.writeFileSync(this.filePath, content);
         return true;

@@ -1,5 +1,6 @@
 import { CommanderStatic } from 'commander';
 import gateway from './gateway';
+import api from './api';
 
 
 export default (program: CommanderStatic) => {
@@ -8,5 +9,6 @@ export default (program: CommanderStatic) => {
 
     // Apply all the functions to the program
     gateway(make);
+    api(make);
     
 }

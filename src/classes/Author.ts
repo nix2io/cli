@@ -19,6 +19,17 @@ export default class Author {
         this.updateFlags();
     };
 
+    static deserialize(data: {[key: string]: any}) {
+        return new Author(
+            data.email,
+            data.name || null,
+            data.publicEmail || null,
+            data.url || null,
+            data.alert || 'none',
+            new Set(data.flags)
+        )
+    }
+
     serialize() {
         return {
             email:       this.email,

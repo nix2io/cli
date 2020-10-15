@@ -1,8 +1,6 @@
 import { SERVICE_FILE_NAME, ERRORS } from "./constants";
-import { ServiceContext, Info, Author } from './classes';
-import Schema from "./classes/Schema";
-import Field from "./classes/Field";
-import { description } from "commander";
+import { ServiceContext } from './classes';
+import * as services from './classes/services';
 const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
@@ -30,68 +28,29 @@ const getServiceObject = (file: File): object => {
     } catch (err) { throw new Error(ERRORS.INVALID_YAML); }
 }
 
+type serviceTypeClasses = typeof services.APIServiceContext|
+                          typeof services.GatewayServiceContext;
+
+type serviceTypes = services.APIServiceContext|
+                    services.GatewayServiceContext;
+
+
 // parse the object into a ServiceContext instance
 // TODO: change any to a "shape of" thing that describes the service context shape
-const parseServiceObject = (serviceFilePath: string, serviceObject: any): ServiceContext => {
-    const infoObj = serviceObject.info;
-    // authors
-    let authors: Author[] = [];
-    for (let authorObj of infoObj.authors) {
-        authors.push(
-            new Author(
-                authorObj.email,
-                authorObj.name || null,
-                authorObj.publicEmail || null,
-                authorObj.url || null,
-                authorObj.alert || 'none',
-                new Set(authorObj.flags)
-            )
-        )
+const parseServiceObject = (serviceFilePath: string, serviceObject: any): serviceTypes => {
+    // TODO: figure out a better way to do this
+    let serviceClass: serviceTypeClasses;
+    switch (serviceObject.type) {
+        case 'api':
+            serviceClass = services.APIServiceContext;
+            break;
+        case 'gateway':
+            serviceClass = services.GatewayServiceContext;
+            break;
+        default:
+            throw new Error(`Service type ${serviceObject.type} is unsupported`);
     }
-    // schemas
-    let schemas: Schema[] = [];
-    for (let schemaObj of serviceObject.schemas || []) {
-        let fields: {[id: string]: Field} = {};
-        for (let id in schemaObj.fields) {
-            let fieldObj = schemaObj.fields[id],
-                defaultValue = fieldObj.default || null,
-                required = fieldObj.required || false
-            if (typeof fieldObj.type == "undefined") throw new Error("type not given in field");
-            if (required && defaultValue == null) throw new Error("a required field can't have a default value of null");
-
-            fields[id] = new Field(
-                fieldObj.label || null,
-                fieldObj.description || null,
-                fieldObj.type,
-                required,
-                defaultValue,
-                new Set(fieldObj.flags)
-            )
-        }
-        schemas.push(new Schema(
-            schemaObj.identifier,
-            schemaObj.label,
-            schemaObj.description,
-            schemaObj.pluralName,
-            fields
-        ))
-    }
-    return new ServiceContext(
-        serviceFilePath,
-        new Info(
-            infoObj.identifier,
-            infoObj.label || null,
-            infoObj.description || null,
-            infoObj.version,
-            authors,
-            infoObj.created,
-            infoObj.modified,
-            infoObj.license || null,
-            infoObj.termsOfServiceURL || null
-        ),
-        serviceObject.type,
-        schemas
-    )
+    return serviceClass.deserialize(serviceFilePath, serviceObject);
 }
 
 export const getServiceContext = (): ServiceContext|null => {
