@@ -1,4 +1,11 @@
 #!/usr/bin/env node
+/*
+ * File: index.ts
+ * Created: 10/08/2020 10:24:57
+ * ----
+ * Copyright: 2020 Nix² Technologies
+ * Author: Max Koon (maxk@nix2.io)
+ */
 
 
 require('./initalize').default();

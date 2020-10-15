@@ -1,3 +1,11 @@
+/*
+ * File: auth.ts
+ * Created: 10/11/2020 13:03:39
+ * ----
+ * Copyright: 2020 Nix² Technologies
+ * Author: Max Koon (maxk@nix2.io)
+ */
+
 import { CommanderStatic } from "commander";
 import config from '../config';
 import inquirer = require('inquirer');
