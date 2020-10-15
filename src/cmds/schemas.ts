@@ -3,7 +3,7 @@ import { getServiceContext } from "../service";
 import { ERRORS, NONE } from "../constants";
 import inquirer = require("inquirer");
 import { prettyPrint, titleCase } from "koontil";
-import Schema from "../classes/Schema";
+import { Schema } from '../classes';
 const colors = require('colors');
 const Table = require('cli-table');
 const pluralize = require('pluralize');

@@ -53,7 +53,7 @@ const parseServiceObject = (serviceFilePath: string, serviceObject: any): servic
     return serviceClass.deserialize(serviceFilePath, serviceObject);
 }
 
-export const getServiceContext = (): ServiceContext|null => {
+export const getServiceContext = (): serviceTypes|null => {
     // get the full file path
     const serviceFilePath = path.join(process.cwd(), SERVICE_FILE_NAME);
     // return null if there is no file

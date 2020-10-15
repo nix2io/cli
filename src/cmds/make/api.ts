@@ -1,11 +1,11 @@
 import * as commander  from "commander";
-import { ServiceContext } from "../../classes";
+import { ServiceContext, APIServiceContext, Method } from "../../classes";
 import { getServiceContext } from "../../service";
 import { prettyPrint } from "koontil";
 const colors = require('colors');
 
 
-const generateOpenAPI = (serviceContext: ServiceContext) => {
+const generateOpenAPI = (serviceContext: APIServiceContext) => {
 
     let schemas: { [key: string]: any } = {};
 
@@ -28,6 +28,25 @@ const generateOpenAPI = (serviceContext: ServiceContext) => {
         }
     }
 
+    let paths: {[key: string]: any} = {};
+    for (let p in serviceContext.paths) {
+        let path = serviceContext.paths[p],
+            methods: {[key: string]: any} = {};
+
+        for (let verb in path.methods) {
+            // TODO: fix this
+            // @ts-ignore
+            let m = path.methods[verb];
+            let method: Method = m;
+
+            methods[verb] = {
+                summary: method.label,
+                description: method.description
+            }
+        }
+        
+        paths[p] = methods;
+    }
 
     return {
         openapi: "3.0.0",
@@ -36,6 +55,7 @@ const generateOpenAPI = (serviceContext: ServiceContext) => {
             description: serviceContext.info.description,
             version: serviceContext.info.version
         },
+        paths: paths,
         components: {
             schemas
         }
@@ -54,6 +74,7 @@ export default (make: commander.Command) => {
             // make sure there is a service context            
             let serviceContext = getServiceContext();
             if (serviceContext == null) return console.error(colors.red('No service context found'));
+            if (!(serviceContext instanceof APIServiceContext)) return console.error(colors.red('Service is not an API'));
 
             let api = generateOpenAPI(serviceContext);
 
