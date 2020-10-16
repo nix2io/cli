@@ -1,5 +1,5 @@
-# Nix2 CLI
-*Nix2 Command Line Interface*
+# Nix² CLI
+*Nix² Command Line Interface*
 
 <p align="center">
   <img style="display: block; width: 100%; max-width: 700px" alt="CLI Screenshot" src="https://i.imgur.com/2N3YWHF.png">
