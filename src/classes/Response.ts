@@ -6,36 +6,44 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 import { HTTP_STATUS_CODES } from '../constants';
-type statusClasses = "server_error" | "client_error" | "redirection" | "success" | "informational";
-
+type statusClasses =
+    | 'server_error'
+    | 'client_error'
+    | 'redirection'
+    | 'success'
+    | 'informational';
 
 export default class Response {
-
     public codeInfo: {
-        label: string,
-        description: string
-    }
+        label: string;
+        description: string;
+    };
 
     constructor(
         public code: string,
         public description: string | null,
         public returnType: string | null,
-        public errorMessage: string | null
+        public errorMessage: string | null,
     ) {
-        if (errorMessage != null && errorMessage != errorMessage.toUpperCase()) throw new Error(`Invalid error message "${errorMessage}"`);
-        if (Object.keys(HTTP_STATUS_CODES).indexOf(code) == -1) throw new Error(`${code} is an invalid status code`);
+        if (errorMessage != null && errorMessage != errorMessage.toUpperCase())
+            throw new Error(`Invalid error message "${errorMessage}"`);
+        if (Object.keys(HTTP_STATUS_CODES).indexOf(code) == -1)
+            throw new Error(`${code} is an invalid status code`);
         // TODO: fix this
         // @ts-ignore
         this.codeInfo = HTTP_STATUS_CODES[code];
     }
 
-    static deserialize(code: string, data: { [key: string]: string }): Response {
+    static deserialize(
+        code: string,
+        data: { [key: string]: string },
+    ): Response {
         return new Response(
             code,
             data.description || null,
             data.returnType || null,
-            data.errorMessage || null
-        )
+            data.errorMessage || null,
+        );
     }
 
     get isOK(): boolean {
@@ -43,15 +51,18 @@ export default class Response {
     }
 
     get isError(): boolean {
-        return this.isStatusClass('client_error') || this.isStatusClass('server_error');
+        return (
+            this.isStatusClass('client_error') ||
+            this.isStatusClass('server_error')
+        );
     }
 
     serialize(): { [key: string]: any } {
         return {
             description: this.description,
             returnType: this.returnType,
-            errorMessage: this.errorMessage
-        }
+            errorMessage: this.errorMessage,
+        };
     }
 
     getStatusClass(): statusClasses {
@@ -67,6 +78,4 @@ export default class Response {
     isStatusClass(_class: statusClasses): boolean {
         return this.getStatusClass() == _class;
     }
-
-
 }

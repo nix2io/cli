@@ -8,11 +8,10 @@
 
 const flagInheritence = {
     dev: 'contributer',
-    leadDev: 'dev'
+    leadDev: 'dev',
 };
 
 export default class Author {
-
     public inherited_flags: Set<string>;
 
     constructor(
@@ -21,7 +20,7 @@ export default class Author {
         public publicEmail: string,
         public url: string,
         public alert: string,
-        public flags: Set<string>
+        public flags: Set<string>,
     ) {
         this.inherited_flags;
         this.updateFlags();
@@ -34,8 +33,8 @@ export default class Author {
             data.publicEmail || null,
             data.url || null,
             data.alert || 'none',
-            new Set(data.flags)
-        )
+            new Set(data.flags),
+        );
     }
 
     serialize(): { [key: string]: any } {
@@ -45,8 +44,8 @@ export default class Author {
             publicEmail: this.publicEmail,
             url: this.url,
             alert: this.alert,
-            flags: Array.from(this.flags)
-        }
+            flags: Array.from(this.flags),
+        };
     }
 
     updateFlags(): void {
@@ -61,5 +60,4 @@ export default class Author {
         }
         this.inherited_flags = flags;
     }
-
 }

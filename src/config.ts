@@ -18,7 +18,7 @@ class Config {
     }
 
     write() {
-        fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(this.config))
+        fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(this.config));
     }
 
     has(name: string): boolean {
@@ -35,6 +35,5 @@ class Config {
         this.write();
     }
 }
-
 
 export default new Config();
