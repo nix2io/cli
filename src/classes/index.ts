@@ -5,3 +5,4 @@ export {default as APIServiceContext} from './services/APIServiceContext';
 export {default as Schema} from './Schema';
 export {default as Path} from './Path';
 export {default as Method} from './Method';
+export {default as Response} from './Response';

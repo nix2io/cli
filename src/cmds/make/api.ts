@@ -1,8 +1,10 @@
 import * as commander  from "commander";
-import { ServiceContext, APIServiceContext, Method } from "../../classes";
+import { ServiceContext, APIServiceContext, Method, Response, Author } from "../../classes";
 import { getServiceContext } from "../../service";
 import { prettyPrint } from "koontil";
+const yaml = require('js-yaml');
 const colors = require('colors');
+const fs = require('fs');
 
 
 const generateOpenAPI = (serviceContext: APIServiceContext) => {
@@ -27,6 +29,20 @@ const generateOpenAPI = (serviceContext: APIServiceContext) => {
             properties
         }
     }
+    // error schema
+    schemas['Error'] = {
+        type: 'object',
+        properties: {
+            message: {
+                type: 'string'
+            },
+        },
+        required: [
+            'message'
+        ]
+    }
+
+    let responses: {[key: string]: any} = {};
 
     let paths: {[key: string]: any} = {};
     for (let p in serviceContext.paths) {
@@ -39,27 +55,88 @@ const generateOpenAPI = (serviceContext: APIServiceContext) => {
             let m = path.methods[verb];
             let method: Method = m;
 
+            const func = (resp: Response) => {
+                let response = {
+                    description: resp.description
+                }
+                if (resp.isError) {
+                    let codeName = resp.codeInfo.label.replace(/ /g, "");
+                    response = {...response, ...{
+                        $ref: '#/components/responses/' + codeName
+                    }};
+
+                    if (Object.keys(responses).indexOf(codeName) == -1) {
+                        responses[codeName] = {
+                            description: resp.codeInfo.description,
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/Error'
+                                    }
+                                }
+                            }
+                        };
+                    }
+
+
+                }
+                return response;
+            }
+
             methods[verb] = {
                 summary: method.label,
-                description: method.description
+                description: method.description,
+                responses: Object.assign({}, ...Object.keys(method.responses).map((k: string) => ({[k]: func(method.responses[k])})))
             }
         }
         
         paths[p] = methods;
     }
 
-    return {
+    let contactAuthor: Author|null = null;
+    let supportAuthor = serviceContext.info.getAuthorsByFlags('support');
+    if (supportAuthor.length > 0) {
+        contactAuthor = supportAuthor[0];
+    } else {
+        let publicLeadDev = serviceContext.info.getLeadDevs().filter(dev => dev.publicEmail != null);
+        if (publicLeadDev.length > 0) {
+            contactAuthor = publicLeadDev[0];
+        } else {
+            let publicDev = serviceContext.info.getDevs().filter(dev => dev.publicEmail != null);
+            if (publicDev.length > 0 ) {
+                contactAuthor = publicDev[0];
+            }
+        }
+    }
+
+    let data: {[key: string]: any} = {
         openapi: "3.0.0",
         info: {
             title: serviceContext.info.label,
             description: serviceContext.info.description,
-            version: serviceContext.info.version
+            version: serviceContext.info.version,
+            termsOfService: serviceContext.info.termsOfServiceURL,
+            license: {
+                name: serviceContext.info.license,
+                url: 'https://nix2.io/license'
+            }
         },
         paths: paths,
         components: {
+            responses,
             schemas
         }
+    };
+    
+    if (contactAuthor != null) {
+        data.info['contact'] = {
+            email: contactAuthor.publicEmail,
+        }
+        if (contactAuthor.name != null) data.info.contact['name'] = contactAuthor.name;
+        if (contactAuthor.url != null) data.info.contact['url'] = contactAuthor.url;
     }
+
+    return data;
 
 }
 
@@ -78,7 +155,10 @@ export default (make: commander.Command) => {
 
             let api = generateOpenAPI(serviceContext);
 
-            prettyPrint(api);
+            let content = yaml.safeDump(api);
+            fs.writeFileSync('service-api.yaml', content);
+
+            // prettyPrint(api);
             
 
 
