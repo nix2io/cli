@@ -10,28 +10,28 @@ import Author from './Author';
 
 
 export default class Info {
-    
+
     constructor(
         public identifier: string,
-        public label: string|null,
-        public description: string|null,
-        public version: string|null,
+        public label: string | null,
+        public description: string | null,
+        public version: string | null,
         public authors: Author[],
         private createdTimestamp: number,
         private modifiedTimestamp: number,
         public license: string,
         public termsOfServiceURL: string
-    ) {}
+    ) { }
 
-    get created() {
+    get created(): Date {
         return new Date(this.createdTimestamp * 1000);
     }
 
-    get modified() {
+    get modified(): Date {
         return new Date(this.modifiedTimestamp * 1000);
     }
 
-    static deserialize(data: {[key: string]: any}) {
+    static deserialize(data: { [key: string]: any }): Info {
         return new Info(
             data.identifier,
             data.label || null,
@@ -45,16 +45,16 @@ export default class Info {
         )
     }
 
-    serialize() {
+    serialize(): { [key: string]: any } {
         return {
-            identifier:        this.identifier,
-            label:             this.label,
-            description:       this.description,
-            version:           this.version,
-            authors:           this.authors.map(a => a.serialize()),
-            created:           this.createdTimestamp,
-            modified:          this.modifiedTimestamp,
-            license:           this.license,
+            identifier: this.identifier,
+            label: this.label,
+            description: this.description,
+            version: this.version,
+            authors: this.authors.map(a => a.serialize()),
+            created: this.createdTimestamp,
+            modified: this.modifiedTimestamp,
+            license: this.license,
             termsOfServiceURL: this.termsOfServiceURL
         }
     }
@@ -63,26 +63,26 @@ export default class Info {
         return this.authors.filter(author => flags.every(flag => author.inherited_flags.has(flag)));
     }
 
-    getContributers() {
+    getContributers(): Author[] {
         return this.getAuthorsByFlags('contributer');
     }
 
-    getDevs() {
+    getDevs(): Author[] {
         return this.getAuthorsByFlags('dev');
     }
 
-    getLeadDevs() {
+    getLeadDevs(): Author[] {
         return this.getAuthorsByFlags('leadDev');
     }
 
-    getAuthor(email: string): Author|null {
-        let match = this.authors.filter(a => a.email == email);
+    getAuthor(email: string): Author | null {
+        const match = this.authors.filter(a => a.email == email);
         if (match.length == 0) return null;
         return match[0];
     }
 
     createAndAddAuthor(email: string, name: string, publicEmail: string, url: string, alert: string, flags: Set<string>): Author {
-        return this.addAuthor(new Author(email, name, publicEmail, url, alert, flags)); 
+        return this.addAuthor(new Author(email, name, publicEmail, url, alert, flags));
     }
 
     addAuthor(author: Author): Author {
@@ -92,8 +92,8 @@ export default class Info {
         return author;
     }
 
-    removeAuthor(email: string) {
-        let author = this.getAuthor(email);
+    removeAuthor(email: string): boolean {
+        const author = this.getAuthor(email);
         if (author == null) return false;
         this.authors.splice(this.authors.indexOf(author), 1);
         return true;

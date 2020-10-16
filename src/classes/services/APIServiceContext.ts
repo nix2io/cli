@@ -11,14 +11,14 @@ import { Schema, Path } from '..';
 
 
 export default class APIServiceContext extends ServiceContext {
-    
-    public paths: {[key: string]: Path};
+
+    public paths: { [key: string]: Path };
 
     constructor(
         filePath: string,
-        info:     Info,
-        schemas:  Schema[],
-        paths:    {[key: string]: Path}
+        info: Info,
+        schemas: Schema[],
+        paths: { [key: string]: Path }
     ) {
         super(filePath, info, 'api', schemas);
         this.paths = paths;
@@ -29,14 +29,16 @@ export default class APIServiceContext extends ServiceContext {
             serviceFilePath,
             Info.deserialize(data.info),
             Object.values(data.schemas).map((schema: any) => Schema.deserialize(schema)),
-            Object.assign({}, ...Object.keys(data.paths).map(k => ({[k]: Path.deserialize(k, data.paths[k])})))
+            Object.assign({}, ...Object.keys(data.paths).map(k => ({ [k]: Path.deserialize(k, data.paths[k]) })))
         )
-    };
+    }
 
-    serialize() {
-        return {...super.serialize(), ...{
-            paths: Object.assign({}, ...Object.keys(this.paths).map((k: string) => ({[k]: this.paths[k].serialize()})))
-        }}
+    serialize(): { [key: string]: any } {
+        return {
+            ...super.serialize(), ...{
+                paths: Object.assign({}, ...Object.keys(this.paths).map((k: string) => ({ [k]: this.paths[k].serialize() })))
+            }
+        }
     }
 
 }

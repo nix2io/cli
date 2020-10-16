@@ -8,12 +8,12 @@
 
 import * as commander from "commander";
 
-export default (make: commander.Command) => {
-    
+export default (make: commander.Command): void => {
+
     make
         .command('gateway')
         .description('make a gateway')
         .action(() => {
             console.log('creating gateway');
-        });   
+        });
 }

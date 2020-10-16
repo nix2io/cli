@@ -10,10 +10,10 @@ import { CommanderStatic } from "commander";
 import config from '../config';
 import inquirer = require('inquirer');
 import { SYMBOLS } from "../constants";
-const colors = require('colors');
+import colors = require('colors');
 
-export default (program: CommanderStatic) => {
-    
+export default (program: CommanderStatic): void => {
+
     program.command('auth')
         .description('authenticate to a user account (WIP)')
         .action(() => {

@@ -12,9 +12,9 @@ const flagInheritence = {
 };
 
 export default class Author {
-    
+
     public inherited_flags: Set<string>;
-    
+
     constructor(
         public email: string,
         public name: string,
@@ -25,9 +25,9 @@ export default class Author {
     ) {
         this.inherited_flags;
         this.updateFlags();
-    };
+    }
 
-    static deserialize(data: {[key: string]: any}) {
+    static deserialize(data: { [key: string]: any }): Author {
         return new Author(
             data.email,
             data.name || null,
@@ -38,21 +38,21 @@ export default class Author {
         )
     }
 
-    serialize() {
+    serialize(): { [key: string]: any } {
         return {
-            email:       this.email,
-            name:        this.name,
+            email: this.email,
+            name: this.name,
             publicEmail: this.publicEmail,
-            url:         this.url,
-            alert:       this.alert,
-            flags:       Array.from(this.flags)
+            url: this.url,
+            alert: this.alert,
+            flags: Array.from(this.flags)
         }
     }
 
-    updateFlags() {
-        let flags = new Set(this.flags);
-        for (let flag of flags) {
-            let currentFlag = flag;
+    updateFlags(): void {
+        const flags = new Set(this.flags);
+        for (const flag of flags) {
+            const currentFlag = flag;
             while (Object.keys(flagInheritence).indexOf(currentFlag) != -1) {
                 // @ts-ignore
                 currentFlag = flagInheritence[currentFlag];

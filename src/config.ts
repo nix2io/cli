@@ -7,14 +7,14 @@
  */
 
 import { CONFIG_FILE_PATH } from './constants';
-const fs = require('fs');
+import fs = require('fs');
 
 // TODO: add error handling
 class Config {
-    private config: {[key: string]: any};
+    private config: { [key: string]: any };
 
     constructor() {
-        this.config = JSON.parse(fs.readFileSync(CONFIG_FILE_PATH));
+        this.config = JSON.parse(fs.readFileSync(CONFIG_FILE_PATH, 'utf-8'));
     }
 
     write() {

@@ -7,9 +7,9 @@
  */
 
 import { CONFIG_PATH, CACHE_PATH, CONFIG_FILE_PATH, ERRORS } from './constants';
-const colors = require('colors');
+import colors = require('colors');
 // const path = require('path');
-const fs = require('fs');
+import fs = require('fs');
 
 
 const createDir = () => {
@@ -29,7 +29,7 @@ const createConfig = () => {
 
 const initalize = () => {
     // if the main dir does not exist, also create the cache and config
-    if (!fs.existsSync(CONFIG_PATH)){
+    if (!fs.existsSync(CONFIG_PATH)) {
         createDir();
         createCacheDir();
         createConfig();
@@ -41,6 +41,6 @@ const initalize = () => {
     if (!fs.existsSync(CONFIG_FILE_PATH)) createConfig();
 }
 
-export default () => {
-    try { initalize() } catch(err) { console.error(colors.red(`Error initializing: ${err.message}`)); }
+export default (): void => {
+    try { initalize() } catch (err) { console.error(colors.red(`Error initializing: ${err.message}`)); }
 }

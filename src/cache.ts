@@ -7,8 +7,8 @@
  */
 
 import { CACHE_PATH } from './constants';
-const fs = require('fs');
-const path = require('path');
+import fs = require('fs');
+import path = require('path');
 
 
 class Cache {
@@ -24,7 +24,7 @@ class Cache {
     get(name: string): { [key: string]: any; } {
         if (!this.exists(name)) return {};
         try {
-            return JSON.parse(fs.readFileSync(this.makePath(name)));
+            return JSON.parse(fs.readFileSync(this.makePath(name), 'utf-8'));
         } catch (err) {
             console.error("Could not read the cache");
             return {};
@@ -37,8 +37,8 @@ class Cache {
     }
 
     clear() {
-        fs.readdirSync(CACHE_PATH).forEach((file: File, _: any) => {
-            let filePath = path.join(CACHE_PATH, file);
+        fs.readdirSync(CACHE_PATH).forEach((file: string, _: any) => {
+            const filePath = path.join(CACHE_PATH, file);
             if (!fs.lstatSync(filePath).isDirectory()) fs.unlinkSync(filePath);
         });
     }

@@ -12,14 +12,14 @@ import inquirer = require('inquirer');
 import { ERRORS, SERVICE_FILE_NAME, SYMBOLS } from '../constants';
 import { getServiceContext } from '../service';
 import { authed, user } from '../user';
-const yaml = require('js-yaml');
-const fs = require('fs');
-const path = require('path');
-const colors = require('colors');
+import yaml = require('js-yaml');
+import fs = require('fs');
+import path = require('path');
+import colors = require('colors');
 
 
-export default (program: CommanderStatic) => {
-    
+export default (program: CommanderStatic): void => {
+
     program
         .command('init [dirname]')
         .description('initialize a service')
@@ -30,9 +30,9 @@ export default (program: CommanderStatic) => {
             const skipConfirm = commandOptions.yes;
             // get the name of the service
             if (dirname == null) dirname = '.';
-            let servicePath       = path.join(process.cwd(), dirname),
+            const servicePath = path.join(process.cwd(), dirname),
                 serviceIdentifier = path.basename(servicePath),
-                serviceLabel      = titleCase(serviceIdentifier.replace(/-/g, ' ')); 
+                serviceLabel = titleCase(serviceIdentifier.replace(/-/g, ' '));
             // create the questions
             const defaults = {
                 identifier: serviceIdentifier,
@@ -45,15 +45,15 @@ export default (program: CommanderStatic) => {
 
             const createServiceObject = (options: any) => {
                 const currentTimestamp = Math.floor(new Date().getTime() / 1000);
-                let info: { [key: string]: any } = {
-                    identifier:        options.identifier,
-                    label:             options.label,
-                    description:       options.description,
-                    version:           '1.0.0',
-                    authors:           [],
-                    created:           currentTimestamp,
-                    modified:          currentTimestamp,
-                    license:           'CC',
+                const info: { [key: string]: any } = {
+                    identifier: options.identifier,
+                    label: options.label,
+                    description: options.description,
+                    version: '1.0.0',
+                    authors: [],
+                    created: currentTimestamp,
+                    modified: currentTimestamp,
+                    license: 'CC',
                     termsOfServiceURL: 'nix2.io/tos'
                 }
                 // add the authed user as a main dev
@@ -64,31 +64,31 @@ export default (program: CommanderStatic) => {
                     url: null,
                     flags: ['leadDev']  // using an array bc yaml dump
                 });
-                let type = 'app',
+                const type = 'app',
                     data = {
-                    info,
-                    type
-                };
+                        info,
+                        type
+                    };
 
                 return data;
             }
 
             // TODO: create better types
             const initialize = () => {
-                let newServiceFilePath = path.join(servicePath, SERVICE_FILE_NAME);
+                const newServiceFilePath = path.join(servicePath, SERVICE_FILE_NAME);
                 fs.writeFileSync(newServiceFilePath, yaml.safeDump(createServiceObject(options)));
                 console.log(colors.green(`${SYMBOLS.CHECK} Service initialized`));
             }
 
-            if (skipConfirm) return initialize(); 
+            if (skipConfirm) return initialize();
 
             // create the questions for inquirer
-            
-            let questions: {}[] = [];
+
+            const questions: { [key: string]: any }[] = [];
 
             let k: keyof typeof defaults;
             for (k in defaults) {
-                let value = defaults[k];
+                const value = defaults[k];
                 questions.push({
                     type: 'input',
                     message: titleCase(k),
@@ -103,15 +103,15 @@ export default (program: CommanderStatic) => {
             });
 
             // console.log(questions);
-            
+
             inquirer
                 .prompt(questions)
                 .then((info: any) => {
                     // merge the current options
-                    options = {...options, ...info};
-                    
-                    let data = createServiceObject(options);
-                    
+                    options = { ...options, ...info };
+
+                    const data = createServiceObject(options);
+
 
                     prettyPrint(data);
 
@@ -125,11 +125,7 @@ export default (program: CommanderStatic) => {
                             }
                         ])
                         .then((answer: any) => {
-                            let confirm = answer.confirm;
-                            if (!confirm) {
-                                console.log(ERRORS.ABORT);
-                                return;
-                            }
+                            if (!answer.confirm) return console.log(ERRORS.ABORT);
                             initialize();
                         });
 

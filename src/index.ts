@@ -8,7 +8,7 @@
  */
 
 
-require('./initalize').default();
+require('./initalize').default();  // eslint-disable-line @typescript-eslint/no-var-requires
 import * as program from 'commander';
 import * as cmds from './cmds';
 import { VERSION } from './constants';
@@ -21,7 +21,7 @@ program
 
 
 // Apply all the functions to the program
-for (let func of Object.values(cmds)) func(program);
+for (const func of Object.values(cmds)) func(program);
 
 
 // Show the info screen if no commands given

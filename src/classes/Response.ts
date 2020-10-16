@@ -6,11 +6,11 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 import { HTTP_STATUS_CODES } from '../constants';
-type statusClasses = "server_error"|"client_error"|"redirection"|"success"|"informational";
+type statusClasses = "server_error" | "client_error" | "redirection" | "success" | "informational";
 
 
 export default class Response {
-      
+
     public codeInfo: {
         label: string,
         description: string
@@ -18,9 +18,9 @@ export default class Response {
 
     constructor(
         public code: string,
-        public description: string|null,
-        public returnType: string|null,
-        public errorMessage: string|null
+        public description: string | null,
+        public returnType: string | null,
+        public errorMessage: string | null
     ) {
         if (errorMessage != null && errorMessage != errorMessage.toUpperCase()) throw new Error(`Invalid error message "${errorMessage}"`);
         if (Object.keys(HTTP_STATUS_CODES).indexOf(code) == -1) throw new Error(`${code} is an invalid status code`);
@@ -29,7 +29,7 @@ export default class Response {
         this.codeInfo = HTTP_STATUS_CODES[code];
     }
 
-    static deserialize(code:string, data: {[key: string]: string}) {
+    static deserialize(code: string, data: { [key: string]: string }): Response {
         return new Response(
             code,
             data.description || null,
@@ -38,15 +38,15 @@ export default class Response {
         )
     }
 
-    get isOK() {
+    get isOK(): boolean {
         return this.isStatusClass('success');
     }
 
-    get isError() {
+    get isError(): boolean {
         return this.isStatusClass('client_error') || this.isStatusClass('server_error');
     }
 
-    serialize() {
+    serialize(): { [key: string]: any } {
         return {
             description: this.description,
             returnType: this.returnType,
@@ -64,7 +64,7 @@ export default class Response {
         throw new Error(`${code} is an invalid status code`);
     }
 
-    isStatusClass(_class: statusClasses) {
+    isStatusClass(_class: statusClasses): boolean {
         return this.getStatusClass() == _class;
     }
 

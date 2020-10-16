@@ -9,21 +9,21 @@
 export default class Field {
     constructor(
         public name: string,
-        public label: string|null,
-        public description: string|null,
+        public label: string | null,
+        public description: string | null,
         public type: string,
         public required: boolean,
-        public defaultValue: any,
+        public defaultValue: string | number | boolean | { [key: string]: any } | null,
         public flags: Set<string>
     ) {
         // if (this.required && defaultValue == null) throw new Error("a required field can't have a default value of null");
     }
 
-    static deserialize(name: string, data: {[key: string]: any}) {
+    static deserialize(name: string, data: { [key: string]: any }): Field {
         // check some cases
         // TODO: move this to the Field        
         if (typeof data.type == "undefined") throw new Error("type not given in field");
-    
+
         return new Field(
             name,
             data.label || null,
@@ -35,7 +35,7 @@ export default class Field {
         )
     }
 
-    serialize() {
+    serialize(): { [key: string]: any } {
         return {
             label: this.label,
             description: this.description,

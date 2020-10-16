@@ -8,13 +8,13 @@
 
 import { CommanderStatic } from "commander";
 import cache from '../cache';
-const colors = require('colors');
-const ora = require('ora');
+import colors = require('colors');
+import ora = require('ora');
 
 
-export default (program: CommanderStatic) => {
-    
-    let cacheCommand = program
+export default (program: CommanderStatic): void => {
+
+    const cacheCommand = program
         .command('cache')
         .description('manage your cache');
 
