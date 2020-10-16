@@ -16,12 +16,15 @@ export default abstract class ServiceContext {
         private filePath: string,
         public info: Info,
         public type: string,
-        public schemas: Schema[]
-    ) { }
+        public schemas: Schema[],
+    ) {}
 
     // @ts-ignore
-    static deserialize(serviceFilePath: string, data: { [key: string]: any }): ServiceContext {
-        throw Error("NOT IMPLEMENTED");
+    static deserialize(
+        serviceFilePath: string,
+        data: { [key: string]: any },
+    ): ServiceContext {
+        throw Error('NOT IMPLEMENTED');
         console.log(serviceFilePath, data);
     }
 
@@ -29,8 +32,8 @@ export default abstract class ServiceContext {
         return {
             info: this.info.serialize(),
             type: this.type,
-            schemas: this.schemas.map(s => s.serialize())
-        }
+            schemas: this.schemas.map((s) => s.serialize()),
+        };
     }
 
     write(): boolean {
@@ -41,13 +44,14 @@ export default abstract class ServiceContext {
     }
 
     getSchema(identifier: string): Schema | null {
-        const match = this.schemas.filter(s => s.identifier == identifier);
+        const match = this.schemas.filter((s) => s.identifier == identifier);
         if (match.length == 0) return null;
         return match[0];
     }
 
     addSchema(schema: Schema): Schema {
-        if (this.getSchema(schema.identifier) != null) throw new Error("Schema with the same identifier already exists");
+        if (this.getSchema(schema.identifier) != null)
+            throw new Error('Schema with the same identifier already exists');
         this.schemas.push(schema);
         return schema;
     }
@@ -58,5 +62,4 @@ export default abstract class ServiceContext {
         this.schemas.splice(this.schemas.indexOf(schema), 1);
         return true;
     }
-
 }

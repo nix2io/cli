@@ -6,14 +6,12 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import * as commander from "commander";
+import * as commander from 'commander';
 
 export default (make: commander.Command): void => {
-
-    make
-        .command('gateway')
+    make.command('gateway')
         .description('make a gateway')
         .action(() => {
             console.log('creating gateway');
         });
-}
+};

@@ -6,15 +6,14 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { CommanderStatic } from "commander";
+import { CommanderStatic } from 'commander';
 import { prettyPrint } from 'koontil';
 import { ERRORS, NONE } from '../constants';
 import cache from '../cache';
-import { getServiceContext } from "../service";
+import { getServiceContext } from '../service';
 import inquirer = require('inquirer');
 import colors = require('colors');
 import Table = require('cli-table');
-
 
 // TODO: implement using cache to get author info
 /**
@@ -39,7 +38,7 @@ const createAuthorObject = (email: string, options: { [key: string]: any }) => {
     const name = options.authorName || null,
         publicEmail = options.publicEmail || null,
         url = options.url || null,
-        alert = options.alert || "none",
+        alert = options.alert || 'none',
         flags: Set<string> = new Set();
 
     if (options.public) flags.add('public');
@@ -53,9 +52,9 @@ const createAuthorObject = (email: string, options: { [key: string]: any }) => {
         publicEmail,
         url,
         alert,
-        flags
+        flags,
     };
-}
+};
 /**
 const colorsStrings = (obj: { [key: string]: any; }) => {
     for (const key in obj) {
@@ -69,36 +68,53 @@ const colorsStrings = (obj: { [key: string]: any; }) => {
 
 const displayAuthors = (): void => {
     const serviceContext = getServiceContext();
-    if (serviceContext == null) { console.error(colors.red('No service context')); return; }
+    if (serviceContext == null) {
+        console.error(colors.red('No service context'));
+        return;
+    }
 
-    const table = new Table({ head: ['Email', 'Name', 'Flags'], style: { head: ['cyan', 'bold'] } });
+    const table = new Table({
+        head: ['Email', 'Name', 'Flags'],
+        style: { head: ['cyan', 'bold'] },
+    });
     for (const author of serviceContext.info.authors) {
-        table.push([author.email, author.name || NONE, Array.from(author.flags).join(", ") || NONE]);
+        table.push([
+            author.email,
+            author.name || NONE,
+            Array.from(author.flags).join(', ') || NONE,
+        ]);
     }
     const authorCount = serviceContext.info.authors.length;
 
-    console.log(`Displaying ${colors.bold(`${authorCount} author${authorCount != 1 ? 's' : ''}`)}`);
+    console.log(
+        `Displaying ${colors.bold(
+            `${authorCount} author${authorCount != 1 ? 's' : ''}`,
+        )}`,
+    );
     console.log(table.toString());
-}
-
+};
 
 export default (program: CommanderStatic): void => {
-
     const authors = program
         .command('authors')
         .alias('author')
         .description('manage your authors')
         .action(displayAuthors);
 
-    authors.command('list')
+    authors
+        .command('list')
         .description('list the service authors')
         .action(displayAuthors);
 
     // TODO: refactor the same way as remove author
-    authors.command('add <email>')
+    authors
+        .command('add <email>')
         .description('add an author')
         .option('-n, --authorName [name]', 'name of the author')
-        .option('-E, --publicEmail [publicEmail]', 'email to use for the public')
+        .option(
+            '-E, --publicEmail [publicEmail]',
+            'email to use for the public',
+        )
         .option('-u, --url [url]', 'author url')
         .option('-a, --alert [alert]', 'alert options')
         // flags
@@ -111,14 +127,18 @@ export default (program: CommanderStatic): void => {
         .action((email: string, options) => {
             // check if there is a service context
             const serviceContext = getServiceContext();
-            if (serviceContext == null) return console.error(colors.red('No service context'));
+            if (serviceContext == null)
+                return console.error(colors.red('No service context'));
             const confirmAdd = options.yes;
 
             // check if the author already exists
-            if (serviceContext.info.getAuthor(email) != null) return console.error(colors.red('An author with the same email exists'));
+            if (serviceContext.info.getAuthor(email) != null)
+                return console.error(
+                    colors.red('An author with the same email exists'),
+                );
 
             // define the author object
-            const author = createAuthorObject(email, options)
+            const author = createAuthorObject(email, options);
 
             // logic for adding an authors
             const addAuthor = () => {
@@ -130,15 +150,21 @@ export default (program: CommanderStatic): void => {
                         author.publicEmail,
                         author.url,
                         author.alert,
-                        author.flags
+                        author.flags,
                     );
-                } catch (err) { return console.error(err) }
+                } catch (err) {
+                    return console.error(err);
+                }
 
                 // try to write the service.yaml
                 try {
                     serviceContext.write();
                     console.log(colors.green(`✔ Author ${author.email} added`));
-                } catch (err) { return console.error(colors.red('Error saving service.yaml: ' + err.message)); }
+                } catch (err) {
+                    return console.error(
+                        colors.red('Error saving service.yaml: ' + err.message),
+                    );
+                }
 
                 // save the author into cache
                 const cachedAuthors = cache.get('authors'),
@@ -146,15 +172,15 @@ export default (program: CommanderStatic): void => {
                 authorCopy.flags = Array.from(author.flags);
                 cachedAuthors[email] = author;
                 cache.set('authors', cachedAuthors);
-            }
+            };
 
             // add the author if confirm
             if (confirmAdd) return addAuthor();
 
             // prompt the user for confirmation
-            console.log(colors.yellow("⚠  About to write to service.yaml\n"));
+            console.log(colors.yellow('⚠  About to write to service.yaml\n'));
             prettyPrint(author);
-            console.log("\n");
+            console.log('\n');
 
             // get the user response
             inquirer
@@ -162,8 +188,8 @@ export default (program: CommanderStatic): void => {
                     {
                         type: 'confirm',
                         message: 'Proceed with adding author?',
-                        name: 'confirm'
-                    }
+                        name: 'confirm',
+                    },
                 ])
                 .then((answer: any) => {
                     if (!answer.confirm) return console.log(ERRORS.ABORT);
@@ -171,33 +197,36 @@ export default (program: CommanderStatic): void => {
                 });
         });
 
-    authors.command('remove <email>')
+    authors
+        .command('remove <email>')
         .description('remove an author')
         .option('-y, --yes', 'skip the confirmation screen')
         .action((email: string, options) => {
             // check if there is a service context
             const serviceContext = getServiceContext();
-            if (serviceContext == null) return console.error(colors.red('No service context'));
+            if (serviceContext == null)
+                return console.error(colors.red('No service context'));
             const confirmRemove = options.yes;
 
             // check if the author exists
             const author = serviceContext.info.getAuthor(email);
-            if (author == null) return console.error(colors.red('Author does not exists'));
+            if (author == null)
+                return console.error(colors.red('Author does not exists'));
 
             // logic for author removal
             const removeAuthor = () => {
                 serviceContext.info.removeAuthor(email);
                 serviceContext.write();
                 console.log(colors.green(`✔ Author ${email} removed`));
-            }
+            };
 
             // remove the author if confirm
             if (confirmRemove) return removeAuthor();
 
             // prompt the user for confirmation
-            console.log(colors.yellow("⚠  About to write to service.yaml\n"));
+            console.log(colors.yellow('⚠  About to write to service.yaml\n'));
             prettyPrint(author.serialize());
-            console.log("\n");
+            console.log('\n');
 
             // get the user response
             inquirer
@@ -206,12 +235,12 @@ export default (program: CommanderStatic): void => {
                         type: 'confirm',
                         message: 'Proceed with removing author?',
                         name: 'confirm',
-                        default: false
-                    }
+                        default: false,
+                    },
                 ])
                 .then((answer: any) => {
                     if (!answer.confirm) return console.log(ERRORS.ABORT);
                     removeAuthor();
                 });
         });
-}
+};

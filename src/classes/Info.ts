@@ -8,9 +8,7 @@
 
 import Author from './Author';
 
-
 export default class Info {
-
     constructor(
         public identifier: string,
         public label: string | null,
@@ -20,8 +18,8 @@ export default class Info {
         private createdTimestamp: number,
         private modifiedTimestamp: number,
         public license: string,
-        public termsOfServiceURL: string
-    ) { }
+        public termsOfServiceURL: string,
+    ) {}
 
     get created(): Date {
         return new Date(this.createdTimestamp * 1000);
@@ -37,12 +35,14 @@ export default class Info {
             data.label || null,
             data.description || null,
             data.version,
-            Object.values(data.authors).map((auth: any) => Author.deserialize(auth)),
+            Object.values(data.authors).map((auth: any) =>
+                Author.deserialize(auth),
+            ),
             data.created,
             data.modified,
             data.license || null,
-            data.termsOfServiceURL || null
-        )
+            data.termsOfServiceURL || null,
+        );
     }
 
     serialize(): { [key: string]: any } {
@@ -51,16 +51,18 @@ export default class Info {
             label: this.label,
             description: this.description,
             version: this.version,
-            authors: this.authors.map(a => a.serialize()),
+            authors: this.authors.map((a) => a.serialize()),
             created: this.createdTimestamp,
             modified: this.modifiedTimestamp,
             license: this.license,
-            termsOfServiceURL: this.termsOfServiceURL
-        }
+            termsOfServiceURL: this.termsOfServiceURL,
+        };
     }
 
     getAuthorsByFlags(...flags: string[]): Author[] {
-        return this.authors.filter(author => flags.every(flag => author.inherited_flags.has(flag)));
+        return this.authors.filter((author) =>
+            flags.every((flag) => author.inherited_flags.has(flag)),
+        );
     }
 
     getContributers(): Author[] {
@@ -76,18 +78,28 @@ export default class Info {
     }
 
     getAuthor(email: string): Author | null {
-        const match = this.authors.filter(a => a.email == email);
+        const match = this.authors.filter((a) => a.email == email);
         if (match.length == 0) return null;
         return match[0];
     }
 
-    createAndAddAuthor(email: string, name: string, publicEmail: string, url: string, alert: string, flags: Set<string>): Author {
-        return this.addAuthor(new Author(email, name, publicEmail, url, alert, flags));
+    createAndAddAuthor(
+        email: string,
+        name: string,
+        publicEmail: string,
+        url: string,
+        alert: string,
+        flags: Set<string>,
+    ): Author {
+        return this.addAuthor(
+            new Author(email, name, publicEmail, url, alert, flags),
+        );
     }
 
     addAuthor(author: Author): Author {
         // throw an error if an author w the same email
-        if (this.getAuthor(author.email) != null) throw new Error("An author with the same email exists");
+        if (this.getAuthor(author.email) != null)
+            throw new Error('An author with the same email exists');
         this.authors.push(author);
         return author;
     }

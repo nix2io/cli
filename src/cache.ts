@@ -10,9 +10,7 @@ import { CACHE_PATH } from './constants';
 import fs = require('fs');
 import path = require('path');
 
-
 class Cache {
-
     makePath(name: string): string {
         return path.join(CACHE_PATH, name);
     }
@@ -21,12 +19,12 @@ class Cache {
         return fs.existsSync(this.makePath(name));
     }
 
-    get(name: string): { [key: string]: any; } {
+    get(name: string): { [key: string]: any } {
         if (!this.exists(name)) return {};
         try {
             return JSON.parse(fs.readFileSync(this.makePath(name), 'utf-8'));
         } catch (err) {
-            console.error("Could not read the cache");
+            console.error('Could not read the cache');
             return {};
         }
     }

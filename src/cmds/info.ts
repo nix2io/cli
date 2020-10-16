@@ -6,28 +6,35 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { CommanderStatic } from "commander";
+import { CommanderStatic } from 'commander';
 import { formatString } from 'koontil';
-import { VERSION, SERVICE_DISPLAY_TEMPLATE, SYMBOLS } from "../constants";
-import { getServiceContext } from "../service";
+import { VERSION, SERVICE_DISPLAY_TEMPLATE, SYMBOLS } from '../constants';
+import { getServiceContext } from '../service';
 import { authed, user } from '../user';
 import colors = require('colors');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const friendlyTime = require('friendly-time');
 // const ora = require('ora');
 
-
 export default (program: CommanderStatic): void => {
-
     program
         .command('info')
         .description('display service context info')
         .action(() => {
-            console.log(SYMBOLS.ROBOT + " " + colors.bold('Nix2 CLI') + colors.grey(` v${VERSION}`));
+            console.log(
+                SYMBOLS.ROBOT +
+                    ' ' +
+                    colors.bold('Nix2 CLI') +
+                    colors.grey(` v${VERSION}`),
+            );
             if (authed) {
-                console.log(colors.cyan(` ${SYMBOLS.INFO} Authed as ${user?.name}`))
+                console.log(
+                    colors.cyan(` ${SYMBOLS.INFO} Authed as ${user?.name}`),
+                );
             } else {
-                console.log(colors.yellow(` ${SYMBOLS.WARNING} No user authed`))
+                console.log(
+                    colors.yellow(` ${SYMBOLS.WARNING} No user authed`),
+                );
             }
             // get the service
             try {
@@ -39,22 +46,21 @@ export default (program: CommanderStatic): void => {
                 const info = service.info;
                 const devCount = service.info.getDevs().length;
 
-                console.log(formatString(SERVICE_DISPLAY_TEMPLATE, {
-                    label: info.label,
-                    identifier: info.identifier,
-                    description: info.description,
-                    version: info.version,
-                    authorText: `${devCount} dev${devCount != 1 ? 's' : ''}`,
-                    created: friendlyTime(info.created),
-                    modified: friendlyTime(info.modified)
-                }));
-
-
-
+                console.log(
+                    formatString(SERVICE_DISPLAY_TEMPLATE, {
+                        label: info.label,
+                        identifier: info.identifier,
+                        description: info.description,
+                        version: info.version,
+                        authorText: `${devCount} dev${
+                            devCount != 1 ? 's' : ''
+                        }`,
+                        created: friendlyTime(info.created),
+                        modified: friendlyTime(info.modified),
+                    }),
+                );
             } catch (err) {
                 console.error(colors.red(`ERR: ${err.message}`));
             }
-
         });
-
-}
+};

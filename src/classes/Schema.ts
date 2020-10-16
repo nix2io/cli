@@ -6,9 +6,8 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import Field from "./Field";
-import { titleCase } from "koontil";
-
+import Field from './Field';
+import { titleCase } from 'koontil';
 
 export default class Schema {
     private id: Field;
@@ -18,9 +17,17 @@ export default class Schema {
         public label: string,
         public description: string,
         public pluralName: string,
-        public _fields: { [id: string]: Field }
+        public _fields: { [id: string]: Field },
     ) {
-        this.id = new Field('_id', 'ID', `Id of the ${label}`, 'number', true, null, new Set(['pk']));
+        this.id = new Field(
+            '_id',
+            'ID',
+            `Id of the ${label}`,
+            'number',
+            true,
+            null,
+            new Set(['pk']),
+        );
     }
 
     static deserialize(data: { [key: string]: any }): Schema {
@@ -29,8 +36,13 @@ export default class Schema {
             data.label,
             data.description,
             data.pluralName,
-            Object.assign({}, ...Object.keys(data.fields).map(k => ({ [k]: Field.deserialize(k, data.fields[k]) })))
-        )
+            Object.assign(
+                {},
+                ...Object.keys(data.fields).map((k) => ({
+                    [k]: Field.deserialize(k, data.fields[k]),
+                })),
+            ),
+        );
     }
 
     serialize(): { [key: string]: any } {
@@ -39,17 +51,25 @@ export default class Schema {
             label: this.label,
             description: this.description,
             // This just runs the .serialize() method over the fields object
-            fields: Object.assign({}, ...Object.keys(this.fields).map(k => ({ [k]: this.fields[k].serialize() })))
-        }
+            fields: Object.assign(
+                {},
+                ...Object.keys(this.fields).map((k) => ({
+                    [k]: this.fields[k].serialize(),
+                })),
+            ),
+        };
     }
 
     get fields(): { [id: string]: Field } {
-        return Object.assign({
-            [this.id.name]: this.id
-        }, this._fields);
+        return Object.assign(
+            {
+                [this.id.name]: this.id,
+            },
+            this._fields,
+        );
     }
 
     get pascalCase(): string {
-        return titleCase(this.label).replace(/ /g, "");
+        return titleCase(this.label).replace(/ /g, '');
     }
 }

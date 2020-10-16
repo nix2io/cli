@@ -6,7 +6,7 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { SERVICE_FILE_NAME, ERRORS } from "./constants";
+import { SERVICE_FILE_NAME, ERRORS } from './constants';
 import * as services from './classes/services';
 import fs = require('fs');
 import path = require('path');
@@ -14,15 +14,21 @@ import yaml = require('js-yaml');
 
 // check if the file exists
 const serviceFileExists = (serviceFilePath: string): boolean => {
-    try { return fs.existsSync(serviceFilePath); }
-    catch (err) { throw new Error(ERRORS.NO_CHECK_FOR_FILE); }
-}
+    try {
+        return fs.existsSync(serviceFilePath);
+    } catch (err) {
+        throw new Error(ERRORS.NO_CHECK_FOR_FILE);
+    }
+};
 
 // get the file from the path
 const getServiceFile = (serviceFilePath: string): string => {
-    try { return fs.readFileSync(serviceFilePath, 'utf-8'); }
-    catch (err) { throw new Error(ERRORS.NO_OPEN_FILE); }
-}
+    try {
+        return fs.readFileSync(serviceFilePath, 'utf-8');
+    } catch (err) {
+        throw new Error(ERRORS.NO_OPEN_FILE);
+    }
+};
 
 // returns a js object from the yaml
 const getServiceObject = (content: string): { [key: string]: any } => {
@@ -30,21 +36,26 @@ const getServiceObject = (content: string): { [key: string]: any } => {
         // parse the file's yaml
         const serviceObject = yaml.load(content);
         // throw an error if the response is anything but an object
-        if (typeof serviceObject != "object") throw new Error(ERRORS.INVALID_YAML);
+        if (typeof serviceObject != 'object')
+            throw new Error(ERRORS.INVALID_YAML);
         return serviceObject;
-    } catch (err) { throw new Error(ERRORS.INVALID_YAML); }
-}
+    } catch (err) {
+        throw new Error(ERRORS.INVALID_YAML);
+    }
+};
 
-type serviceTypeClasses = typeof services.APIServiceContext |
-    typeof services.GatewayServiceContext;
+type serviceTypeClasses =
+    | typeof services.APIServiceContext
+    | typeof services.GatewayServiceContext;
 
-type serviceTypes = services.APIServiceContext |
-    services.GatewayServiceContext;
-
+type serviceTypes = services.APIServiceContext | services.GatewayServiceContext;
 
 // parse the object into a ServiceContext instance
 // TODO: change any to a "shape of" thing that describes the service context shape
-const parseServiceObject = (serviceFilePath: string, serviceObject: { [key: string]: any }): serviceTypes => {
+const parseServiceObject = (
+    serviceFilePath: string,
+    serviceObject: { [key: string]: any },
+): serviceTypes => {
     // TODO: figure out a better way to do this
     let serviceClass: serviceTypeClasses;
     switch (serviceObject.type) {
@@ -55,10 +66,12 @@ const parseServiceObject = (serviceFilePath: string, serviceObject: { [key: stri
             serviceClass = services.GatewayServiceContext;
             break;
         default:
-            throw new Error(`Service type ${serviceObject.type} is unsupported`);
+            throw new Error(
+                `Service type ${serviceObject.type} is unsupported`,
+            );
     }
     return serviceClass.deserialize(serviceFilePath, serviceObject);
-}
+};
 
 export const getServiceContext = (): serviceTypes | null => {
     // get the full file path
@@ -69,7 +82,6 @@ export const getServiceContext = (): serviceTypes | null => {
     const content = getServiceFile(serviceFilePath);
     // get the service object
     const obj = getServiceObject(content);
-    // parse and return the service context 
+    // parse and return the service context
     return parseServiceObject(serviceFilePath, obj);
-
-}
+};
