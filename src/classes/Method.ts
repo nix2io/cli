@@ -14,7 +14,14 @@ export default class Method {
         null,
         'INTERNAL',
     );
-
+    /**
+     * Class to represent a `method` for a `path` for an `API`
+     * @class Method
+     * @param {string}          type        method type
+     * @param {string}          label       label of the method
+     * @param {string}          description description of the method
+     * @param {array<Response>} _responses  responces for the method
+     */
     constructor(
         public type: string,
         public label: string,
@@ -22,7 +29,14 @@ export default class Method {
         private _responses: { [key: string]: Response },
     ) {}
 
-    static deserialize(type: string, data: { [key: string]: any }): Method {
+    /**
+     * Deserialize an object into an `Method` instance
+     * @function deserialize
+     * @memberof Method
+     * @param    {object} data Javascript object of the Method
+     * @returns  {Method}      `Method` instance
+     */
+    static deserialize(type: string, data: Record<string, unknown>): Method {
         return new Method(
             type,
             data.label,
@@ -36,7 +50,17 @@ export default class Method {
         );
     }
 
-    get responses(): { [key: string]: Response } {
+    /**
+     * Returns the given responses plus the default responces
+     *
+     * Default responces:
+     * - 500: Internal Server Error
+     *
+     * @function responces
+     * @memberof Method
+     * @returns  {Record<string, Response>} object of all the responces
+     */
+    get responses(): Record<string, Response> {
         return {
             ...this._responses,
             ...{
@@ -45,7 +69,13 @@ export default class Method {
         };
     }
 
-    serialize(): { [key: string]: any } {
+    /**
+     * Serialize an Method instance into an object
+     * @function serialize
+     * @memberof Method
+     * @returns  {Record<string, unknown>} Javascript object
+     */
+    serialize(): Record<string, unknown> {
         return {
             label: this.label,
             description: this.description,

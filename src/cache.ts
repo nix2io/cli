@@ -19,7 +19,7 @@ class Cache {
         return fs.existsSync(this.makePath(name));
     }
 
-    get(name: string): { [key: string]: any } {
+    get(name: string): Record<string, unknown> {
         if (!this.exists(name)) return {};
         try {
             return JSON.parse(fs.readFileSync(this.makePath(name), 'utf-8'));
@@ -29,13 +29,26 @@ class Cache {
         }
     }
 
-    set(name: string, obj: { [key: string]: any }) {
+    /**
+     * Set the value of
+     * @function set
+     * @memberof Cache
+     * @param name name of the cache
+     * @param obj  object value
+     */
+    set(name: string, obj: Record<string, unknown>) {
         // TODO: add error handling
         fs.writeFileSync(this.makePath(name), JSON.stringify(obj));
     }
 
+    /**
+     * Remove all the files
+     * @function clear
+     * @memberof Cache
+     * @returns  `True` if successfull
+     */
     clear() {
-        fs.readdirSync(CACHE_PATH).forEach((file: string, _: any) => {
+        fs.readdirSync(CACHE_PATH).forEach((file: string, _: unknown) => {
             const filePath = path.join(CACHE_PATH, file);
             if (!fs.lstatSync(filePath).isDirectory()) fs.unlinkSync(filePath);
         });

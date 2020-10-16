@@ -12,7 +12,12 @@ class User {
     constructor(public email: string, public name: string) {}
 }
 
-const userObj = config.get('user');
+const userObj = <
+    {
+        email: string;
+        name: string;
+    }
+>config.get('user');
 
 export const authed = userObj != null;
 export const user = module.exports.authed

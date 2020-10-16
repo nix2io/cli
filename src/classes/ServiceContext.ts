@@ -12,6 +12,13 @@ import yaml = require('js-yaml');
 import fs = require('fs');
 
 export default abstract class ServiceContext {
+    /**
+     *
+     * @param {string}        filePath path to the service.yaml
+     * @param {Info}          info     info of the service
+     * @param {string}        type     type of service
+     * @param {Array<Schema>} schemas  list of service schemas
+     */
     constructor(
         private filePath: string,
         public info: Info,
@@ -19,16 +26,23 @@ export default abstract class ServiceContext {
         public schemas: Schema[],
     ) {}
 
-    // @ts-ignore
+    /**
+     * Deserialize an object into an `ServiceContext` instance
+     * @function deserialize
+     * @memberof ServiceContext
+     * @param   {string} serviceFilePath path to the service.yaml
+     * @param   {object} data            Javascript object of the Info
+     * @returns {ServiceContext}         Service context object
+     */
     static deserialize(
         serviceFilePath: string,
-        data: { [key: string]: any },
+        data: Record<string, unknown>,
     ): ServiceContext {
         throw Error('NOT IMPLEMENTED');
         console.log(serviceFilePath, data);
     }
 
-    serialize(): { [key: string]: any } {
+    serialize(): Record<string, unknown> {
         return {
             info: this.info.serialize(),
             type: this.type,
