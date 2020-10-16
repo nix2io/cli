@@ -1,3 +1,10 @@
+/*
+ * File: Response.ts
+ * Created: 10/15/2020 13:03:39
+ * ----
+ * Copyright: 2020 Nix² Technologies
+ * Author: Max Koon (maxk@nix2.io)
+ */
 import { HTTP_STATUS_CODES } from '../constants';
 type statusClasses = "server_error"|"client_error"|"redirection"|"success"|"informational";
 
