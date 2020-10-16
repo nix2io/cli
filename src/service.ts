@@ -1,3 +1,11 @@
+/*
+ * File: service.ts
+ * Created: 10/08/2020 10:24:57
+ * ----
+ * Copyright: 2020 Nix² Technologies
+ * Author: Max Koon (maxk@nix2.io)
+ */
+
 import { SERVICE_FILE_NAME, ERRORS } from "./constants";
 import { ServiceContext } from './classes';
 import * as services from './classes/services';

@@ -1,3 +1,11 @@
+/*
+ * File: info.ts
+ * Created: 10/09/2020 10:24:57
+ * ----
+ * Copyright: 2020 Nix² Technologies
+ * Author: Max Koon (maxk@nix2.io)
+ */
+
 import { CommanderStatic } from "commander";
 import { formatString } from 'koontil';
 import { VERSION, SERVICE_DISPLAY_TEMPLATE, SYMBOLS } from "../constants";

@@ -1,3 +1,11 @@
+/*
+ * File: constants.ts
+ * Created: 10/08/2020 10:24:57
+ * ----
+ * Copyright: 2020 Nix² Technologies
+ * Author: Max Koon (maxk@nix2.io)
+ */
+
 const { version } = require('../package.json');
 const path = require('path')
 const colors = require('colors');

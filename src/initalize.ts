@@ -1,3 +1,11 @@
+/*
+ * File: initalize.ts
+ * Created: 10/11/2020 13:03:39
+ * ----
+ * Copyright: 2020 Nix² Technologies
+ * Author: Max Koon (maxk@nix2.io)
+ */
+
 import { CONFIG_PATH, CACHE_PATH, CONFIG_FILE_PATH, ERRORS } from './constants';
 const colors = require('colors');
 // const path = require('path');
