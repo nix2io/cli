@@ -1,11 +1,19 @@
 # Nix² CLI
-*Nix² Command Line Interface*
+
+_Nix² Command Line Interface_
+
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nix2io/cli/CI)
+[![Requirements Status](https://requires.io/github/nix2io/cli/requirements.svg?branch=master)](https://requires.io/github/nix2io/cli/requirements/?branch=master)
+![npm](https://img.shields.io/npm/v/@nix2/nix-cli?label=npm%20version)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/nix2io/cli?label=dev%20version)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
 <p align="center">
   <img style="display: block; width: 100%; max-width: 700px" alt="CLI Screenshot" src="https://i.imgur.com/2N3YWHF.png">
 </p>
 
 ## Installation
+
 All you need is to install is node
 
 ```sh
@@ -21,7 +29,7 @@ When running the command with no arguments, it will default to `dev info`.
 
 ### Help
 
-This CLI is built with commander.js, which generates help screens based off the structure of the application. 
+This CLI is built with commander.js, which generates help screens based off the structure of the application.
 To get help on any commands, just run `dev help`.
 
 ```sh
@@ -126,7 +134,7 @@ Options:
   -h, --help                       display help for command
 ```
 
-> **_NOTE_**  Each author's data is cached for the most recent usage so you don't need to retype all these parameters each time you add an author. To clear cache please read [this](#clear)
+> **_NOTE_** Each author's data is cached for the most recent usage so you don't need to retype all these parameters each time you add an author. To clear cache please read [this](#clear)
 
 #### Remove
 
