@@ -9,7 +9,6 @@
 import { CONFIG_FILE_PATH } from './constants';
 import fs = require('fs');
 
-// TODO: add error handling
 class Config {
     /**
      * Class for managing config

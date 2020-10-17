@@ -15,7 +15,6 @@ import inquirer = require('inquirer');
 import colors = require('colors');
 import Table = require('cli-table');
 
-// TODO: implement using cache to get author info
 /**
 const getAuthorData = (authorData: { [key: string]: any; }, callback: Function) => {
     const cachedAuthors = cache.get('authors');
@@ -34,7 +33,10 @@ const getAuthorData = (authorData: { [key: string]: any; }, callback: Function) 
     callback(authorData);
 } */
 
-const createAuthorObject = (email: string, options: Record<string, any>) => {
+const createAuthorObject = (
+    email: string,
+    options: Record<string, string | null>,
+) => {
     const name = options.authorName || null,
         publicEmail = options.publicEmail || null,
         url = options.url || null,
@@ -106,7 +108,6 @@ export default (program: CommanderStatic): void => {
         .description('list the service authors')
         .action(displayAuthors);
 
-    // TODO: refactor the same way as remove author
     authors
         .command('add <email>')
         .description('add an author')

@@ -37,7 +37,6 @@ class Cache {
      * @param obj  object value
      */
     set(name: string, obj: Record<string, unknown>) {
-        // TODO: add error handling
         fs.writeFileSync(this.makePath(name), JSON.stringify(obj));
     }
 

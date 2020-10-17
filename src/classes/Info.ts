@@ -197,9 +197,9 @@ export default class Info {
      */
     createAndAddAuthor(
         email: string,
-        name: string,
-        publicEmail: string,
-        url: string,
+        name: string | null,
+        publicEmail: string | null,
+        url: string | null,
         alert: string,
         flags: Set<string>,
     ): Author {

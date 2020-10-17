@@ -5,7 +5,6 @@
  * Copyright: 2020 Nix² Technologies
  * Author: Max Koon (maxk@nix2.io)
  */
-// TODO: change to import
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../package.json');
 import path = require('path');

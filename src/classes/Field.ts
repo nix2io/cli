@@ -26,9 +26,7 @@ export default class Field {
         public required: boolean,
         public defaultValue: unknown,
         public flags: Set<string>,
-    ) {
-        // TODO: make sure a non-nullable value doesnt have a default value of null
-    }
+    ) {}
 
     /**
      * Deserialize an object into an `Field` instance

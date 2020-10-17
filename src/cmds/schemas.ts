@@ -74,18 +74,6 @@ export default (program: CommanderStatic): void => {
         .option('-y, --yes', 'skip the confirmation message')
         .option('-d, --desc [description]', 'description of the schema')
         .action((identifier: string, options) => {
-            // TODO: implement something like this
-
-            // dev schema add artist,page
-
-            // dev schema add artist->album->song
-            // will create artist
-            // album will have artistId
-            // song will have songId
-            // these will be links
-
-            // dev schema add user->page,otherThing
-
             // check if there is a service context
             const serviceContext = getServiceContext();
             if (serviceContext == null)

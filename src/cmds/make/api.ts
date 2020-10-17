@@ -54,7 +54,9 @@ const generateOpenAPI = (serviceContext: APIServiceContext) => {
             methods: Record<string, unknown> = {};
 
         for (const verb in path.methods) {
-            const m = Object.values(path.methods)[Object.keys(path.methods).indexOf(verb)];
+            const m = Object.values(path.methods)[
+                Object.keys(path.methods).indexOf(verb)
+            ];
             const method: Method = m;
 
             const func = (resp: Response) => {

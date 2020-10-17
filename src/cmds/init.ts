@@ -75,7 +75,6 @@ export default (program: CommanderStatic): void => {
                 return data;
             };
 
-            // TODO: create better types
             const initialize = () => {
                 const newServiceFilePath = path.join(
                     servicePath,
