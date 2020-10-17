@@ -11,6 +11,7 @@ import * as services from './classes/services';
 import fs = require('fs');
 import path = require('path');
 import yaml = require('js-yaml');
+import { ServiceContext } from './classes';
 
 // check if the file exists
 const serviceFileExists = (serviceFilePath: string): boolean => {
@@ -30,7 +31,11 @@ const getServiceFile = (serviceFilePath: string): string => {
     }
 };
 
-// returns a js object from the yaml
+/**
+ * Returns a Javascript object from the service.yaml
+ * @param   {string} content Content of the file
+ * @returns {object}       service object 
+ */
 const getServiceObject = (content: string): Record<string, unknown> => {
     try {
         // parse the file's yaml
@@ -50,13 +55,16 @@ type serviceTypeClasses =
 
 type serviceTypes = services.APIServiceContext | services.GatewayServiceContext;
 
-// parse the object into a ServiceContext instance
-// TODO: change any to a "shape of" thing that describes the service context shape
+/**
+ * Parse a Javascript object to return a `ServiceContext` instance
+ * @param   {string} serviceFilePath Path to the `service.yaml`
+ * @param   {object} serviceObject   Javascript object of the service object
+ * @returns {ServiceContext}         new `ServiceContext` instance 
+ */
 const parseServiceObject = (
     serviceFilePath: string,
     serviceObject: Record<string, unknown>,
 ): serviceTypes => {
-    // TODO: figure out a better way to do this
     let serviceClass: serviceTypeClasses;
     switch (serviceObject.type) {
         case 'api':
@@ -75,6 +83,7 @@ const parseServiceObject = (
         <Record<string, any>>serviceObject,
     );
 };
+
 /**
  * Return the service object in the users current directory
  * @return {ServiceContext} Instance of the Service Context

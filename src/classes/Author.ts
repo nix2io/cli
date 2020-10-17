@@ -99,10 +99,9 @@ export default class Author {
     private updateFlags(): void {
         const flags = new Set(this.flags);
         for (const flag of flags) {
-            const currentFlag = flag;
+            let currentFlag = flag;
             while (Object.keys(flagInheritence).indexOf(currentFlag) != -1) {
-                // @ts-ignore
-                currentFlag = flagInheritence[currentFlag];
+                currentFlag = Object.values(flagInheritence)[Object.keys(flagInheritence).indexOf(currentFlag)];
                 flags.add(currentFlag);
             }
         }

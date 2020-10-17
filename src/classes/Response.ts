@@ -37,9 +37,7 @@ export default class Response {
             throw new Error(`Invalid error message "${errorMessage}"`);
         if (Object.keys(HTTP_STATUS_CODES).indexOf(code) == -1)
             throw new Error(`${code} is an invalid status code`);
-        // TODO: fix this
-        // @ts-ignore
-        this.codeInfo = HTTP_STATUS_CODES[code];
+        this.codeInfo = Object.values(HTTP_STATUS_CODES)[Object.keys(HTTP_STATUS_CODES).indexOf(code)];
     }
 
     /**

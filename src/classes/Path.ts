@@ -54,8 +54,7 @@ export default class Path {
         return Object.assign(
             {},
             ...Object.keys(this.methods).map((k: string) => ({
-                // @ts-ignore  WHAT THE HELL
-                [k]: this.methods[k].serialize(),
+                [k]: Object.values(this.methods)[Object.keys(this.methods).indexOf(k)].serialize(),
             })),
         );
     }
