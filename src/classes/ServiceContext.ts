@@ -13,7 +13,9 @@ import fs = require('fs');
 
 export default abstract class ServiceContext {
     /**
-     *
+     * Abstract class to represent a service context
+     * @class ServiceContext
+     * @abstract
      * @param {string}        filePath path to the service.yaml
      * @param {Info}          info     info of the service
      * @param {string}        type     type of service
@@ -27,8 +29,9 @@ export default abstract class ServiceContext {
     ) {}
 
     /**
-     * Deserialize an object into an `ServiceContext` instance
+     * Deserialize an object into a `ServiceContext` instance
      * @function deserialize
+     * @static
      * @memberof ServiceContext
      * @param   {string} serviceFilePath path to the service.yaml
      * @param   {object} data            Javascript object of the Info
@@ -42,6 +45,12 @@ export default abstract class ServiceContext {
         console.log(serviceFilePath, data);
     }
 
+    /**
+     * Serialize a ServiceContext instance into an object
+     * @function serialize
+     * @memberof ServiceContext
+     * @returns  {Record<string, unknown>} Javascript object
+     */
     serialize(): Record<string, unknown> {
         return {
             info: this.info.serialize(),
@@ -50,6 +59,12 @@ export default abstract class ServiceContext {
         };
     }
 
+    /**
+     * Writes the current ServiceContext from memory to disk
+     * @function write
+     * @memberof ServiceContext
+     * @returns  {boolean} `true` if successfull
+     */
     write(): boolean {
         const s = this.serialize();
         const content = yaml.safeDump(s);
@@ -57,12 +72,26 @@ export default abstract class ServiceContext {
         return true;
     }
 
+    /**
+     * Get a schema based on the `identifier`
+     * @function getSchema
+     * @memberof ServiceContext
+     * @param   {string} identifier Identifier of the `Schema` to get
+     * @returns {Schema}            `Schema` to return
+     */
     getSchema(identifier: string): Schema | null {
         const match = this.schemas.filter((s) => s.identifier == identifier);
         if (match.length == 0) return null;
         return match[0];
     }
 
+    /**
+     * Adds a `Schema` based off a `Schema` object
+     * @function addSchema
+     * @memberof ServiceContext
+     * @param   {Schema} schema `Schema` to add
+     * @returns {Schema}        returns the `Schema` given
+     */
     addSchema(schema: Schema): Schema {
         if (this.getSchema(schema.identifier) != null)
             throw new Error('Schema with the same identifier already exists');
@@ -70,6 +99,13 @@ export default abstract class ServiceContext {
         return schema;
     }
 
+    /**
+     * Removes a `Schema` from it's `identifier`
+     * @function removeSchema
+     * @memberof ServiceContext
+     * @param    {string} identifier `identifier` of the `Schema` to remove
+     * @returns  {boolean}           `true` if the `Schema` was removed
+     */
     removeSchema(identifier: string): boolean {
         const schema = this.getSchema(identifier);
         if (schema == null) return false;

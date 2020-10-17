@@ -34,7 +34,7 @@ const getAuthorData = (authorData: { [key: string]: any; }, callback: Function) 
     callback(authorData);
 } */
 
-const createAuthorObject = (email: string, options: { [key: string]: any }) => {
+const createAuthorObject = (email: string, options: Record<string, any>) => {
     const name = options.authorName || null,
         publicEmail = options.publicEmail || null,
         url = options.url || null,
@@ -168,7 +168,10 @@ export default (program: CommanderStatic): void => {
 
                 // save the author into cache
                 const cachedAuthors = cache.get('authors'),
-                    authorCopy: any = Object.assign({}, author);
+                    authorCopy: Record<string, unknown> = Object.assign(
+                        {},
+                        author,
+                    );
                 authorCopy.flags = Array.from(author.flags);
                 cachedAuthors[email] = author;
                 cache.set('authors', cachedAuthors);
@@ -191,7 +194,7 @@ export default (program: CommanderStatic): void => {
                         name: 'confirm',
                     },
                 ])
-                .then((answer: any) => {
+                .then((answer) => {
                     if (!answer.confirm) return console.log(ERRORS.ABORT);
                     addAuthor();
                 });
@@ -238,7 +241,7 @@ export default (program: CommanderStatic): void => {
                         default: false,
                     },
                 ])
-                .then((answer: any) => {
+                .then((answer) => {
                     if (!answer.confirm) return console.log(ERRORS.ABORT);
                     removeAuthor();
                 });

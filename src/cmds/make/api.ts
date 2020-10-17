@@ -13,14 +13,14 @@ import colors = require('colors');
 import fs = require('fs');
 
 const generateOpenAPI = (serviceContext: APIServiceContext) => {
-    const schemas: { [key: string]: any } = {};
+    const schemas: Record<string, unknown> = {};
 
     for (const schema of serviceContext.schemas) {
         const id = schema.pascalCase;
         const required: string[] = Object.values(schema.fields)
             .filter((field) => field.required)
             .map((field) => field.name);
-        const properties: { [key: string]: any } = {};
+        const properties: Record<string, unknown> = {};
 
         for (const key in schema.fields) {
             const field = schema.fields[key];
@@ -46,12 +46,12 @@ const generateOpenAPI = (serviceContext: APIServiceContext) => {
         required: ['message'],
     };
 
-    const responses: { [key: string]: any } = {};
+    const responses: Record<string, unknown> = {};
 
-    const paths: { [key: string]: any } = {};
+    const paths: Record<string, unknown> = {};
     for (const p in serviceContext.paths) {
         const path = serviceContext.paths[p],
-            methods: { [key: string]: any } = {};
+            methods: Record<string, unknown> = {};
 
         for (const verb in path.methods) {
             // TODO: fix this
@@ -123,7 +123,7 @@ const generateOpenAPI = (serviceContext: APIServiceContext) => {
         }
     }
 
-    const data: { [key: string]: any } = {
+    const data: Record<string, any> = {
         openapi: '3.0.0',
         info: {
             title: serviceContext.info.label,

@@ -43,6 +43,7 @@ export default class Schema {
     /**
      * Deserialize an object into an `Schema` instance
      * @function deserialize
+     * @static
      * @memberof Schema
      * @param   data Javascript object of the Schema
      * @returns      `Schema` instance

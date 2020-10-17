@@ -70,7 +70,10 @@ const parseServiceObject = (
                 `Service type ${serviceObject.type} is unsupported`,
             );
     }
-    return serviceClass.deserialize(serviceFilePath, serviceObject);
+    return serviceClass.deserialize(
+        serviceFilePath,
+        <Record<string, any>>serviceObject,
+    );
 };
 /**
  * Return the service object in the users current directory

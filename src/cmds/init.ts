@@ -39,14 +39,14 @@ export default (program: CommanderStatic): void => {
                 description: 'A Nix² Service',
             };
             // let the options be defaults
-            let options: { [key: string]: any } = Object.assign({}, defaults);
+            let options: Record<string, unknown> = Object.assign({}, defaults);
             options.userLeadDev = authed;
 
-            const createServiceObject = (options: any) => {
+            const createServiceObject = (options: Record<string, unknown>) => {
                 const currentTimestamp = Math.floor(
                     new Date().getTime() / 1000,
                 );
-                const info: { [key: string]: any } = {
+                const info: Record<string, any> = {
                     identifier: options.identifier,
                     label: options.label,
                     description: options.description,
@@ -94,7 +94,7 @@ export default (program: CommanderStatic): void => {
 
             // create the questions for inquirer
 
-            const questions: { [key: string]: any }[] = [];
+            const questions: Record<string, unknown>[] = [];
 
             let k: keyof typeof defaults;
             for (k in defaults) {
@@ -115,7 +115,7 @@ export default (program: CommanderStatic): void => {
 
             // console.log(questions);
 
-            inquirer.prompt(questions).then((info: any) => {
+            inquirer.prompt(questions).then((info) => {
                 // merge the current options
                 options = { ...options, ...info };
 
@@ -132,7 +132,7 @@ export default (program: CommanderStatic): void => {
                             name: 'confirm',
                         },
                     ])
-                    .then((answer: any) => {
+                    .then((answer) => {
                         if (!answer.confirm) return console.log(ERRORS.ABORT);
                         initialize();
                     });

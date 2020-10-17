@@ -25,26 +25,43 @@ export default class Method {
     constructor(
         public type: string,
         public label: string,
-        public description: string,
+        public description: string | null,
         private _responses: { [key: string]: Response },
     ) {}
 
     /**
      * Deserialize an object into an `Method` instance
      * @function deserialize
+     * @static
      * @memberof Method
      * @param    {object} data Javascript object of the Method
      * @returns  {Method}      `Method` instance
      */
     static deserialize(type: string, data: Record<string, unknown>): Method {
+        // test the datatypes
+        type responsesType = Record<string, Record<string, unknown>>;
+        let responses: responsesType;
+        if (typeof data.label != 'string')
+            throw Error(`label: ${data.label} is not a string`);
+        if (
+            typeof data.description != 'undefined' &&
+            typeof data.description != 'string'
+        )
+            throw Error(`description: ${data.description} is not a string`);
+        if (typeof data.responses != 'object' && data.responses != null) {
+            throw Error(`responses: ${data.responses} is not an object`);
+        } else {
+            responses = <responsesType>data.responses;
+        }
+        // create the new method
         return new Method(
             type,
             data.label,
-            data.description,
+            data.description || null,
             Object.assign(
                 {},
-                ...Object.keys(data.responses).map((k) => ({
-                    [k]: Response.deserialize(k, data.responses[k]),
+                ...Object.keys(responses).map((k) => ({
+                    [k]: Response.deserialize(k, responses[k]),
                 })),
             ),
         );

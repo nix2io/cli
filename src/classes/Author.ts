@@ -39,6 +39,7 @@ export default class Author {
     /**
      * Deserialize an object into an `Author` instance
      * @function deserialize
+     * @static
      * @memberof Author
      * @param   data Javascript object of the Author
      * @returns      `Author` instance

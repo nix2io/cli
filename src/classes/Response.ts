@@ -19,6 +19,14 @@ export default class Response {
         description: string;
     };
 
+    /**
+     * Class to represent an api response for a method
+     * @class Response
+     * @param {string} code         the HTTP status code of the response
+     * @param {string} description  a description of the response
+     * @param {string} returnType   the return type of the response
+     * @param {string} errorMessage the message to display on an error
+     */
     constructor(
         public code: string,
         public description: string | null,
@@ -34,10 +42,35 @@ export default class Response {
         this.codeInfo = HTTP_STATUS_CODES[code];
     }
 
-    static deserialize(
-        code: string,
-        data: { [key: string]: string },
-    ): Response {
+    /**
+     * Deserialize an object into an `Method` instance
+     * @function deserialize
+     * @static
+     * @memberof Response
+     * @param    {string} code HTTP status code
+     * @param    {object} data Javascript object of the Method
+     * @returns  {Response}    `Response` instance
+     */
+    static deserialize(code: string, data: Record<string, unknown>): Response {
+        // test the datatypes
+        if (
+            typeof data.description != 'undefined' &&
+            typeof data.description != 'string'
+        )
+            throw Error(`description: ${data.description} is not a string`);
+
+        if (
+            typeof data.returnType != 'undefined' &&
+            typeof data.returnType != 'string'
+        )
+            throw Error(`returnType: ${data.returnType} is not a string`);
+
+        if (
+            typeof data.errorMessage != 'undefined' &&
+            typeof data.errorMessage != 'string'
+        )
+            throw Error(`errorMessage: ${data.errorMessage} is not a string`);
+
         return new Response(
             code,
             data.description || null,
@@ -46,10 +79,22 @@ export default class Response {
         );
     }
 
+    /**
+     * The response successfull code
+     * @function isOK
+     * @memberof Response
+     * @returns  {boolean} `true` if the response is a successful code
+     */
     get isOK(): boolean {
         return this.isStatusClass('success');
     }
 
+    /**
+     * The response an error code
+     * @function isError
+     * @memberof Response
+     * @returns  {boolean} `true` if the response is an error code
+     */
     get isError(): boolean {
         return (
             this.isStatusClass('client_error') ||
@@ -57,7 +102,13 @@ export default class Response {
         );
     }
 
-    serialize(): { [key: string]: any } {
+    /**
+     * Serialize a Response instance into an object
+     * @function serialize
+     * @memberof Response
+     * @returns  {Record<string, unknown>} Javascript object
+     */
+    serialize(): Record<string, unknown> {
         return {
             description: this.description,
             returnType: this.returnType,
@@ -65,6 +116,12 @@ export default class Response {
         };
     }
 
+    /**
+     * Returns the class based off the status code
+     * @function getStatusClass
+     * @memberof Response
+     * @returns  {string} class of the status code
+     */
     getStatusClass(): statusClasses {
         const code = parseInt(this.code);
         if (code >= 500) return 'server_error';
@@ -75,6 +132,13 @@ export default class Response {
         throw new Error(`${code} is an invalid status code`);
     }
 
+    /**
+     * Compaires a given status class to the Response's status class
+     * @function isStatusClass
+     * @memberof Response
+     * @param   {string} _class string of the response class to check
+     * @returns {boolean}       `true` if the given class is what the response class is
+     */
     isStatusClass(_class: statusClasses): boolean {
         return this.getStatusClass() == _class;
     }

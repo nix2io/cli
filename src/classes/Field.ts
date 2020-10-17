@@ -33,6 +33,7 @@ export default class Field {
     /**
      * Deserialize an object into an `Field` instance
      * @function deserialize
+     * @static
      * @memberof Field
      * @param    {string}                  name     Name of the field
      * @param    {Record<string, unknown>} data     Javascript object of the Field

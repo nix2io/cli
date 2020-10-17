@@ -55,6 +55,7 @@ export default class Info {
     /**
      * Deserialize an object into an `Info` instance
      * @function deserialize
+     * @static
      * @memberof Info
      * @param    {object} data Javascript object of the Info
      * @returns  {Info}        `Info` instance
