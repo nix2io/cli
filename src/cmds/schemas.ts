@@ -44,7 +44,10 @@ const displaySchemas = (): void => {
     console.log(table.toString());
 };
 
-const createSchemaObject = (identifier: string, options: any) => {
+const createSchemaObject = (
+    identifier: string,
+    options: Record<string, string | null>,
+) => {
     return {
         identifier: identifier,
         label: titleCase(identifier.replace(/_/g, ' ')),
@@ -70,19 +73,7 @@ export default (program: CommanderStatic): void => {
         .description('add a schema')
         .option('-y, --yes', 'skip the confirmation message')
         .option('-d, --desc [description]', 'description of the schema')
-        .action((identifier: string, options: any) => {
-            // TODO: implement something like this
-
-            // dev schema add artist,page
-
-            // dev schema add artist->album->song
-            // will create artist
-            // album will have artistId
-            // song will have songId
-            // these will be links
-
-            // dev schema add user->page,otherThing
-
+        .action((identifier: string, options) => {
             // check if there is a service context
             const serviceContext = getServiceContext();
             if (serviceContext == null)
@@ -146,7 +137,7 @@ export default (program: CommanderStatic): void => {
                         name: 'confirm',
                     },
                 ])
-                .then((answer: any) => {
+                .then((answer) => {
                     if (!answer.confirm) return console.log(ERRORS.ABORT);
                     addSchema();
                 });
@@ -156,7 +147,7 @@ export default (program: CommanderStatic): void => {
         .command('remove <identifier>')
         .description('remove a schema')
         .option('-y, --yes', 'skip the confirmation message')
-        .action((identifier: string, options: any) => {
+        .action((identifier: string, options) => {
             // check if there is a service context
             const serviceContext = getServiceContext();
             if (serviceContext == null)
@@ -193,7 +184,7 @@ export default (program: CommanderStatic): void => {
                         default: false,
                     },
                 ])
-                .then((answer: any) => {
+                .then((answer) => {
                     if (!answer.confirm) return console.log(ERRORS.ABORT);
                     removeSchema();
                 });

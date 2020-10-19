@@ -30,8 +30,12 @@ const getServiceFile = (serviceFilePath: string): string => {
     }
 };
 
-// returns a js object from the yaml
-const getServiceObject = (content: string): { [key: string]: any } => {
+/**
+ * Returns a Javascript object from the service.yaml
+ * @param   {string} content Content of the file
+ * @returns {object}       service object
+ */
+const getServiceObject = (content: string): Record<string, unknown> => {
     try {
         // parse the file's yaml
         const serviceObject = yaml.load(content);
@@ -50,13 +54,16 @@ type serviceTypeClasses =
 
 type serviceTypes = services.APIServiceContext | services.GatewayServiceContext;
 
-// parse the object into a ServiceContext instance
-// TODO: change any to a "shape of" thing that describes the service context shape
+/**
+ * Parse a Javascript object to return a `ServiceContext` instance
+ * @param   {string} serviceFilePath Path to the `service.yaml`
+ * @param   {object} serviceObject   Javascript object of the service object
+ * @returns {ServiceContext}         new `ServiceContext` instance
+ */
 const parseServiceObject = (
     serviceFilePath: string,
-    serviceObject: { [key: string]: any },
+    serviceObject: Record<string, unknown>,
 ): serviceTypes => {
-    // TODO: figure out a better way to do this
     let serviceClass: serviceTypeClasses;
     switch (serviceObject.type) {
         case 'api':
@@ -70,9 +77,16 @@ const parseServiceObject = (
                 `Service type ${serviceObject.type} is unsupported`,
             );
     }
-    return serviceClass.deserialize(serviceFilePath, serviceObject);
+    return serviceClass.deserialize(
+        serviceFilePath,
+        <Record<string, any>>serviceObject,
+    );
 };
 
+/**
+ * Return the service object in the users current directory
+ * @return {ServiceContext} Instance of the Service Context
+ */
 export const getServiceContext = (): serviceTypes | null => {
     // get the full file path
     const serviceFilePath = path.join(process.cwd(), SERVICE_FILE_NAME);

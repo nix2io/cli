@@ -9,9 +9,20 @@
 import { ServiceContext, Info } from '..';
 import { Schema, Path } from '..';
 
+type Obj = Record<string, unknown>;
+type nestedObj = Record<string, Obj>;
+
 export default class APIServiceContext extends ServiceContext {
     public paths: { [key: string]: Path };
 
+    /**
+     * Class to represent an API Service context
+     * @class APIServiceContext
+     * @param {string}               filePath path to the service.yaml
+     * @param {Info}                 info     info of the service
+     * @param {Array<Schema>}        schemas  list of service schemas
+     * @param {Record<string, Path>} paths    object of paths for the API
+     */
     constructor(
         filePath: string,
         info: Info,
@@ -22,9 +33,18 @@ export default class APIServiceContext extends ServiceContext {
         this.paths = paths;
     }
 
+    /**
+     * Deserialize an object into an `APIServiceContext` instance
+     * @function deserialize
+     * @static
+     * @memberof APIServiceContext
+     * @param   {string} serviceFilePath path to the service.yaml
+     * @param   {object} data            Javascript object of the Info
+     * @returns {APIServiceContext}      Service context object
+     */
     static deserialize(
         serviceFilePath: string,
-        data: { [key: string]: any },
+        data: nestedObj,
     ): ServiceContext {
         return new APIServiceContext(
             serviceFilePath,
@@ -35,13 +55,19 @@ export default class APIServiceContext extends ServiceContext {
             Object.assign(
                 {},
                 ...Object.keys(data.paths).map((k) => ({
-                    [k]: Path.deserialize(k, data.paths[k]),
+                    [k]: Path.deserialize(k, <nestedObj>data.paths[k]),
                 })),
             ),
         );
     }
 
-    serialize(): { [key: string]: any } {
+    /**
+     * Serialize a `APIServiceContext` instance into an object
+     * @function serialize
+     * @memberof APIServiceContext
+     * @returns  {Record<string, unknown>} Javascript object
+     */
+    serialize(): Record<string, unknown> {
         return {
             ...super.serialize(),
             ...{
