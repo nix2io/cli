@@ -3,7 +3,7 @@
 _Nix² Command Line Interface_
 
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nix2io/cli/CI)
-[![Requirements Status](https://requires.io/github/nix2io/cli/requirements.svg?branch=master)](https://requires.io/github/nix2io/cli/requirements/?branch=master)
+![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/@nix2/nix-cli)
 ![npm](https://img.shields.io/npm/v/@nix2/nix-cli?label=npm%20version)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/nix2io/cli?label=dev%20version)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
