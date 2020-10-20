@@ -5,12 +5,10 @@
  * Copyright: 2020 Nix² Technologies
  * Author: Max Koon (maxk@nix2.io)
  */
-
 import { ServiceContext, Info } from '..';
 import { Schema, Path } from '..';
+import { APIServiceContextType } from '../../types';
 
-type Obj = Record<string, unknown>;
-type nestedObj = Record<string, Obj>;
 
 export default class APIServiceContext extends ServiceContext {
     public paths: { [key: string]: Path };
@@ -44,18 +42,18 @@ export default class APIServiceContext extends ServiceContext {
      */
     static deserialize(
         serviceFilePath: string,
-        data: nestedObj,
-    ): ServiceContext {
+        data: APIServiceContextType,
+    ): APIServiceContext {
         return new APIServiceContext(
             serviceFilePath,
             Info.deserialize(data.info),
-            Object.values(data.schemas).map((schema: any) =>
+            Object.values(data.schemas || []).map((schema: any) =>
                 Schema.deserialize(schema),
             ),
             Object.assign(
                 {},
-                ...Object.keys(data.paths).map((k) => ({
-                    [k]: Path.deserialize(k, <nestedObj>data.paths[k]),
+                ...Object.keys(data.paths || []).map((k) => ({
+                    [k]: Path.deserialize(k, data.paths[k]),
                 })),
             ),
         );
@@ -65,9 +63,9 @@ export default class APIServiceContext extends ServiceContext {
      * Serialize a `APIServiceContext` instance into an object
      * @function serialize
      * @memberof APIServiceContext
-     * @returns  {Record<string, unknown>} Javascript object
+     * @returns  {APIServiceContextType} Javascript object
      */
-    serialize(): Record<string, unknown> {
+    serialize(): APIServiceContextType {
         return {
             ...super.serialize(),
             ...{

@@ -79,7 +79,7 @@ const parseServiceObject = (
     }
     return serviceClass.deserialize(
         serviceFilePath,
-        <Record<string, any>>serviceObject,
+        <any>serviceObject,
     );
 };
 

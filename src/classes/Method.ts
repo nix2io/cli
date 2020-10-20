@@ -6,6 +6,7 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 import { Response } from '.';
+import { MethodType } from '../types';
 
 export default class Method {
     private internalServerError = new Response(
@@ -37,8 +38,9 @@ export default class Method {
      * @param    {object} data Javascript object of the Method
      * @returns  {Method}      `Method` instance
      */
-    static deserialize(type: string, data: Record<string, unknown>): Method {
+    static deserialize(type: string, data: MethodType): Method {
         // test the datatypes
+        /**
         type responsesType = Record<string, Record<string, unknown>>;
         let responses: responsesType;
         if (typeof data.label != 'string')
@@ -52,7 +54,7 @@ export default class Method {
             throw Error(`responses: ${data.responses} is not an object`);
         } else {
             responses = <responsesType>data.responses;
-        }
+        }*/
         // create the new method
         return new Method(
             type,
@@ -60,8 +62,8 @@ export default class Method {
             data.description || null,
             Object.assign(
                 {},
-                ...Object.keys(responses).map((k) => ({
-                    [k]: Response.deserialize(k, responses[k]),
+                ...Object.keys(data.responses).map((k) => ({
+                    [k]: Response.deserialize(k, data.responses[k]),
                 })),
             ),
         );
@@ -90,9 +92,9 @@ export default class Method {
      * Serialize an Method instance into an object
      * @function serialize
      * @memberof Method
-     * @returns  {Record<string, unknown>} Javascript object
+     * @returns  {MethodType} Javascript object
      */
-    serialize(): Record<string, unknown> {
+    serialize(): MethodType {
         return {
             label: this.label,
             description: this.description,

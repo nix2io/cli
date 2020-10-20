@@ -10,6 +10,7 @@ import Info from './Info';
 import Schema from './Schema';
 import yaml = require('js-yaml');
 import fs = require('fs');
+import { ServiceContextType } from '../types';
 
 export default abstract class ServiceContext {
     /**
@@ -39,7 +40,7 @@ export default abstract class ServiceContext {
      */
     static deserialize(
         serviceFilePath: string,
-        data: Record<string, unknown>,
+        data: ServiceContextType,
     ): ServiceContext {
         throw Error('NOT IMPLEMENTED');
         console.log(serviceFilePath, data);
@@ -49,9 +50,9 @@ export default abstract class ServiceContext {
      * Serialize a ServiceContext instance into an object
      * @function serialize
      * @memberof ServiceContext
-     * @returns  {Record<string, unknown>} Javascript object
+     * @returns  {ServiceContextType} Javascript object
      */
-    serialize(): Record<string, unknown> {
+    serialize(): ServiceContextType {
         return {
             info: this.info.serialize(),
             type: this.type,

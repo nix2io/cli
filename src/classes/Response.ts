@@ -6,6 +6,7 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 import { HTTP_STATUS_CODES } from '../constants';
+import { ResponseType } from '../types';
 type statusClasses =
     | 'server_error'
     | 'client_error'
@@ -45,11 +46,11 @@ export default class Response {
      * @function deserialize
      * @static
      * @memberof Response
-     * @param    {string} code HTTP status code
-     * @param    {object} data Javascript object of the Method
+     * @param    {string}       code HTTP status code
+     * @param    {ResponseType} data Javascript object of the Method
      * @returns  {Response}    `Response` instance
      */
-    static deserialize(code: string, data: Record<string, unknown>): Response {
+    static deserialize(code: string, data: ResponseType): Response {
         // test the datatypes
         if (
             typeof data.description != 'undefined' &&
@@ -104,9 +105,9 @@ export default class Response {
      * Serialize a Response instance into an object
      * @function serialize
      * @memberof Response
-     * @returns  {Record<string, unknown>} Javascript object
+     * @returns  {ResponseType} Response type shape
      */
-    serialize(): Record<string, unknown> {
+    serialize(): ResponseType {
         return {
             description: this.description,
             returnType: this.returnType,

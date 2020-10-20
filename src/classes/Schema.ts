@@ -8,6 +8,7 @@
 
 import Field from './Field';
 import { titleCase } from 'koontil';
+import { SchemaType } from '../types';
 
 export default class Schema {
     /**
@@ -48,10 +49,8 @@ export default class Schema {
      * @param   data Javascript object of the Schema
      * @returns      `Schema` instance
      */
-    static deserialize(data: { [key: string]: unknown }): Schema {
+    static deserialize(data: SchemaType): Schema {
         // test the types for the given data
-        type fieldsType = Record<string, Record<string, unknown>>;
-        let fields: fieldsType;
         if (typeof data.identifier != 'string')
             throw Error(`identifier: ${data.identifier} is not a string`);
         if (typeof data.label != 'string')
@@ -65,8 +64,6 @@ export default class Schema {
             throw Error(`pluralName: ${data.pluralName} is not a string`);
         if (typeof data.fields != 'object' && data.fields != null) {
             throw Error(`fields: ${data.fields} is not an object`);
-        } else {
-            fields = <fieldsType>data.fields;
         }
 
         return new Schema(
@@ -76,8 +73,8 @@ export default class Schema {
             data.pluralName,
             Object.assign(
                 {},
-                ...Object.keys(fields).map((k) => ({
-                    [k]: Field.deserialize(k, fields[k]),
+                ...Object.keys(data.fields).map((k) => ({
+                    [k]: Field.deserialize(k, data.fields[k]),
                 })),
             ),
         );
@@ -89,11 +86,12 @@ export default class Schema {
      * @memberof Schema
      * @returns Javascript object
      */
-    serialize(): { [key: string]: unknown } {
+    serialize(): SchemaType {
         return {
             identifier: this.identifier,
             label: this.label,
             description: this.description,
+            pluralName: this.pluralName,
             // This just runs the .serialize() method over the fields object
             fields: Object.assign(
                 {},
