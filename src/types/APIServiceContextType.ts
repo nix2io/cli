@@ -6,10 +6,8 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-
 import { PathType, ServiceContextType } from '.';
 
-
 export default interface APIServiceContextType extends ServiceContextType {
-    paths: {[key: string]: PathType}
-} 
+    paths: { [key: string]: PathType };
+}

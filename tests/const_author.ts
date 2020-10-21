@@ -4,5 +4,5 @@ export const WORKING_AUTHOR_1 = {
     publicEmail: 'author1@example.com',
     url: 'auth1.nix2.io',
     alert: '*',
-    flags: ['leadDev']
+    flags: ['leadDev'],
 };

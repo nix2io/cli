@@ -9,7 +9,6 @@
 import Author from './Author';
 import { InfoType } from '../types';
 
-
 export default class Info {
     /**
      * Class to represent info for a service
@@ -64,15 +63,25 @@ export default class Info {
      */
     static deserialize(data: InfoType): Info {
         // Test if the values are present
-        const vals = ['identifier', 'label', 'description', 'version', 'authors', 'created', 'modified', 'license', 'termsOfServiceURL'];
+        const vals = [
+            'identifier',
+            'label',
+            'description',
+            'version',
+            'authors',
+            'created',
+            'modified',
+            'license',
+            'termsOfServiceURL',
+        ];
         for (const val of vals) {
             if (Object.keys(data).indexOf(val) == -1)
-                throw Error(val + " not given");
+                throw Error(val + ' not given');
         }
         // validate the given data
         if (typeof data.identifier != 'string')
             throw Error(`identifier: ${data.identifier} is not a string`);
-        if (typeof data.label != 'string' &&  data.label != null)
+        if (typeof data.label != 'string' && data.label != null)
             throw Error(`label: ${data.label} is not a string`);
         if (typeof data.description != 'string' && data.label != null)
             throw Error(`description: ${data.description} is not a string`);
@@ -86,23 +95,24 @@ export default class Info {
             throw Error(`modified: ${data.modified} is not an int`);
         if (typeof data.license != 'string' && data.license != null)
             throw Error(`license: ${data.license} is not a string`);
-        if (typeof data.termsOfServiceURL != 'string' && data.termsOfServiceURL != null)
+        if (
+            typeof data.termsOfServiceURL != 'string' &&
+            data.termsOfServiceURL != null
+        )
             throw Error(
                 `termsOfServiceURL: ${data.termsOfServiceURL} is not a string`,
             );
 
         return new Info(
             data.identifier,
-            <string|null>data.label,
-            <string|null>data.description,
+            <string | null>data.label,
+            <string | null>data.description,
             data.version,
-            data.authors.map((auth) =>
-                Author.deserialize(auth)
-            ),
+            data.authors.map((auth) => Author.deserialize(auth)),
             data.created,
             data.modified,
-            <string|null>data.license,
-            <string|null>data.termsOfServiceURL,
+            <string | null>data.license,
+            <string | null>data.termsOfServiceURL,
         );
     }
 

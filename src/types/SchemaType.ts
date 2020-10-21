@@ -6,13 +6,12 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { FieldType } from ".";
-
+import { FieldType } from '.';
 
 export default interface SchemaType {
-    identifier: string,
-    label: string,
-    description: string | null,
-    pluralName: string,
-    fields: { [id: string]: FieldType },
-};
+    identifier: string;
+    label: string;
+    description: string | null;
+    pluralName: string;
+    fields: { [id: string]: FieldType };
+}

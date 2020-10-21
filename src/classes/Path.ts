@@ -32,7 +32,7 @@ export default class Path {
      */
     static deserialize(
         path: string,
-        methods: {[key: string]: MethodType},
+        methods: { [key: string]: MethodType },
     ): Path {
         return new Path(
             path,
@@ -55,7 +55,9 @@ export default class Path {
         return Object.assign(
             {},
             ...Object.keys(this.methods).map((k: string) => ({
-                [k]: Object.values(this.methods)[Object.keys(this.methods).indexOf(k)].serialize(),
+                [k]: Object.values(this.methods)[
+                    Object.keys(this.methods).indexOf(k)
+                ].serialize(),
             })),
         );
     }

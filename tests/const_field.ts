@@ -1,4 +1,4 @@
-import { FieldType } from "../src/types";
+import { FieldType } from '../src/types';
 
 export const WORKING_FIELD_1: FieldType = {
     label: 'Name',
@@ -6,7 +6,5 @@ export const WORKING_FIELD_1: FieldType = {
     type: 'string',
     required: true,
     default: null,
-    flags: [
-        'personal'
-    ]
+    flags: ['personal'],
 };

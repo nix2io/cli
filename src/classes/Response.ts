@@ -38,7 +38,9 @@ export default class Response {
             throw new Error(`Invalid error message "${errorMessage}"`);
         if (Object.keys(HTTP_STATUS_CODES).indexOf(code) == -1)
             throw new Error(`${code} is an invalid status code`);
-        this.codeInfo = Object.values(HTTP_STATUS_CODES)[Object.keys(HTTP_STATUS_CODES).indexOf(code)];
+        this.codeInfo = Object.values(HTTP_STATUS_CODES)[
+            Object.keys(HTTP_STATUS_CODES).indexOf(code)
+        ];
     }
 
     /**
@@ -51,23 +53,21 @@ export default class Response {
      * @returns  {Response}    `Response` instance
      */
     static deserialize(code: string, data: ResponseType): Response {
+        // Test if the values are present
+        const vals = ['description', 'returnType', 'errorMessage'];
+        for (const val of vals) {
+            if (Object.keys(data).indexOf(val) == -1)
+                throw Error(val + ' not given');
+        }
+
         // test the datatypes
-        if (
-            typeof data.description != 'undefined' &&
-            typeof data.description != 'string'
-        )
+        if (typeof data.description != 'string' && data.description != null)
             throw Error(`description: ${data.description} is not a string`);
 
-        if (
-            typeof data.returnType != 'undefined' &&
-            typeof data.returnType != 'string'
-        )
+        if (typeof data.returnType != 'string' && data.returnType != null)
             throw Error(`returnType: ${data.returnType} is not a string`);
 
-        if (
-            typeof data.errorMessage != 'undefined' &&
-            typeof data.errorMessage != 'string'
-        )
+        if (typeof data.errorMessage != 'string' && data.errorMessage != null)
             throw Error(`errorMessage: ${data.errorMessage} is not a string`);
 
         return new Response(

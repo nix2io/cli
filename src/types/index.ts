@@ -6,7 +6,6 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-
 export { default as AuthorType } from './AuthorType';
 export { default as InfoType } from './InfoType';
 export { default as FieldType } from './FieldType';

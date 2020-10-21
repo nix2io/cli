@@ -7,10 +7,10 @@
  */
 
 export default interface AuthorType {
-    email: string,
-    name: string | null,
-    publicEmail: string | null,
-    url: string | null,
-    alert: string,
-    flags: string[]
+    email: string;
+    name: string | null;
+    publicEmail: string | null;
+    url: string | null;
+    alert: string;
+    flags: string[];
 }

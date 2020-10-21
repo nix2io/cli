@@ -9,7 +9,6 @@ import { ServiceContext, Info } from '..';
 import { Schema, Path } from '..';
 import { APIServiceContextType } from '../../types';
 
-
 export default class APIServiceContext extends ServiceContext {
     public paths: { [key: string]: Path };
 
@@ -47,12 +46,12 @@ export default class APIServiceContext extends ServiceContext {
         return new APIServiceContext(
             serviceFilePath,
             Info.deserialize(data.info),
-            Object.values(data.schemas || []).map((schema: any) =>
+            Object.values(data.schemas).map((schema: any) =>
                 Schema.deserialize(schema),
             ),
             Object.assign(
                 {},
-                ...Object.keys(data.paths || []).map((k) => ({
+                ...Object.keys(data.paths).map((k) => ({
                     [k]: Path.deserialize(k, data.paths[k]),
                 })),
             ),

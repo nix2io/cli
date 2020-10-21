@@ -7,5 +7,6 @@
  */
 import { MethodType } from '.';
 
-
-export default interface PathType {[key: string]: MethodType}
+export default interface PathType {
+    [key: string]: MethodType;
+}

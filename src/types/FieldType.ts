@@ -6,12 +6,11 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-
 export default interface FieldType {
-    label: string | null,
-    description: string | null,
-    type: string,
-    required: boolean,
-    default: unknown,
-    flags: string[]
+    label: string | null;
+    description: string | null;
+    type: string;
+    required: boolean;
+    default: unknown;
+    flags: string[];
 }

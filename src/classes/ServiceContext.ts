@@ -12,7 +12,7 @@ import yaml = require('js-yaml');
 import fs = require('fs');
 import { ServiceContextType } from '../types';
 
-export default abstract class ServiceContext {
+export default class ServiceContext {
     /**
      * Abstract class to represent a service context
      * @class ServiceContext
@@ -42,8 +42,12 @@ export default abstract class ServiceContext {
         serviceFilePath: string,
         data: ServiceContextType,
     ): ServiceContext {
-        throw Error('NOT IMPLEMENTED');
-        console.log(serviceFilePath, data);
+        return new ServiceContext(
+            serviceFilePath,
+            Info.deserialize(data.info),
+            data.type,
+            data.schemas.map((schema) => Schema.deserialize(schema)),
+        );
     }
 
     /**

@@ -60,7 +60,7 @@ type serviceTypes = services.APIServiceContext | services.GatewayServiceContext;
  * @param   {object} serviceObject   Javascript object of the service object
  * @returns {ServiceContext}         new `ServiceContext` instance
  */
-const parseServiceObject = (
+export const parseServiceObject = (
     serviceFilePath: string,
     serviceObject: Record<string, unknown>,
 ): serviceTypes => {
@@ -77,10 +77,7 @@ const parseServiceObject = (
                 `Service type ${serviceObject.type} is unsupported`,
             );
     }
-    return serviceClass.deserialize(
-        serviceFilePath,
-        <any>serviceObject,
-    );
+    return serviceClass.deserialize(serviceFilePath, <any>serviceObject);
 };
 
 /**

@@ -6,9 +6,8 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-
 export default interface ResponseType {
-    description: string | null,
-    returnType: string | null,
-    errorMessage: string | null  
-};
+    description: string | null;
+    returnType: string | null;
+    errorMessage: string | null;
+}

@@ -7,9 +7,8 @@
  */
 import { ResponseType } from '.';
 
-
 export default interface MethodType {
-    label: string,
-    description: string | null,
-    responses: {[key: string]: ResponseType}
-};
+    label: string;
+    description: string | null;
+    responses: { [key: string]: ResponseType };
+}

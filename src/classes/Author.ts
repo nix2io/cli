@@ -5,7 +5,7 @@
  * Copyright: 2020 Nix² Technologies
  * Author: Max Koon (maxk@nix2.io)
  */
-import { AuthorType } from '../types'
+import { AuthorType } from '../types';
 const flagInheritence = {
     dev: 'contributer',
     leadDev: 'dev',
@@ -49,9 +49,9 @@ export default class Author {
         const vals = ['email', 'name', 'publicEmail', 'url', 'alert', 'flags'];
         for (const val of vals) {
             if (Object.keys(data).indexOf(val) == -1)
-                throw Error(val + " not given");
+                throw Error(val + ' not given');
         }
-        
+
         // Test the given data
         if (typeof data.email != 'string')
             throw Error(`email: ${data.email} is not a string`);
@@ -105,7 +105,9 @@ export default class Author {
         for (const flag of flags) {
             let currentFlag = flag;
             while (Object.keys(flagInheritence).indexOf(currentFlag) != -1) {
-                currentFlag = Object.values(flagInheritence)[Object.keys(flagInheritence).indexOf(currentFlag)];
+                currentFlag = Object.values(flagInheritence)[
+                    Object.keys(flagInheritence).indexOf(currentFlag)
+                ];
                 flags.add(currentFlag);
             }
         }

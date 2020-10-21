@@ -2,8 +2,7 @@ import { describe } from 'mocha';
 import { strict } from 'assert';
 import Author from '../src/classes/Author';
 import { step } from 'mocha-steps';
-import { WORKING_AUTHOR_1 as MOCK_AUTHOR_DATA} from './const_author';
-
+import { WORKING_AUTHOR_1 as MOCK_AUTHOR_DATA } from './const_author';
 
 describe('Author', () => {
     let author: Author;
@@ -26,7 +25,9 @@ describe('Author', () => {
     });
 
     step('inherited flags are correct', () => {
-        strict.notStrictEqual(author.inherited_flags, new Set(['contributer', 'dev', 'leadDev']));
+        strict.notStrictEqual(
+            author.inherited_flags,
+            new Set(['contributer', 'dev', 'leadDev']),
+        );
     });
-
 });

@@ -6,7 +6,7 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { FieldType } from "../types";
+import { FieldType } from '../types';
 
 export default class Field {
     /**

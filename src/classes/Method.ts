@@ -100,8 +100,8 @@ export default class Method {
             description: this.description,
             responses: Object.assign(
                 {},
-                ...Object.keys(this.responses).map((k: string) => ({
-                    [k]: this.responses[k].serialize(),
+                ...Object.keys(this._responses).map((k: string) => ({
+                    [k]: this._responses[k].serialize(),
                 })),
             ),
         };

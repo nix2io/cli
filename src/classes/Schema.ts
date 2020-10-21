@@ -95,8 +95,8 @@ export default class Schema {
             // This just runs the .serialize() method over the fields object
             fields: Object.assign(
                 {},
-                ...Object.keys(this.fields).map((k) => ({
-                    [k]: this.fields[k].serialize(),
+                ...Object.keys(this._fields).map((k) => ({
+                    [k]: this._fields[k].serialize(),
                 })),
             ),
         };

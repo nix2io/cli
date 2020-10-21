@@ -6,11 +6,10 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { InfoType, SchemaType } from ".";
-
+import { InfoType, SchemaType } from '.';
 
 export default interface ServiceContextType {
-    info: InfoType,
-    type: string,
-    schemas: SchemaType[],
-};
+    info: InfoType;
+    type: string;
+    schemas: SchemaType[];
+}

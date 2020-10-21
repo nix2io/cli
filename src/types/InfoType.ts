@@ -6,17 +6,16 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-
 import { AuthorType } from '.';
 
 export default interface InfoType {
-    identifier: string,
-    label: string | null,
-    description: string | null,
-    version: string | null,
-    authors: AuthorType[],
-    created: number,
-    modified: number,
-    license: string | null,
-    termsOfServiceURL: string | null,
-};
+    identifier: string;
+    label: string | null;
+    description: string | null;
+    version: string | null;
+    authors: AuthorType[];
+    created: number;
+    modified: number;
+    license: string | null;
+    termsOfServiceURL: string | null;
+}
