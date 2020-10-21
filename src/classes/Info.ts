@@ -7,6 +7,7 @@
  */
 
 import Author from './Author';
+import { InfoType } from '../types';
 
 export default class Info {
     /**
@@ -60,33 +61,43 @@ export default class Info {
      * @param    {object} data Javascript object of the Info
      * @returns  {Info}        `Info` instance
      */
-    static deserialize(data: Record<string, unknown>): Info {
+    static deserialize(data: InfoType): Info {
+        // Test if the values are present
+        const vals = [
+            'identifier',
+            'label',
+            'description',
+            'version',
+            'authors',
+            'created',
+            'modified',
+            'license',
+            'termsOfServiceURL',
+        ];
+        for (const val of vals) {
+            if (Object.keys(data).indexOf(val) == -1)
+                throw Error(val + ' not given');
+        }
         // validate the given data
         if (typeof data.identifier != 'string')
             throw Error(`identifier: ${data.identifier} is not a string`);
-        if (typeof data.label != 'undefined' && typeof data.label != 'string')
+        if (typeof data.label != 'string' && data.label != null)
             throw Error(`label: ${data.label} is not a string`);
-        if (
-            typeof data.description != 'undefined' &&
-            typeof data.description != 'string'
-        )
+        if (typeof data.description != 'string' && data.label != null)
             throw Error(`description: ${data.description} is not a string`);
         if (typeof data.version != 'string')
             throw Error(`version: ${data.version} is not a string`);
-        if (typeof data.authors != 'undefined' || !Array.isArray(data.authors))
+        if (!Array.isArray(data.authors))
             throw Error(`authors: ${data.authors} is not an array`);
         if (typeof data.created != 'number')
             throw Error(`created: ${data.created} is not an int`);
         if (typeof data.modified != 'number')
             throw Error(`modified: ${data.modified} is not an int`);
-        if (
-            typeof data.license != 'undefined' &&
-            typeof data.license != 'string'
-        )
+        if (typeof data.license != 'string' && data.license != null)
             throw Error(`license: ${data.license} is not a string`);
         if (
-            typeof data.termsOfServiceURL != 'undefined' &&
-            typeof data.termsOfServiceURL != 'string'
+            typeof data.termsOfServiceURL != 'string' &&
+            data.termsOfServiceURL != null
         )
             throw Error(
                 `termsOfServiceURL: ${data.termsOfServiceURL} is not a string`,
@@ -94,16 +105,14 @@ export default class Info {
 
         return new Info(
             data.identifier,
-            data.label || null,
-            data.description || null,
+            <string | null>data.label,
+            <string | null>data.description,
             data.version,
-            Object.values(data.authors).map((auth) =>
-                Author.deserialize(<Record<string, unknown>>auth),
-            ),
+            data.authors.map((auth) => Author.deserialize(auth)),
             data.created,
             data.modified,
-            data.license || null,
-            data.termsOfServiceURL || null,
+            <string | null>data.license,
+            <string | null>data.termsOfServiceURL,
         );
     }
 
@@ -111,9 +120,9 @@ export default class Info {
      * Serialize an Author instance into an object
      * @function serialize
      * @memberof Author
-     * @returns  {Record<string, unknown>} Javascript object
+     * @returns  {InfoType} Javascript object
      */
-    serialize(): Record<string, unknown> {
+    serialize(): InfoType {
         return {
             identifier: this.identifier,
             label: this.label,

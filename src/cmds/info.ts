@@ -60,6 +60,7 @@ export default (program: CommanderStatic): void => {
                     }),
                 );
             } catch (err) {
+                console.error(err);
                 console.error(colors.red(`ERR: ${err.message}`));
             }
         });
