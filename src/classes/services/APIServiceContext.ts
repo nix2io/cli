@@ -8,6 +8,7 @@
 import { ServiceContext, Info } from '..';
 import { Schema, Path } from '..';
 import { APIServiceContextType } from '../../types';
+import ServiceFile from '../ServiceFile';
 
 export default class APIServiceContext extends ServiceContext {
     public paths: { [key: string]: Path };
@@ -21,12 +22,12 @@ export default class APIServiceContext extends ServiceContext {
      * @param {Record<string, Path>} paths    object of paths for the API
      */
     constructor(
-        filePath: string,
+        serviceFile: ServiceFile,
         info: Info,
         schemas: Schema[],
         paths: { [key: string]: Path },
     ) {
-        super(filePath, info, 'api', schemas);
+        super(serviceFile, info, 'api', schemas);
         this.paths = paths;
     }
 
@@ -40,11 +41,11 @@ export default class APIServiceContext extends ServiceContext {
      * @returns {APIServiceContext}      Service context object
      */
     static deserialize(
-        serviceFilePath: string,
+        serviceFile: ServiceFile,
         data: APIServiceContextType,
     ): APIServiceContext {
         return new APIServiceContext(
-            serviceFilePath,
+            serviceFile,
             Info.deserialize(data.info),
             Object.values(data.schemas).map((schema: any) =>
                 Schema.deserialize(schema),
