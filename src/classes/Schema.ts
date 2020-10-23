@@ -50,15 +50,19 @@ export default class Schema {
      * @returns      `Schema` instance
      */
     static deserialize(data: SchemaType): Schema {
+        // Test if the values are present
+        const vals = ['identifier', 'label', 'description', 'fields'];
+        for (const val of vals) {
+            if (Object.keys(data).indexOf(val) == -1)
+                throw Error(val + ' not given');
+        }
+
         // test the types for the given data
         if (typeof data.identifier != 'string')
             throw Error(`identifier: ${data.identifier} is not a string`);
         if (typeof data.label != 'string')
             throw Error(`label: ${data.label} is not a string`);
-        if (
-            typeof data.description != 'undefined' &&
-            typeof data.description != 'string'
-        )
+        if (typeof data.description != 'string' && data.description != null)
             throw Error(`description: ${data.description} is not a string`);
         if (typeof data.pluralName != 'string')
             throw Error(`pluralName: ${data.pluralName} is not a string`);
