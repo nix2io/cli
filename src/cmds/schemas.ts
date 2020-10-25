@@ -15,6 +15,7 @@ import { Schema } from '../classes';
 import colors = require('colors');
 import Table = require('cli-table');
 import pluralize = require('pluralize');
+import { parseRelationString } from '../relString';
 
 const displaySchemas = (): void => {
     const serviceContext = getServiceContext();
@@ -79,6 +80,9 @@ export default (program: CommanderStatic): void => {
             if (serviceContext == null)
                 return console.error(colors.red('No service context'));
             const confirmAdd = options.yes;
+
+            parseRelationString(identifier);
+
 
             // check if the schema already exists
             if (serviceContext.getSchema(identifier) != null)
