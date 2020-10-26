@@ -11,19 +11,20 @@ import Schema from './Schema';
 import yaml = require('js-yaml');
 import fs = require('fs');
 import { ServiceContextType } from '../types';
+import ServiceFile from './ServiceFile';
 
 export default class ServiceContext {
     /**
      * Abstract class to represent a service context
      * @class ServiceContext
      * @abstract
-     * @param {string}        filePath path to the service.yaml
-     * @param {Info}          info     info of the service
-     * @param {string}        type     type of service
-     * @param {Array<Schema>} schemas  list of service schemas
+     * @param {ServiceFile}   serviceFile path to the service.yaml
+     * @param {Info}          info        info of the service
+     * @param {string}        type        type of service
+     * @param {Array<Schema>} schemas     list of service schemas
      */
     constructor(
-        private filePath: string,
+        private serviceFile: ServiceFile,
         public info: Info,
         public type: string,
         public schemas: Schema[],
@@ -39,11 +40,11 @@ export default class ServiceContext {
      * @returns {ServiceContext}         Service context object
      */
     static deserialize(
-        serviceFilePath: string,
+        serviceFile: ServiceFile,
         data: ServiceContextType,
     ): ServiceContext {
         return new ServiceContext(
-            serviceFilePath,
+            serviceFile,
             Info.deserialize(data.info),
             data.type,
             data.schemas.map((schema) => Schema.deserialize(schema)),
@@ -71,9 +72,9 @@ export default class ServiceContext {
      * @returns  {boolean} `true` if successfull
      */
     write(): boolean {
-        const s = this.serialize();
-        const content = yaml.safeDump(s);
-        fs.writeFileSync(this.filePath, content);
+        this.serviceFile.YAWNObject.json = this.serialize();;
+        const content = this.serviceFile.YAWNObject.yaml;
+        // fs.writeFileSync(this.filePath, content);
         return true;
     }
 

@@ -9,6 +9,7 @@
 import { CommanderStatic } from 'commander';
 import gateway from './gateway';
 import api from './api';
+import type from './type';
 
 export default (program: CommanderStatic): void => {
     const make = program
@@ -18,4 +19,5 @@ export default (program: CommanderStatic): void => {
     // Apply all the functions to the program
     gateway(make);
     api(make);
+    type(make);
 };

@@ -15,6 +15,11 @@ import { Schema } from '../classes';
 import colors = require('colors');
 import Table = require('cli-table');
 import pluralize = require('pluralize');
+import { parseRelationship } from './parsers';
+import { RelationshipParseError } from './parsers/relationship/errors';
+import { CommandContext } from './parsers/relationship/classes';
+import Field from '../classes/Field';
+import { FieldType, SchemaType } from '../types';
 
 const displaySchemas = (): void => {
     const serviceContext = getServiceContext();
@@ -47,14 +52,52 @@ const displaySchemas = (): void => {
 const createSchemaObject = (
     identifier: string,
     options: Record<string, string | null>,
-) => {
+    context: CommandContext
+): SchemaType => {
+    let fields: { [key: string]: FieldType } = {};
+    let schemaLabel = titleCase(identifier.replace(/_/g, ' '));
+
+    if (context.linked.hasParents(identifier)) {
+        for (let parent of context.linked.getParents(identifier)) {
+            
+            let fieldName = parent + "Id";
+            let label = `${titleCase(parent)} ID`;
+            let description = `The ${schemaLabel}'s ${titleCase(parent)} identifier.`;
+            fields[fieldName] = {
+                label,
+                description,
+                type: 'number',
+                required: true,
+                default: null,
+                flags: []
+            }
+        }
+    }
     return {
         identifier: identifier,
-        label: titleCase(identifier.replace(/_/g, ' ')),
+        label: schemaLabel,
         pluralName: pluralize.plural(identifier),
         description: options.desc || null,
+        fields
     };
 };
+
+const getSchemaCreationContext = (query: string): CommandContext | null => {
+    try {
+        const [context, error] = parseRelationship(query);
+        if (error != null) {
+            console.log();
+            const arrows = colors.red.bold(Array(error.positionStart+1).join(' ') + Array(error.positionEnd - error.positionStart + 1).join('~'));
+            console.error(`${colors.red('Aborted Operation')} ${error.errorName}: ${error.details}\n\n${query}\n${arrows}\n`);
+            return null;
+        }
+        if (context == null) throw Error('context is not and should not be');
+        return context;
+    } catch (e) {
+        console.error(`Aborted Operation ${e}`);
+        return null;
+    }
+}
 
 export default (program: CommanderStatic): void => {
     const schemas = program
@@ -73,59 +116,64 @@ export default (program: CommanderStatic): void => {
         .description('add a schema')
         .option('-y, --yes', 'skip the confirmation message')
         .option('-d, --desc [description]', 'description of the schema')
-        .action((identifier: string, options) => {
+        .action((query: string, options) => {
             // check if there is a service context
             const serviceContext = getServiceContext();
             if (serviceContext == null)
                 return console.error(colors.red('No service context'));
             const confirmAdd = options.yes;
 
-            // check if the schema already exists
-            if (serviceContext.getSchema(identifier) != null)
-                return console.error(
-                    colors.red('A schema with the same identifier exists'),
-                );
-
-            // define the schema object
-            const schema = createSchemaObject(identifier, options);
-
-            // logic for adding schemas
-            const addSchema = () => {
-                // try to add the schema to the local service context
-                try {
-                    const newSchema = new Schema(
-                        schema.identifier,
-                        schema.label,
-                        schema.description,
-                        schema.pluralName,
-                        {},
-                    );
-                    serviceContext.addSchema(newSchema);
-                } catch (err) {
+            const context = getSchemaCreationContext(query);
+            if (context == null) return;
+            
+            let newSchemas: SchemaType[] = [];
+            
+            for (let identifier of context.schemas) {
+                // check if the schema already exists
+                if (serviceContext.getSchema(identifier) != null)
                     return console.error(
-                        colors.red(`Error creating schema: ${err.message}`),
+                        colors.red('A schema with the same identifier exists'),
                     );
+    
+                // define the schema object
+                newSchemas.push(createSchemaObject(identifier, options, context));
+                
+            }
+            
+            // logic for adding schemas
+            const addSchemas = () => {
+                let newSchemaIDS: string[] = []; 
+                for (let schema of newSchemas) {
+                    // try to add the schema to the local service context
+                    try {
+                        const newSchema = Schema.deserialize(schema);
+                        serviceContext.addSchema(newSchema);
+                        newSchemaIDS.push(newSchema.identifier);
+                    } catch (err) {
+                        return console.error(
+                            colors.red(`Error creating schema: ${err.message}`),
+                            );
+                    }
+                    
                 }
-
                 // try to write the service.yaml
                 try {
                     serviceContext.write();
                     console.log(
-                        colors.green(`✔ Schema ${schema.identifier} added`),
+                        colors.green(`✔ Schemas ${newSchemaIDS.join(', ')} added`),
                     );
                 } catch (err) {
                     return console.error(
                         colors.red('Error saving service.yaml: ' + err.message),
-                    );
+                        );
                 }
-            };
-
+            }
             // add the schema if confirm
-            if (confirmAdd) return addSchema();
+            if (confirmAdd) return addSchemas();
 
             // prompt the user for confirmation
             console.log(colors.yellow('⚠  About to write to service.yaml'));
-            prettyPrint(schema);
+            prettyPrint(newSchemas);
             console.log('\n');
 
             // get the user response
@@ -139,7 +187,7 @@ export default (program: CommanderStatic): void => {
                 ])
                 .then((answer) => {
                     if (!answer.confirm) return console.log(ERRORS.ABORT);
-                    addSchema();
+                    addSchemas();
                 });
         });
 
