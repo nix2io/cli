@@ -6,16 +6,15 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { RelationshipParseError } from "../errors";
+import { RelationshipParseError } from '../errors';
 import { CommandContext, Node, Token } from '.';
-
 
 export default class ParseResult {
     constructor(
         public error: RelationshipParseError | null = null,
-        public node: Node | null = null
+        public node: Node | null = null,
     ) {}
-    
+
     register(result: ParseResult | Token): any {
         if (result instanceof ParseResult) {
             if (result.error != null) {

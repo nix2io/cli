@@ -39,7 +39,7 @@ const getServiceFile = (serviceFilePath: string): ServiceFile => {
     const fileContent = getServiceFileContent(serviceFilePath);
     const YAWNObject = new YAWN(fileContent);
     return new ServiceFile(serviceFilePath, YAWNObject);
-}
+};
 
 /**
  * Returns a Javascript object from the service.yaml

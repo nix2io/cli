@@ -6,11 +6,11 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-export const TOKEN_NAME = "STRING";
-export const TOKEN_LPAR = "LPAR";
-export const TOKEN_RPAR = "RPAR";
-export const TOKEN_LINK = "LINK";
-export const TOKEN_COMMA = "COMMA";
+export const TOKEN_NAME = 'STRING';
+export const TOKEN_LPAR = 'LPAR';
+export const TOKEN_RPAR = 'RPAR';
+export const TOKEN_LINK = 'LINK';
+export const TOKEN_COMMA = 'COMMA';
 export const TOKEN_EOC = 'EOC';
 
 export const SYMBOL_LINK = '/';

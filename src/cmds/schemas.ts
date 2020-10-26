@@ -53,35 +53,35 @@ const createSchemaObject = (
     serviceContext: ServiceContext,
     identifier: string,
     options: Record<string, string | null>,
-    context: CommandContext
+    context: CommandContext,
 ): SchemaType => {
     let fields: { [key: string]: FieldType } = {};
     let schemaLabel = titleCase(identifier.replace(/_/g, ' '));
 
     if (context.linked.hasParents(identifier)) {
         for (let parent of context.linked.getParents(identifier)) {
-            
-            let fieldName = parent + "Id";
+            let fieldName = parent + 'Id';
             let label = `${titleCase(parent)} ID`;
-            let description = `The ${schemaLabel}'s ${titleCase(parent)} identifier.`;
+            let description = `The ${schemaLabel}'s ${titleCase(
+                parent,
+            )} identifier.`;
             fields[fieldName] = {
                 label,
                 description,
                 type: 'number',
                 required: true,
                 default: null,
-                flags: [
-                    'relation'
-                ]
-            }
+                flags: ['relation'],
+            };
         }
     }
     return {
         identifier: identifier,
         label: schemaLabel,
         pluralName: pluralize.plural(identifier),
-        description: options.desc || `A ${serviceContext.info.label} ${schemaLabel}`,
-        fields
+        description:
+            options.desc || `A ${serviceContext.info.label} ${schemaLabel}`,
+        fields,
     };
 };
 
@@ -90,8 +90,17 @@ const getSchemaCreationContext = (query: string): CommandContext | null => {
         const [context, error] = parseRelationship(query);
         if (error != null) {
             console.log();
-            const arrows = colors.red.bold(Array(error.positionStart+1).join(' ') + Array(error.positionEnd - error.positionStart + 1).join('~'));
-            console.error(`${colors.red('Aborted Operation')} ${error.errorName}: ${error.details}\n\n${query}\n${arrows}\n`);
+            const arrows = colors.red.bold(
+                Array(error.positionStart + 1).join(' ') +
+                    Array(error.positionEnd - error.positionStart + 1).join(
+                        '~',
+                    ),
+            );
+            console.error(
+                `${colors.red('Aborted Operation')} ${error.errorName}: ${
+                    error.details
+                }\n\n${query}\n${arrows}\n`,
+            );
             return null;
         }
         if (context == null) throw Error('context is not and should not be');
@@ -100,7 +109,7 @@ const getSchemaCreationContext = (query: string): CommandContext | null => {
         console.error(`Aborted Operation ${e}`);
         return null;
     }
-}
+};
 
 export default (program: CommanderStatic): void => {
     const schemas = program
@@ -128,24 +137,32 @@ export default (program: CommanderStatic): void => {
 
             const context = getSchemaCreationContext(query);
             if (context == null) return;
-            
+
             let newSchemas: SchemaType[] = [];
-            
+
             for (let identifier of context.schemas) {
                 // check if the schema already exists
                 if (serviceContext.getSchema(identifier) != null)
                     return console.error(
-                        colors.red(`A schema with the identifier '${identifier}' already exists`),
+                        colors.red(
+                            `A schema with the identifier '${identifier}' already exists`,
+                        ),
                     );
-    
+
                 // define the schema object
-                newSchemas.push(createSchemaObject(serviceContext, identifier, options, context));
-                
+                newSchemas.push(
+                    createSchemaObject(
+                        serviceContext,
+                        identifier,
+                        options,
+                        context,
+                    ),
+                );
             }
-            
+
             // logic for adding schemas
             const addSchemas = () => {
-                let newSchemaIDS: string[] = []; 
+                let newSchemaIDS: string[] = [];
                 for (let schema of newSchemas) {
                     // try to add the schema to the local service context
                     try {
@@ -155,22 +172,23 @@ export default (program: CommanderStatic): void => {
                     } catch (err) {
                         return console.error(
                             colors.red(`Error creating schema: ${err.message}`),
-                            );
+                        );
                     }
-                    
                 }
                 // try to write the service.yaml
                 try {
                     serviceContext.write();
                     console.log(
-                        colors.green(`✔ Schemas ${newSchemaIDS.join(', ')} added`),
+                        colors.green(
+                            `✔ Schemas ${newSchemaIDS.join(', ')} added`,
+                        ),
                     );
                 } catch (err) {
                     return console.error(
                         colors.red('Error saving service.yaml: ' + err.message),
-                        );
+                    );
                 }
-            }
+            };
             // add the schema if confirm
             if (confirmAdd) return addSchemas();
 

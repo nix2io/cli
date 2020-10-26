@@ -6,13 +6,10 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import YAWN from "../yawn";
+import YAWN from '../yawn';
 
 export default class ServiceFile {
-    constructor(
-        public path: string,
-        public YAWNObject: YAWN
-    ) { }
+    constructor(public path: string, public YAWNObject: YAWN) {}
 
     getJSON() {
         return this.YAWNObject.json;

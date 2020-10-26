@@ -11,8 +11,8 @@ export default class Token {
         public type: string,
         public value: string | null = null,
         public positionStart: number | null = null,
-        public positionEnd: number | null = null)
-    {
+        public positionEnd: number | null = null,
+    ) {
         if (this.positionStart != null) {
             this.positionEnd = this.positionStart + 1;
         }

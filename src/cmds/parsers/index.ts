@@ -6,4 +6,4 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-export{ default as parseRelationship } from './relationship';
+export { default as parseRelationship } from './relationship';

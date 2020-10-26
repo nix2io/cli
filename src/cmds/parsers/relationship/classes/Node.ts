@@ -6,7 +6,7 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { CommandContext } from ".";
+import { CommandContext } from '.';
 
 export default abstract class Node {
     abstract run(_: CommandContext): string[];

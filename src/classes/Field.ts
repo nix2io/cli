@@ -41,12 +41,19 @@ export default class Field {
      */
     static deserialize(name: string, data: FieldType): Field {
         // Test if the values are present
-        const vals = ['label', 'description', 'type', 'required', 'default', 'flags'];
+        const vals = [
+            'label',
+            'description',
+            'type',
+            'required',
+            'default',
+            'flags',
+        ];
         for (const val of vals) {
             if (Object.keys(data).indexOf(val) == -1)
                 throw Error(val + ' not given');
         }
-        
+
         // check the given data
         if (typeof data.label != 'undefined' && typeof data.label != 'string')
             throw Error(`label: ${data.label} is not a string`);

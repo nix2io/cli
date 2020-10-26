@@ -25,8 +25,6 @@ class LinkedSchemas {
     }
 }
 export default class CommandContext {
-    
     public linked = new LinkedSchemas();
     public schemas: Set<string> = new Set();
-
 }

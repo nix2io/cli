@@ -11,8 +11,8 @@ export class RelationshipParseError extends Error {
         public positionStart: number,
         public positionEnd: number,
         public errorName: string,
-        public details: string)
-    {
+        public details: string,
+    ) {
         super();
     }
 }
@@ -21,9 +21,9 @@ export class IllegalCharacterError extends RelationshipParseError {
     constructor(
         public positionStart: number,
         public positionEnd: number,
-        public details: string)
-    {
-        super(positionStart, positionEnd, 'Illegal Character', details)
+        public details: string,
+    ) {
+        super(positionStart, positionEnd, 'Illegal Character', details);
     }
 }
 
@@ -31,8 +31,8 @@ export class InvalidSyntaxError extends RelationshipParseError {
     constructor(
         public positionStart: number,
         public positionEnd: number,
-        public details: string = '')
-    {
-        super(positionStart, positionEnd, 'Invalid Syntax', details)
+        public details: string = '',
+    ) {
+        super(positionStart, positionEnd, 'Invalid Syntax', details);
     }
 }

@@ -6,16 +6,16 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { CommandContext, Node, Token } from ".";
-import { TOKEN_LINK } from "../constants";
+import { CommandContext, Node, Token } from '.';
+import { TOKEN_LINK } from '../constants';
 
 export default class BinaryOperationNode implements Node {
     constructor(
         public leftNode: Node,
         public operationToken: Token,
-        public rightNode: Node
+        public rightNode: Node,
     ) {}
-    
+
     run(context: CommandContext): string[] {
         const leftNodes = this.leftNode.run(context);
         const rightNodes = this.rightNode.run(context);
