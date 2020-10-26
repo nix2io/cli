@@ -15,6 +15,14 @@ class LinkedSchemas {
         }
         this.schemas[schema].add(parent);
     }
+
+    hasParents(identifier: string) {
+        return Object.keys(this.schemas).indexOf(identifier) != -1;
+    }
+
+    getParents(identifier: string) {
+        return this.schemas[identifier];
+    }
 }
 export default class CommandContext {
     

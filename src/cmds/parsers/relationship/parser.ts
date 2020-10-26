@@ -65,11 +65,11 @@ export default (tokens: Token[]) => {
     // get the result as a bin op
     let result = binaryOperation();
     if (result.error == null && currentToken!.type != TOKEN_EOC) {
-        throw new InvalidSyntaxError(
+        return result.failure(new InvalidSyntaxError(
             currentToken!.positionStart!,
             currentToken!.positionEnd!,
             `expected ${SYMBOL_COMMA} or ${SYMBOL_LINK}`
-        )
+        ));
     }
     return result;
 }

@@ -23,7 +23,7 @@ import { IllegalCharacterError } from "./errors";
 
 
 
-export default (command: string) => {
+export default (command: string): [Token[], IllegalCharacterError | null] => {
     // position of the command
     let position = -1;
     // current character of the command
@@ -87,9 +87,9 @@ export default (command: string) => {
             const positionStart = position;
             const invalidCharacter = currentCharacter;
             advance();
-            throw new IllegalCharacterError(positionStart, position, `'${invalidCharacter}'`);
+            return [[], new IllegalCharacterError(positionStart, position, `'${invalidCharacter}'`)];
         }
     }
     tokens.push(new Token(TOKEN_EOC, null, position));
-    return tokens;
+    return [tokens, null];
 }

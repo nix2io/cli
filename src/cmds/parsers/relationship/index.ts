@@ -7,13 +7,17 @@
  */
 
 import { CommandContext } from './classes';
+import { RelationshipParseError } from './errors';
 import lexer from './lexer';
 import parser from './parser';
 
 
-export default (command: string) => {
-    const tokens = lexer(command);
+export default (command: string): [CommandContext, null] | [null, RelationshipParseError] => {
+    const [tokens, error] = lexer(command);
+    if (error) { return [null, error]; }
     const ast = parser(tokens);
-    if (ast.error != null) return ast;
-    return ast.node!.run(new CommandContext())
+    if (ast.error != null) return [null, ast.error];
+    const ctx = new CommandContext();
+    ast.node!.run(ctx)
+    return [ctx, null];
 }
