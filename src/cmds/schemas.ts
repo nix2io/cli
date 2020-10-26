@@ -69,7 +69,9 @@ const createSchemaObject = (
                 type: 'number',
                 required: true,
                 default: null,
-                flags: []
+                flags: [
+                    'relation'
+                ]
             }
         }
     }
@@ -132,7 +134,7 @@ export default (program: CommanderStatic): void => {
                 // check if the schema already exists
                 if (serviceContext.getSchema(identifier) != null)
                     return console.error(
-                        colors.red('A schema with the same identifier exists'),
+                        colors.red(`A schema with the identifier '${identifier}' already exists`),
                     );
     
                 // define the schema object
