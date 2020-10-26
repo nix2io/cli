@@ -11,7 +11,7 @@ import { getServiceContext } from '../service';
 import { ERRORS, NONE } from '../constants';
 import inquirer = require('inquirer');
 import { prettyPrint, titleCase } from 'koontil';
-import { Schema } from '../classes';
+import { Schema, ServiceContext } from '../classes';
 import colors = require('colors');
 import Table = require('cli-table');
 import pluralize = require('pluralize');
@@ -50,6 +50,7 @@ const displaySchemas = (): void => {
 };
 
 const createSchemaObject = (
+    serviceContext: ServiceContext,
     identifier: string,
     options: Record<string, string | null>,
     context: CommandContext
@@ -79,7 +80,7 @@ const createSchemaObject = (
         identifier: identifier,
         label: schemaLabel,
         pluralName: pluralize.plural(identifier),
-        description: options.desc || null,
+        description: options.desc || `A ${serviceContext.info.label} ${schemaLabel}`,
         fields
     };
 };
@@ -138,7 +139,7 @@ export default (program: CommanderStatic): void => {
                     );
     
                 // define the schema object
-                newSchemas.push(createSchemaObject(identifier, options, context));
+                newSchemas.push(createSchemaObject(serviceContext, identifier, options, context));
                 
             }
             

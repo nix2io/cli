@@ -72,9 +72,9 @@ export default class ServiceContext {
      * @returns  {boolean} `true` if successfull
      */
     write(): boolean {
-        this.serviceFile.YAWNObject.json = this.serialize();;
+        this.serviceFile.YAWNObject.json = this.serialize();
         const content = this.serviceFile.YAWNObject.yaml;
-        // fs.writeFileSync(this.filePath, content);
+        fs.writeFileSync(this.serviceFile.path, content);
         return true;
     }
 
