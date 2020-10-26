@@ -16,9 +16,7 @@ import colors = require('colors');
 import Table = require('cli-table');
 import pluralize = require('pluralize');
 import { parseRelationship } from './parsers';
-import { RelationshipParseError } from './parsers/relationship/errors';
 import { CommandContext } from './parsers/relationship/classes';
-import Field from '../classes/Field';
 import { FieldType, SchemaType } from '../types';
 
 const displaySchemas = (): void => {

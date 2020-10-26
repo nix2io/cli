@@ -7,13 +7,13 @@
  */
 
 import { CommandContext } from './classes';
-import { RelationshipParseError } from './errors';
+import { ParseError } from '../shared/errors';
 import lexer from './lexer';
 import parser from './parser';
 
 export default (
     command: string,
-): [CommandContext, null] | [null, RelationshipParseError] => {
+): [CommandContext, null] | [null, ParseError] => {
     const [tokens, error] = lexer(command);
     if (error) {
         return [null, error];

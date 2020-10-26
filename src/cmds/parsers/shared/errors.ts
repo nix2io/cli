@@ -6,7 +6,7 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-export class RelationshipParseError extends Error {
+export class ParseError extends Error {
     constructor(
         public positionStart: number,
         public positionEnd: number,
@@ -17,7 +17,7 @@ export class RelationshipParseError extends Error {
     }
 }
 
-export class IllegalCharacterError extends RelationshipParseError {
+export class IllegalCharacterError extends ParseError {
     constructor(
         public positionStart: number,
         public positionEnd: number,
@@ -27,7 +27,7 @@ export class IllegalCharacterError extends RelationshipParseError {
     }
 }
 
-export class InvalidSyntaxError extends RelationshipParseError {
+export class InvalidSyntaxError extends ParseError {
     constructor(
         public positionStart: number,
         public positionEnd: number,

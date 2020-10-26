@@ -9,15 +9,19 @@
 import { Token } from '../shared/classes';
 import {
     SYMBOL_COMMA,
-    SYMBOL_LINK,
     SYMBOL_LPAR,
     SYMBOL_RPAR,
     TOKEN_COMMA,
     TOKEN_EOC,
-    TOKEN_LINK,
     TOKEN_LPAR,
     TOKEN_NAME,
     TOKEN_RPAR,
+    SYMBOL_INDEX,
+    SYMBOL_ALL,
+    SYMBOL_EXCLUDE,
+    TOKEN_EXCLUDE,
+    TOKEN_ALL,
+    TOKEN_INDEX,
 } from './constants';
 import { IllegalCharacterError } from '../shared/errors';
 
@@ -46,7 +50,7 @@ export default (command: string): [Token[], IllegalCharacterError | null] => {
     };
 
     /**
-     * Make a Schema ID token
+     * Make a Alert name
      */
     const makeName = (): Token => {
         const positionStart = position;
@@ -73,11 +77,17 @@ export default (command: string): [Token[], IllegalCharacterError | null] => {
             tokens.push(makeName());
         }
         // link token
-        else if (currentCharacter == SYMBOL_LINK) {
-            tokens.push(new Token(TOKEN_LINK, null, position));
+        else if (currentCharacter == SYMBOL_INDEX) {
+            tokens.push(new Token(TOKEN_INDEX, null, position));
             advance();
         } else if (currentCharacter == SYMBOL_COMMA) {
             tokens.push(new Token(TOKEN_COMMA, null, position));
+            advance();
+        } else if (currentCharacter == SYMBOL_ALL) {
+            tokens.push(new Token(TOKEN_ALL, null, position));
+            advance();
+        } else if (currentCharacter == SYMBOL_EXCLUDE) {
+            tokens.push(new Token(TOKEN_EXCLUDE, null, position));
             advance();
         } else if (currentCharacter == SYMBOL_LPAR) {
             tokens.push(new Token(TOKEN_LPAR, null, position));

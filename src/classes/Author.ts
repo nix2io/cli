@@ -6,6 +6,8 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 import { AuthorType } from '../types';
+import parseAlert from '../cmds/parsers/alert';
+
 const flagInheritence = {
     dev: 'contributer',
     leadDev: 'dev',
@@ -112,5 +114,9 @@ export default class Author {
             }
         }
         this.inherited_flags = flags;
+    }
+
+    isListening() {
+        return parseAlert(this.alert);
     }
 }

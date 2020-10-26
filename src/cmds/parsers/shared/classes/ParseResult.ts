@@ -6,12 +6,12 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { RelationshipParseError } from '../errors';
-import { CommandContext, Node, Token } from '.';
+import { ParseError } from '../errors';
+import { Node, Token } from '.';
 
 export default class ParseResult {
     constructor(
-        public error: RelationshipParseError | null = null,
+        public error: ParseError | null = null,
         public node: Node | null = null,
     ) {}
 
@@ -30,15 +30,8 @@ export default class ParseResult {
         return this;
     }
 
-    failure(error: RelationshipParseError) {
+    failure(error: ParseError) {
         this.error = error;
         return this;
-    }
-
-    createCommand() {
-        let ctx = new CommandContext();
-        if (this.node == null) throw Error('node is null');
-        this.node.run(ctx);
-        return ctx;
     }
 }

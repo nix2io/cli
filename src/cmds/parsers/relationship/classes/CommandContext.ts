@@ -1,6 +1,6 @@
 /*
- * File: Node.ts
- * Created: 10/26/2020 19:58:00
+ * File: CommandContext.ts
+ * Created: 10/25/2020 19:58:00
  * ----
  * Copyright: 2020 Nix² Technologies
  * Author: Max Koon (maxk@nix2.io)

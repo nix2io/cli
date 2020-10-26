@@ -6,7 +6,8 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { BinaryOperationNode, ParseResult, Token } from './classes';
+import { Token } from '../shared/classes';
+import { BinaryOperationNode } from './classes';
 import NameNode from './classes/NameNode';
 import {
     SYMBOL_COMMA,
@@ -19,9 +20,10 @@ import {
     TOKEN_NAME,
     TOKEN_RPAR,
 } from './constants';
-import { InvalidSyntaxError } from './errors';
+import { InvalidSyntaxError } from '../shared/errors';
+import RelationshipParseResult from './classes/RelationshipParseResult';
 
-export default (tokens: Token[]) => {
+export default (tokens: Token[]): RelationshipParseResult => {
     // current token index
     let position: number = -1;
     // current token of the parser
@@ -35,8 +37,8 @@ export default (tokens: Token[]) => {
         return currentToken;
     };
 
-    const binaryOperation = (): ParseResult => {
-        const result = new ParseResult();
+    const binaryOperation = (): RelationshipParseResult => {
+        const result = new RelationshipParseResult();
         let left = result.register(name()!);
         if (result.error != null) {
             return result;
@@ -57,8 +59,8 @@ export default (tokens: Token[]) => {
         return result.success(left);
     };
 
-    const name = (): ParseResult => {
-        const result = new ParseResult();
+    const name = (): RelationshipParseResult => {
+        const result = new RelationshipParseResult();
         const token = currentToken!;
         if (token.type == TOKEN_NAME) {
             result.register(advance()!);

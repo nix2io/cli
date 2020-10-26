@@ -6,7 +6,8 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { CommandContext, Node, Token } from '.';
+import { Node, Token } from '../../shared/classes';
+import { CommandContext } from '.';
 
 export default class NameNode implements Node {
     constructor(public token: Token) {}
