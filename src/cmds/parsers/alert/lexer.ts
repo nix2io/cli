@@ -17,10 +17,8 @@ import {
     TOKEN_NAME,
     TOKEN_RPAR,
     SYMBOL_INDEX,
-    SYMBOL_ALL,
     SYMBOL_EXCLUDE,
     TOKEN_EXCLUDE,
-    TOKEN_ALL,
     TOKEN_INDEX,
 } from './constants';
 import { IllegalCharacterError } from '../shared/errors';
@@ -82,9 +80,6 @@ export default (command: string): [Token[], IllegalCharacterError | null] => {
             advance();
         } else if (currentCharacter == SYMBOL_COMMA) {
             tokens.push(new Token(TOKEN_COMMA, null, position));
-            advance();
-        } else if (currentCharacter == SYMBOL_ALL) {
-            tokens.push(new Token(TOKEN_ALL, null, position));
             advance();
         } else if (currentCharacter == SYMBOL_EXCLUDE) {
             tokens.push(new Token(TOKEN_EXCLUDE, null, position));

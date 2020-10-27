@@ -9,13 +9,11 @@
 export const TOKEN_NAME = 'STRING';
 export const TOKEN_LPAR = 'LPAR';
 export const TOKEN_RPAR = 'RPAR';
-export const TOKEN_ALL = 'ALL';
 export const TOKEN_INDEX = 'INDEX';
 export const TOKEN_COMMA = 'COMMA';
 export const TOKEN_EXCLUDE = 'EXCLUDE';
 export const TOKEN_EOC = 'EOC';
 
-export const SYMBOL_ALL = '*';
 export const SYMBOL_INDEX = '.';
 export const SYMBOL_COMMA = ',';
 export const SYMBOL_EXCLUDE = '-';

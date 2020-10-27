@@ -7,6 +7,8 @@
  */
 import { AuthorType } from '../types';
 import parseAlert from '../cmds/parsers/alert';
+import { AlertRule } from '../cmds/parsers/alert/classes';
+import colors = require('colors');
 
 const flagInheritence = {
     dev: 'contributer',
@@ -25,6 +27,7 @@ export default class Author {
      * @param {Set<string>} flags        Set of flags for the author
      */
     public inherited_flags: Set<string>;
+    public alertRule: AlertRule;
 
     constructor(
         public email: string,
@@ -36,6 +39,7 @@ export default class Author {
     ) {
         this.inherited_flags;
         this.updateFlags();
+        this.updateAlertRule();
     }
 
     /**
@@ -116,7 +120,28 @@ export default class Author {
         this.inherited_flags = flags;
     }
 
-    isListening() {
-        return parseAlert(this.alert);
+    private updateAlertRule(): void {
+        let [rule, error] = parseAlert(this.alert);
+        if (error != null) {
+            console.log();
+            const arrows = colors.red.bold(
+                Array(error.positionStart + 1).join(' ') +
+                    Array(error.positionEnd - error.positionStart + 1).join(
+                        '^',
+                    ),
+            );
+            console.error(
+                `${colors.red('Error Parsing Alert Rule')} ${
+                    error.errorName
+                }: ${error.details}\n\n${this.alert}\n${arrows}\n`,
+            );
+            throw Error('Invalid Alert Rule');
+        }
+        console.log(rule!);
+        console.log(rule?.toString());
+
+        this.alertRule = rule!;
     }
+
+    isListening() {}
 }
