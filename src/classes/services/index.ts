@@ -8,3 +8,4 @@
 
 export { default as APIServiceContext } from './APIServiceContext';
 export { default as GatewayServiceContext } from './GatewayServiceContext';
+export { default as TypescriptServiceContext } from './TypescriptServiceContext';

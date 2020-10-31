@@ -51,6 +51,16 @@ ${SYMBOLS.PAPER} Local data ${colors.grey(`from ${SERVICE_FILE_NAME}`)}
  - created {created}
 `;
 
+export const PACKAGES = {
+    TYPESCRIPT: {
+        pkg: {},
+        dev: {
+            typescript: '4.0.3',
+            '@types/node': '14.14.0',
+        },
+    },
+};
+
 // error messages
 export const ERRORS = {
     NO_CHECK_FOR_FILE: 'Could not check if file exists',

@@ -18,7 +18,7 @@ export default (command: string): [AlertRule, null] | [null, ParseError] => {
     }
     const ast = parser(tokens);
     if (ast.error != null) return [null, ast.error];
-    console.log(JSON.stringify(ast, null, 2));
+    // console.log(JSON.stringify(ast, null, 2));
     const rule = new AlertRule('');
     ast.node!.run(rule);
     return [rule, null];

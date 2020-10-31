@@ -137,9 +137,8 @@ export default class Author {
             );
             throw Error('Invalid Alert Rule');
         }
-        console.log(rule!);
-        console.log(rule?.toString());
-
+        // console.log(rule!);
+        // console.log(rule?.toString());
         this.alertRule = rule!;
     }
 

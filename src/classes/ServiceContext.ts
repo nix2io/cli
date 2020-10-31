@@ -12,6 +12,7 @@ import yaml = require('js-yaml');
 import fs = require('fs');
 import { ServiceContextType } from '../types';
 import ServiceFile from './ServiceFile';
+import { dirname } from 'path';
 
 export default class ServiceContext {
     /**
@@ -29,6 +30,16 @@ export default class ServiceContext {
         public type: string,
         public schemas: Schema[],
     ) {}
+
+    /**
+     * Returns the service directory
+     * @memberof ServiceContext
+     * @protected
+     * @returns {string} Path to the directory
+     */
+    protected get serviceDirectory(): string {
+        return dirname(this.serviceFile.path);
+    }
 
     /**
      * Deserialize an object into a `ServiceContext` instance
