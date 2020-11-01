@@ -25,12 +25,12 @@ export default class ParseResult {
         return result;
     }
 
-    success(node: Node) {
+    success(node: Node): ParseResult {
         this.node = node;
         return this;
     }
 
-    failure(error: ParseError) {
+    failure(error: ParseError): ParseResult {
         this.error = error;
         return this;
     }

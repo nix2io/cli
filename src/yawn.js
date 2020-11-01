@@ -1,5 +1,4 @@
 'use strict';
-
 import { EOL } from 'os';
 import { compose, serialize } from 'yaml-js';
 import { load, dump } from 'js-yaml';

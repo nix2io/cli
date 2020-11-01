@@ -53,14 +53,14 @@ const createSchemaObject = (
     options: Record<string, string | null>,
     context: CommandContext,
 ): SchemaType => {
-    let fields: { [key: string]: FieldType } = {};
-    let schemaLabel = titleCase(identifier.replace(/_/g, ' '));
+    const fields: { [key: string]: FieldType } = {};
+    const schemaLabel = titleCase(identifier.replace(/_/g, ' '));
 
     if (context.linked.hasParents(identifier)) {
-        for (let parent of context.linked.getParents(identifier)) {
-            let fieldName = parent + 'Id';
-            let label = `${titleCase(parent)} ID`;
-            let description = `The ${schemaLabel}'s ${titleCase(
+        for (const parent of context.linked.getParents(identifier)) {
+            const fieldName = parent + 'Id';
+            const label = `${titleCase(parent)} ID`;
+            const description = `The ${schemaLabel}'s ${titleCase(
                 parent,
             )} identifier.`;
             fields[fieldName] = {
@@ -136,9 +136,9 @@ export default (program: CommanderStatic): void => {
             const context = getSchemaCreationContext(query);
             if (context == null) return;
 
-            let newSchemas: SchemaType[] = [];
+            const newSchemas: SchemaType[] = [];
 
-            for (let identifier of context.schemas) {
+            for (const identifier of context.schemas) {
                 // check if the schema already exists
                 if (serviceContext.getSchema(identifier) != null)
                     return console.error(
@@ -160,8 +160,8 @@ export default (program: CommanderStatic): void => {
 
             // logic for adding schemas
             const addSchemas = () => {
-                let newSchemaIDS: string[] = [];
-                for (let schema of newSchemas) {
+                const newSchemaIDS: string[] = [];
+                for (const schema of newSchemas) {
                     // try to add the schema to the local service context
                     try {
                         const newSchema = Schema.deserialize(schema);

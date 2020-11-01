@@ -96,7 +96,7 @@ export default (tokens: Token[]): RelationshipParseResult => {
     // advance to the first token
     advance();
     // get the result as a bin op
-    let result = binaryOperation();
+    const result = binaryOperation();
     if (result.error == null && currentToken!.type != TOKEN_EOC) {
         return result.failure(
             new InvalidSyntaxError(
