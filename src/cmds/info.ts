@@ -7,7 +7,7 @@
  */
 
 import { CommanderStatic } from 'commander';
-import { formatString } from 'koontil';
+import { formatString } from '../util';
 import { VERSION, SERVICE_DISPLAY_TEMPLATE, SYMBOLS } from '../constants';
 import { getServiceContext } from '../service';
 import { authed, user } from '../user';
@@ -20,7 +20,7 @@ export default (program: CommanderStatic): void => {
     program
         .command('info')
         .description('display service context info')
-        .action(() => {
+        .action((options) => {
             console.log(
                 SYMBOLS.ROBOT +
                     ' ' +
@@ -38,7 +38,7 @@ export default (program: CommanderStatic): void => {
             }
             // get the service
             try {
-                const service = getServiceContext();
+                const service = getServiceContext(options);
                 if (service == null) {
                     console.log(colors.grey('No service in this directory'));
                     return;

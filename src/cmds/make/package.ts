@@ -7,9 +7,9 @@ import { TypescriptServiceContext } from '../../classes';
 export const pkg = (make: commander.Command): void => {
     make.command('package')
         .description('make a package.json')
-        .action(() => {
+        .action((options) => {
             // make sure there is a service context
-            const serviceContext = getServiceContext();
+            const serviceContext = getServiceContext(options);
             if (serviceContext == null)
                 return console.error(colors.red('No service context found'));
             if (!(serviceContext instanceof TypescriptServiceContext)) {

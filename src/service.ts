@@ -12,6 +12,8 @@ import fs = require('fs');
 import path = require('path');
 import YAWN from './yawn';
 import ServiceFile from './classes/ServiceFile';
+import commander = require('commander');
+import { joinPaths } from './util';
 
 // check if the file exists
 const serviceFileExists = (serviceFilePath: string): boolean => {
@@ -92,9 +94,15 @@ export const parseServiceObject = (
  * Return the service object in the users current directory
  * @return {ServiceContext} Instance of the Service Context
  */
-export const getServiceContext = (): serviceTypes | null => {
+export const getServiceContext = (options: any): serviceTypes | null => {
     // get the full file path
-    const serviceFilePath = path.join(process.cwd(), SERVICE_FILE_NAME);
+    while (options.name() != 'nix-cli') {
+        options = options.parent;
+    }
+    const serviceFilePath = joinPaths(options.dir || '.');
+
+    console.log(serviceFilePath);
+
     // return null if there is no file
     if (!serviceFileExists(serviceFilePath)) return null;
     // get the file

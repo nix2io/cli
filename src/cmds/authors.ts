@@ -7,7 +7,7 @@
  */
 
 import { CommanderStatic } from 'commander';
-import { prettyPrint } from 'koontil';
+import { prettyPrint } from '../util';
 import { ERRORS, NONE } from '../constants';
 import cache from '../cache';
 import { getServiceContext } from '../service';
@@ -68,8 +68,8 @@ const colorsStrings = (obj: { [key: string]: any; }) => {
     return obj;
 } */
 
-const displayAuthors = (): void => {
-    const serviceContext = getServiceContext();
+const displayAuthors = (options: any): void => {
+    const serviceContext = getServiceContext(options);
     if (serviceContext == null) {
         console.error(colors.red('No service context'));
         return;
@@ -129,7 +129,7 @@ export default (program: CommanderStatic): void => {
         .option('-y, --yes', 'skip the confirmation screen')
         .action((email: string, options) => {
             // check if there is a service context
-            const serviceContext = getServiceContext();
+            const serviceContext = getServiceContext(options);
             if (serviceContext == null)
                 return console.error(colors.red('No service context'));
             const confirmAdd = options.yes;
@@ -209,7 +209,7 @@ export default (program: CommanderStatic): void => {
         .option('-y, --yes', 'skip the confirmation screen')
         .action((email: string, options) => {
             // check if there is a service context
-            const serviceContext = getServiceContext();
+            const serviceContext = getServiceContext(options);
             if (serviceContext == null)
                 return console.error(colors.red('No service context'));
             const confirmRemove = options.yes;

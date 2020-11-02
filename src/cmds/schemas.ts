@@ -10,7 +10,7 @@ import { CommanderStatic } from 'commander';
 import { getServiceContext } from '../service';
 import { ERRORS, NONE } from '../constants';
 import inquirer = require('inquirer');
-import { prettyPrint, titleCase } from 'koontil';
+import { prettyPrint, titleCase } from '../util';
 import { Schema, ServiceContext } from '../classes';
 import colors = require('colors');
 import Table = require('cli-table');
@@ -19,8 +19,8 @@ import { parseRelationship } from './parsers';
 import { CommandContext } from './parsers/relationship/classes';
 import { FieldType, SchemaType } from '../types';
 
-const displaySchemas = (): void => {
-    const serviceContext = getServiceContext();
+const displaySchemas = (options: any): void => {
+    const serviceContext = getServiceContext(options);
     if (serviceContext == null) {
         console.error(colors.red('No service context'));
         return;
@@ -128,7 +128,7 @@ export default (program: CommanderStatic): void => {
         .option('-d, --desc [description]', 'description of the schema')
         .action((query: string, options) => {
             // check if there is a service context
-            const serviceContext = getServiceContext();
+            const serviceContext = getServiceContext(options);
             if (serviceContext == null)
                 return console.error(colors.red('No service context'));
             const confirmAdd = options.yes;
@@ -216,7 +216,7 @@ export default (program: CommanderStatic): void => {
         .option('-y, --yes', 'skip the confirmation message')
         .action((identifier: string, options) => {
             // check if there is a service context
-            const serviceContext = getServiceContext();
+            const serviceContext = getServiceContext(options);
             if (serviceContext == null)
                 return console.error(colors.red('No service context'));
             const confirmRemove = options.yes;

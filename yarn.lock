@@ -500,7 +500,7 @@ color-name@~1.1.4:
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
-colors@*, colors@^1.4.0:
+colors@*:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.4.0.tgz#c50491479d4c1bdaed2c9ced32cf7c7dc2360f78"
   integrity sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==
@@ -1139,13 +1139,6 @@ jsonfile@^6.0.1:
     universalify "^1.0.0"
   optionalDependencies:
     graceful-fs "^4.1.6"
-
-koontil@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/koontil/-/koontil-1.1.0.tgz#f03bab89b4ceeb69e2eca88bc30815a402d636e4"
-  integrity sha512-EB8ekNU5CVnDe4/tUvh265lrlbCnmdFpcMokXwSvivSW2+SdpDYxPCLkE/SLRb3t7ifrSw5jIRJTPgj4Wucneg==
-  dependencies:
-    colors "^1.4.0"
 
 levn@^0.4.1:
   version "0.4.1"

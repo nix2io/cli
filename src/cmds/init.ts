@@ -7,7 +7,7 @@
  */
 
 import { CommanderStatic } from 'commander';
-import { titleCase, prettyPrint } from 'koontil';
+import { titleCase, prettyPrint } from '../util';
 import inquirer = require('inquirer');
 import { ERRORS, SERVICE_FILE_NAME, SYMBOLS } from '../constants';
 import { getServiceContext } from '../service';
@@ -23,8 +23,11 @@ export default (program: CommanderStatic): void => {
         .description('initialize a service')
         .option('-y, --yes', 'skip the confirm message')
         .action((dirname: string, commandOptions) => {
+            dirname = dirname || commandOptions.parent.dir;
+            console.log(dirname);
+
             // check if a service context exists
-            if (getServiceContext() != null)
+            if (getServiceContext(dirname) != null)
                 return console.error(ERRORS.SERVICE_EXISTS);
             const skipConfirm = commandOptions.yes;
             // get the name of the service

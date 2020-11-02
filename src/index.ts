@@ -14,7 +14,7 @@ import { VERSION } from './constants';
 
 // Program info
 program.name('nix-cli').version(VERSION, '-v', 'output cli version');
-
+program.option('--dir <directory>', 'use a different specified directory', '.');
 // Apply all the functions to the program
 for (const func of Object.values(cmds)) func(program);
 

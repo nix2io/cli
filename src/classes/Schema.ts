@@ -7,7 +7,7 @@
  */
 
 import Field from './Field';
-import { titleCase } from 'koontil';
+import { titleCase } from '../util';
 import { SchemaType } from '../types';
 
 export default class Schema {

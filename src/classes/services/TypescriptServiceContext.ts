@@ -59,7 +59,7 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
     readPackageFile(): PackageJSONType {
         let tempdir = '.';
         // TODO: remove this
-        // tempdir = join(this.serviceDirectory, '/serv');
+        tempdir = join(this.serviceDirectory, '/serv');
         const packagePath = join(tempdir, '/package.json');
         if (!existsSync(packagePath)) {
             throw Error('FILE_NOT_EXIST');

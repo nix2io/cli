@@ -14,9 +14,9 @@ import path = require('path');
 export default (make: commander.Command): void => {
     make.command('type <schema>')
         .description('make a type')
-        .action((schemaIdentifier: string) => {
+        .action((schemaIdentifier: string, options) => {
             // make sure there is a service context
-            const serviceContext = getServiceContext();
+            const serviceContext = getServiceContext(options);
             if (serviceContext == null)
                 return console.error(colors.red('No service context found'));
             // get the specified schema
