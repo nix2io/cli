@@ -7,7 +7,7 @@
  */
 
 import { CommanderStatic } from 'commander';
-import { titleCase, prettyPrint } from '../util';
+import { titleCase, prettyPrint, getServiceContextPath } from '../util';
 import inquirer = require('inquirer');
 import { ERRORS, SERVICE_FILE_NAME, SYMBOLS } from '../constants';
 import { getServiceContext } from '../service';
@@ -16,6 +16,7 @@ import yaml = require('js-yaml');
 import fs = require('fs');
 import path = require('path');
 import colors = require('colors');
+import { InfoType, SchemaType, ServiceContextType } from '../types';
 
 export default (program: CommanderStatic): void => {
     program
@@ -23,16 +24,12 @@ export default (program: CommanderStatic): void => {
         .description('initialize a service')
         .option('-y, --yes', 'skip the confirm message')
         .action((dirname: string, commandOptions) => {
-            dirname = dirname || commandOptions.parent.dir;
-            console.log(dirname);
-
             // check if a service context exists
-            if (getServiceContext(dirname) != null)
+            if (getServiceContext(commandOptions, dirname) != null)
                 return console.error(ERRORS.SERVICE_EXISTS);
             const skipConfirm = commandOptions.yes;
             // get the name of the service
-            if (dirname == null) dirname = '.';
-            const servicePath = path.join(process.cwd(), dirname),
+            const servicePath = getServiceContextPath(commandOptions, dirname),
                 serviceIdentifier = path.basename(servicePath),
                 serviceLabel = titleCase(serviceIdentifier.replace(/-/g, ' '));
             // create the questions
@@ -45,11 +42,11 @@ export default (program: CommanderStatic): void => {
             let options: Record<string, unknown> = Object.assign({}, defaults);
             options.userLeadDev = authed;
 
-            const createServiceObject = (options: Record<string, unknown>) => {
+            const createServiceObject = (options: Record<string, any>) => {
                 const currentTimestamp = Math.floor(
                     new Date().getTime() / 1000,
                 );
-                const info: Record<string, any> = {
+                const info: InfoType = {
                     identifier: options.identifier,
                     label: options.label,
                     description: options.description,
@@ -61,18 +58,21 @@ export default (program: CommanderStatic): void => {
                     termsOfServiceURL: 'nix2.io/tos',
                 };
                 // add the authed user as a main dev
-                if (options.userLeadDev)
+                if (options.userLeadDev && authed && user != null)
                     info.authors.push({
-                        email: user?.email,
-                        name: user?.name,
+                        email: user.email,
+                        name: user.name,
                         publicEmail: null,
                         url: null,
+                        alert: '*',
                         flags: ['leadDev'], // using an array bc yaml dump
                     });
                 const type = 'app',
-                    data = {
+                    schemas: SchemaType[] = [],
+                    data: ServiceContextType = {
                         info,
                         type,
+                        schemas,
                     };
 
                 return data;

@@ -7,14 +7,13 @@
  */
 
 import { CommanderStatic } from 'commander';
-import { formatString } from '../util';
+import { formatString, getRootOptions } from '../util';
 import { VERSION, SERVICE_DISPLAY_TEMPLATE, SYMBOLS } from '../constants';
 import { getServiceContext } from '../service';
 import { authed, user } from '../user';
 import colors = require('colors');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const friendlyTime = require('friendly-time');
-// const ora = require('ora');
 
 export default (program: CommanderStatic): void => {
     program
@@ -60,8 +59,11 @@ export default (program: CommanderStatic): void => {
                     }),
                 );
             } catch (err) {
-                console.error(err);
-                console.error(colors.red(`ERR: ${err.message}`));
+                if (getRootOptions(options).debug) {
+                    console.error(err);
+                } else {
+                    console.error(colors.red(`ERR: ${err.message}`));
+                }
             }
         });
 };

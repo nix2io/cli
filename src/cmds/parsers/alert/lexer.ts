@@ -34,7 +34,7 @@ export default (command: string): [Token[], IllegalCharacterError | null] => {
      * TODO: make it the identifier regex
      * @param {string} str
      */
-    const isLetter = (str: string | null): boolean => /^[a-zA-Z]$/.test(str!);
+    const isLetter = (str: string | null): boolean => /^[a-zA-Z*]$/.test(str!);
 
     /**
      * Advance the lexer position and char

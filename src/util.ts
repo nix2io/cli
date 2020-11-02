@@ -2,11 +2,32 @@ import path = require('path');
 import colors = require('colors');
 import { SERVICE_FILE_NAME } from './constants';
 
-export const joinPaths = (pathChange: string) => {
+export const getRootOptions = (options: any): any => {
+    while (options.name() != 'nix-cli') {
+        options = options.parent;
+    }
+    return options;
+};
+
+// get a path to the service directory
+export const getServiceContextPath = (
+    options: any,
+    overwriteDir: string | undefined = undefined,
+) => {
+    const pathChange = overwriteDir || getRootOptions(options).dir || '.';
     return path.join(
         path.isAbsolute(pathChange)
             ? pathChange
             : path.join(process.cwd(), pathChange),
+    );
+};
+
+export const getServiceContextFilePath = (
+    options: any,
+    overwriteDir: string | undefined = undefined,
+) => {
+    return path.join(
+        getServiceContextPath(options, overwriteDir),
         SERVICE_FILE_NAME,
     );
 };

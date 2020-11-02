@@ -7,7 +7,7 @@
  */
 
 import { CommanderStatic } from 'commander';
-import { prettyPrint } from '../util';
+import { getRootOptions, prettyPrint } from '../util';
 import { ERRORS, NONE } from '../constants';
 import cache from '../cache';
 import { getServiceContext } from '../service';
@@ -156,7 +156,12 @@ export default (program: CommanderStatic): void => {
                         author.flags,
                     );
                 } catch (err) {
-                    return console.error(err);
+                    if (getRootOptions(options).debug) {
+                        console.error(err);
+                    } else {
+                        console.error(colors.red(`ERR: ${err.message}`));
+                    }
+                    return;
                 }
 
                 // try to write the service.yaml

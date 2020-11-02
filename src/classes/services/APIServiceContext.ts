@@ -44,6 +44,13 @@ export default class APIServiceContext extends TypescriptServiceContext {
         serviceFile: ServiceFile,
         data: APIServiceContextType,
     ): APIServiceContext {
+        // Test if the values are present
+        const vals = ['info', 'schemas', 'paths'];
+        for (const val of vals) {
+            if (Object.keys(data).indexOf(val) == -1)
+                throw Error(val + ' not given');
+        }
+
         return new APIServiceContext(
             serviceFile,
             Info.deserialize(data.info),
