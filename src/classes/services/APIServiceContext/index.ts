@@ -1,16 +1,18 @@
 /*
- * File: APIServiceContext.ts
+ * File: index.ts
  * Created: 10/14/2020 13:03:39
  * ----
  * Copyright: 2020 Nix² Technologies
  * Author: Max Koon (maxk@nix2.io)
  */
-import { Info, TypescriptServiceContext } from '..';
-import { Schema, Path } from '..';
-import { APIServiceContextType } from '../../types';
-import ServiceFile from '../ServiceFile';
+import { TypescriptServiceContext } from '..';
+import { Info, Schema, Path } from '../..';
+import { APIServiceContextType } from '../../../types';
+import ServiceFile from '../../ServiceFile';
 
 export default class APIServiceContext extends TypescriptServiceContext {
+    static NAME = 'api';
+
     public paths: { [key: string]: Path };
 
     /**
@@ -66,6 +68,23 @@ export default class APIServiceContext extends TypescriptServiceContext {
         );
     }
 
+    static createObject(
+        data: {
+            identifier: string;
+            label: string;
+            description: string;
+            userLeadDev: boolean;
+        },
+        user: any,
+    ): APIServiceContextType {
+        return {
+            ...super.createObject(data, user),
+            ...{
+                paths: {},
+            },
+        };
+    }
+
     /**
      * Serialize a `APIServiceContext` instance into an object
      * @function serialize
@@ -76,6 +95,7 @@ export default class APIServiceContext extends TypescriptServiceContext {
         return {
             ...super.serialize(),
             ...{
+                type: 'api',
                 paths: Object.assign(
                     {},
                     ...Object.keys(this.paths).map((k: string) => ({

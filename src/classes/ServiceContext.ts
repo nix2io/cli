@@ -13,8 +13,14 @@ import fs = require('fs');
 import { ServiceContextType } from '../types';
 import ServiceFile from './ServiceFile';
 import { dirname } from 'path';
+import path = require('path');
+import { getServiceContextPath, titleCase } from '../util';
+import { Inquirer } from 'inquirer';
+import inquirer = require('inquirer');
 
-export default class ServiceContext {
+export default abstract class ServiceContext {
+    static NAME: string;
+
     /**
      * Abstract class to represent a service context
      * @class ServiceContext
@@ -42,24 +48,99 @@ export default class ServiceContext {
     }
 
     /**
-     * Deserialize an object into a `ServiceContext` instance
-     * @function deserialize
-     * @static
-     * @memberof ServiceContext
-     * @param   {string} serviceFilePath path to the service.yaml
-     * @param   {object} data            Javascript object of the Info
-     * @returns {ServiceContext}         Service context object
+     * Return the inital data for the base Service Context
+     * @param options Options given by the cli
+     * @param user    User object
      */
-    static deserialize(
-        serviceFile: ServiceFile,
-        data: ServiceContextType,
-    ): ServiceContext {
-        return new ServiceContext(
-            serviceFile,
-            Info.deserialize(data.info),
-            data.type,
-            data.schemas.map((schema) => Schema.deserialize(schema)),
-        );
+    static getInitializeData(options: any, user: any) {
+        const authed = user != null,
+            serviceIdentifier = path.basename(getServiceContextPath(options)),
+            serviceLabel = titleCase(serviceIdentifier.replace(/-/g, ' ')),
+            serviceDescription = 'A Nix² Service';
+        const data: Record<
+            string,
+            {
+                value: string | boolean;
+                prompt: inquirer.Question;
+            }
+        > = {
+            identifier: {
+                value: serviceIdentifier,
+                prompt: {
+                    type: 'input',
+                    message: 'Identifier',
+                    name: 'identifier',
+                    default: serviceIdentifier,
+                },
+            },
+            label: {
+                value: serviceLabel,
+                prompt: {
+                    type: 'input',
+                    message: 'Label',
+                    name: 'label',
+                    default: serviceLabel,
+                },
+            },
+            description: {
+                value: serviceDescription,
+                prompt: {
+                    type: 'input',
+                    message: 'Description',
+                    name: 'description',
+                    default: serviceDescription,
+                },
+            },
+        };
+        if (authed) {
+            data.makeLeadDev = {
+                value: true,
+                prompt: {
+                    type: 'confirm',
+                    message: 'Make you the lead dev?',
+                    name: 'userLeadDev',
+                },
+            };
+        }
+        return data;
+    }
+
+    static createObject(
+        data: {
+            identifier: string;
+            label: string;
+            description: string;
+            userLeadDev: boolean;
+        },
+        user: any,
+    ): ServiceContextType {
+        const currentTimestamp = Math.floor(new Date().getTime() / 1000);
+        const serviceObject: ServiceContextType = {
+            info: {
+                identifier: data.identifier,
+                label: data.label,
+                description: data.description,
+                version: '1.0.0',
+                authors: [],
+                created: currentTimestamp,
+                modified: currentTimestamp,
+                license: 'CC',
+                termsOfServiceURL: 'nix2.io/tos',
+            },
+            schemas: [],
+            type: 'app',
+        };
+        if (data.userLeadDev) {
+            serviceObject.info.authors.push({
+                email: user.email,
+                name: user.name,
+                publicEmail: null,
+                url: null,
+                alert: '*',
+                flags: ['leadDev'],
+            });
+        }
+        return serviceObject;
     }
 
     /**
