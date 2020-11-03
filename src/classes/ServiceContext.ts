@@ -12,14 +12,15 @@ import yaml = require('js-yaml');
 import fs = require('fs');
 import { ServiceContextType } from '../types';
 import ServiceFile from './ServiceFile';
-import { dirname } from 'path';
+import { dirname, join, resolve } from 'path';
 import path = require('path');
 import { getServiceContextPath, titleCase } from '../util';
-import { Inquirer } from 'inquirer';
 import inquirer = require('inquirer');
+import { user } from '../user';
 
 export default abstract class ServiceContext {
     static NAME: string;
+    static DIRNAME: string = __dirname;
 
     /**
      * Abstract class to represent a service context
@@ -43,7 +44,7 @@ export default abstract class ServiceContext {
      * @protected
      * @returns {string} Path to the directory
      */
-    protected get serviceDirectory(): string {
+    get serviceDirectory(): string {
         return dirname(this.serviceFile.path);
     }
 
@@ -124,7 +125,7 @@ export default abstract class ServiceContext {
                 authors: [],
                 created: currentTimestamp,
                 modified: currentTimestamp,
-                license: 'CC',
+                license: 'CC-BY-1.0',
                 termsOfServiceURL: 'nix2.io/tos',
             },
             schemas: [],
@@ -209,5 +210,45 @@ export default abstract class ServiceContext {
         if (schema == null) return false;
         this.schemas.splice(this.schemas.indexOf(schema), 1);
         return true;
+    }
+
+    getTemplate(scope: string, fileName: string) {
+        const templatePath = join(
+            __dirname,
+            `services/${scope}/templates/`,
+            `${fileName}.template`,
+        );
+        return fs.readFileSync(templatePath, 'utf-8');
+    }
+
+    getREADMELines(): string[] {
+        return [`# ${this.info.label}`, `${this.info.description}`];
+    }
+
+    createREADME(): void {
+        const READMEContent = this.getREADMELines().join('\n');
+        console.log(READMEContent);
+
+        fs.writeFileSync(
+            join(this.serviceDirectory, 'README.md'),
+            READMEContent,
+        );
+    }
+
+    getFileHeaderLines(file: string): string[] {
+        let lines = [
+            `File: ${file}`,
+            `Created: ${new Date().toISOString()}`,
+            '----',
+            'Copyright: 2020 Nix² Technologies',
+        ];
+        if (user != null) {
+            lines.push(`Author: ${user.name} (${user.email})`);
+        }
+        return lines;
+    }
+
+    postInitLogic(): void {
+        this.createREADME();
     }
 }

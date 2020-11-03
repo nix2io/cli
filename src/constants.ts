@@ -70,6 +70,9 @@ export const ERRORS = {
     SERVICE_EXISTS: colors.red(
         `${SERVICE_FILE_NAME} already exists in this directory`,
     ),
+    NO_SERVICE_EXISTS: `${SERVICE_FILE_NAME} does not exist in this directory`,
+    SERVICE_NOT_OF_TYPESCRIPT: `The service is not a Typescript service`,
+    PACKAGE_EXISTS: 'package.json already exists in this directory',
     ABORT: colors.red('\nAborted'),
 };
 

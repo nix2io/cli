@@ -14,5 +14,7 @@ export { default as ResponseType } from './ResponseType';
 export { default as PathType } from './PathType';
 export { default as SchemaType } from './SchemaType';
 export { default as PackageJSONType } from './PackageJSONType';
+// service types
 export { default as ServiceContextType } from './ServiceContextType';
 export { default as APIServiceContextType } from './APIServiceContextType';
+export { default as GraphQLServiceContextType } from './GraphQLServiceContextType';

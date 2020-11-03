@@ -5,15 +5,15 @@
  * Copyright: 2020 Nix² Technologies
  * Author: Max Koon (maxk@nix2.io)
  */
-import { existsSync, readFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { Info, Schema, ServiceContext } from '../..';
 import { PACKAGES } from '../../../constants';
 import PackageJSONType from '../../../types/PackageJSONType';
 import { authed, user } from '../../../user';
 import ServiceFile from '../../ServiceFile';
+import { execSync } from 'child_process';
 
-type DependenciesType = Record<string, string>;
 export default abstract class TypescriptServiceContext extends ServiceContext {
     static NAME = 'typescript';
 
@@ -32,8 +32,9 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
         info: Info,
         type: string,
         schemas: Schema[],
-        private _dependencies: DependenciesType = {},
-        private _devDependencies: DependenciesType = {},
+        private _dependencies: Record<string, string> = {},
+        private _devDependencies: Record<string, string> = {},
+        private _scripts: Record<string, string> = {},
     ) {
         super(serviceFile, info, type, schemas);
     }
@@ -44,7 +45,7 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
      * @function dependencies
      * @returns {Record<string, string>} Object of package name and version
      */
-    get dependencies(): DependenciesType {
+    get dependencies(): Record<string, string> {
         return { ...this._dependencies, ...{} };
     }
 
@@ -54,17 +55,24 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
      * @function devDependencies
      * @returns {Record<string, string>} Object of package name and version
      */
-    get devDependencies(): DependenciesType {
+    get devDependencies(): Record<string, string> {
         return { ...this._devDependencies, ...PACKAGES.TYPESCRIPT.dev };
     }
 
-    readPackageFile(): PackageJSONType {
-        let tempdir = '.';
-        // TODO: remove this
-        tempdir = join(this.serviceDirectory, '/serv');
-        const packagePath = join(tempdir, '/package.json');
+    /**
+     * Object of the scripts
+     * @memberof TypescriptServiceContext
+     * @function scripts
+     * @returns {Record<string, string>} Object of the scripts
+     */
+    get scripts(): Record<string, string> {
+        return { ...this._scripts, ...{} };
+    }
+
+    readPackageFile(): PackageJSONType | null {
+        const packagePath = join(this.serviceDirectory, 'package.json');
         if (!existsSync(packagePath)) {
-            throw Error('FILE_NOT_EXIST');
+            return null;
         }
         const fileContent = readFileSync(packagePath, 'utf-8');
         const fileObject = JSON.parse(fileContent);
@@ -80,8 +88,55 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
             license: this.info.license || 'CC-BY-1.0',
             dependencies: this.dependencies,
             devDependencies: this.devDependencies,
+            scripts: this.scripts,
         };
         if (authed) packageContent.author = `${user?.name} <${user?.email}>`;
         return packageContent;
+    }
+
+    createPackageFile() {
+        writeFileSync(
+            join(this.serviceDirectory, 'package.json'),
+            JSON.stringify(this.createPackageContent(), null, 4),
+        );
+    }
+
+    getFileHeader(fileName: string) {
+        return (
+            '/*\n' +
+            this.getFileHeaderLines(fileName)
+                .map((line) => ` * ${line}`)
+                .join('\n') +
+            '\n*/\n'
+        );
+    }
+
+    createSourceDirectory() {
+        const sourceDir = join(this.serviceDirectory, '/src');
+        if (!existsSync(sourceDir)) mkdirSync(sourceDir);
+        return sourceDir;
+    }
+
+    getMainIndexFileContext(): string {
+        return this.getFileHeader('index.ts');
+    }
+
+    createSourceFiles() {
+        const sourceDir = this.createSourceDirectory();
+        writeFileSync(
+            join(sourceDir, 'index.ts'),
+            this.getMainIndexFileContext(),
+        );
+    }
+
+    installPackages() {
+        execSync(`yarn --cwd ${this.serviceDirectory}`);
+    }
+
+    postInitLogic() {
+        super.postInitLogic();
+        this.createPackageFile();
+        this.createSourceFiles();
+        this.installPackages();
     }
 }

@@ -110,6 +110,10 @@ export default (program: CommanderStatic): void => {
                 console.log(
                     colors.green(`${SYMBOLS.CHECK} Service initialized`),
                 );
+                console.log('Running post init logic');
+                // create the new instance
+                const service = getServiceContext(options);
+                service?.postInitLogic();
             };
             // initialize without confirmation
             if (skipConfirm) return initialize();

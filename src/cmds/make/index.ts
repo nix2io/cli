@@ -15,6 +15,7 @@ import { pkg } from './package';
 export default (program: CommanderStatic): void => {
     const make = program
         .command('make')
+        .alias('mk')
         .description('make things related to your service');
 
     // Apply all the functions to the program

@@ -55,6 +55,7 @@ const prettyFormat = (
     tabIndex = 0,
     lastElementList = false,
 ): string => {
+    const tab = Array(tabIndex + 1).join('    ');
     // first few are simple
     if (typeof v == 'string') return colors.green(v);
     if (typeof v == 'number') return colors.cyan(v.toString());
@@ -65,14 +66,7 @@ const prettyFormat = (
 
     if (Array.isArray(v))
         return v
-            .map(
-                (i) =>
-                    `\n${Array(tabIndex).join('  ')}- ${prettyFormat(
-                        i,
-                        tabIndex + 1,
-                        true,
-                    )}`,
-            )
+            .map((i) => `\n${tab}- ${prettyFormat(i, tabIndex + 1, true)}`)
             .join('');
 
     if (typeof v == 'object') {
@@ -80,9 +74,7 @@ const prettyFormat = (
         let i = 0;
         for (let key in v) {
             s += `${
-                i == 0 && lastElementList
-                    ? ''
-                    : `\n${Array(tabIndex).join('  ')}`
+                i == 0 && lastElementList ? '' : `\n${tab}`
             }${key}: ${prettyFormat(v[key], tabIndex + 1)}`;
             i++;
         }
