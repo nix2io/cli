@@ -68,6 +68,23 @@ export default class APIServiceContext extends TypescriptServiceContext {
         );
     }
 
+    static createObject(
+        data: {
+            identifier: string;
+            label: string;
+            description: string;
+            userLeadDev: boolean;
+        },
+        user: any,
+    ): APIServiceContextType {
+        return {
+            ...super.createObject(data, user),
+            ...{
+                paths: {},
+            },
+        };
+    }
+
     /**
      * Serialize a `APIServiceContext` instance into an object
      * @function serialize
@@ -78,6 +95,7 @@ export default class APIServiceContext extends TypescriptServiceContext {
         return {
             ...super.serialize(),
             ...{
+                type: 'api',
                 paths: Object.assign(
                     {},
                     ...Object.keys(this.paths).map((k: string) => ({

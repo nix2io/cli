@@ -39,6 +39,25 @@ const inquireServiceType = async (): Promise<string> => {
         });
 };
 
+const inquireServiceData = async (
+    data: Record<
+        string,
+        {
+            value: string | boolean;
+            prompt: inquirer.Question;
+        }
+    >,
+): Promise<any> => {
+    return inquirer
+        .prompt(Object.values(data).map((question) => question.prompt))
+        .then((response) => {
+            return response;
+        })
+        .catch((err) => {
+            throw Error(err);
+        });
+};
+
 const getServiceClassFromTypeOrNull = (type: string) => {
     try {
         return getServiceClassFromType(type);
@@ -52,15 +71,14 @@ export default (program: CommanderStatic): void => {
         .command('init [serviceType]')
         .description('initialize a service')
         .option('-y, --yes', 'skip the confirm message')
-        .action(async (serviceType: string, commandOptions) => {
+        .action(async (serviceType: string, options) => {
             // check if a service context exists
-            if (getServiceContext(commandOptions) != null)
+            if (getServiceContext(options) != null)
                 return console.error(ERRORS.SERVICE_EXISTS);
-            const skipConfirm = commandOptions.yes;
-            // get the name of the service
-            const servicePath = getServiceContextPath(commandOptions),
-                serviceIdentifier = path.basename(servicePath),
-                serviceLabel = titleCase(serviceIdentifier.replace(/-/g, ' '));
+            const skipConfirm = options.yes;
+            // error if the --yes flag is true and there is no type
+            if (skipConfirm && !serviceType)
+                return console.error(colors.red('No service type provided'));
             // prompt the user for the type if none given
             const serviceClass = getServiceClassFromTypeOrNull(
                 serviceType || (await inquireServiceType()),
@@ -71,113 +89,43 @@ export default (program: CommanderStatic): void => {
                     colors.red(`${serviceType} is not a valid service type`),
                 );
             }
-            return;
-            // create the questions
-            const defaults = {
-                identifier: serviceIdentifier,
-                label: serviceLabel,
-                description: 'A Nix² Service',
-            };
-            // let the options be defaults
-            let options: Record<string, unknown> = Object.assign({}, defaults);
-            options.userLeadDev = authed;
-
-            const createServiceObject = (options: Record<string, any>) => {
-                const currentTimestamp = Math.floor(
-                    new Date().getTime() / 1000,
-                );
-                const info: InfoType = {
-                    identifier: options.identifier,
-                    label: options.label,
-                    description: options.description,
-                    version: '1.0.0',
-                    authors: [],
-                    created: currentTimestamp,
-                    modified: currentTimestamp,
-                    license: 'CC',
-                    termsOfServiceURL: 'nix2.io/tos',
-                };
-                // add the authed user as a main dev
-                if (options.userLeadDev && authed && user != null)
-                    info.authors.push({
-                        email: user.email,
-                        name: user.name,
-                        publicEmail: null,
-                        url: null,
-                        alert: '*',
-                        flags: ['leadDev'], // using an array bc yaml dump
-                    });
-                const type = 'app',
-                    schemas: SchemaType[] = [],
-                    data: ServiceContextType = {
-                        info,
-                        type,
-                        schemas,
-                    };
-
-                return data;
-            };
-
+            // get the initial data from the selected class
+            const initialData = serviceClass.getInitializeData(options, user);
+            const data = skipConfirm
+                ? Object.assign(
+                      {},
+                      ...Object.keys(initialData).map((k: string) => ({
+                          [k]: initialData[k].value,
+                      })),
+                  )
+                : await inquireServiceData(initialData);
+            const serviceObject = serviceClass.createObject(data, user);
+            // define the initialize logic
             const initialize = () => {
-                const newServiceFilePath = path.join(
-                    servicePath,
+                const servicePath = path.join(
+                    getServiceContextPath(options),
                     SERVICE_FILE_NAME,
                 );
-                fs.writeFileSync(
-                    newServiceFilePath,
-                    yaml.safeDump(createServiceObject(options)),
-                );
+                fs.writeFileSync(servicePath, yaml.safeDump(serviceObject));
                 console.log(
                     colors.green(`${SYMBOLS.CHECK} Service initialized`),
                 );
             };
-
+            // initialize without confirmation
             if (skipConfirm) return initialize();
-
-            // create the questions for inquirer
-
-            const questions: Record<string, unknown>[] = [];
-
-            let k: keyof typeof defaults;
-            for (k in defaults) {
-                const value = defaults[k];
-                questions.push({
-                    type: 'input',
-                    message: titleCase(k),
-                    name: k,
-                    default: value,
+            // confirm user to create
+            prettyPrint(serviceObject);
+            inquirer
+                .prompt([
+                    {
+                        type: 'confirm',
+                        message: 'Proceed to initialize the service?',
+                        name: 'confirm',
+                    },
+                ])
+                .then((answer) => {
+                    if (!answer.confirm) return console.log(ERRORS.ABORT);
+                    initialize();
                 });
-            }
-            if (authed)
-                questions.push({
-                    type: 'confirm',
-                    message: 'Make you the lead dev?',
-                    name: 'userLeadDev',
-                });
-
-            // console.log(questions);
-
-            inquirer.prompt(questions).then((info) => {
-                // merge the current options
-                options = { ...options, ...info };
-
-                const data = createServiceObject(options);
-
-                prettyPrint(data);
-
-                // confirm user to create
-                inquirer
-                    .prompt([
-                        {
-                            type: 'confirm',
-                            message: 'Proceed to initialize the service?',
-                            name: 'confirm',
-                        },
-                    ])
-                    .then((answer) => {
-                        if (!answer.confirm) return console.log(ERRORS.ABORT);
-                        initialize();
-                    });
-            });
         });
 };
