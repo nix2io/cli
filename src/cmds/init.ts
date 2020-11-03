@@ -17,21 +17,55 @@ import fs = require('fs');
 import path = require('path');
 import colors = require('colors');
 import { InfoType, SchemaType, ServiceContextType } from '../types';
+import { APIServiceContext } from '../classes';
+import { GatewayServiceContext } from '../classes/services';
+
+const gotTypeCallback = (type: string) => {
+    console.log(type);
+};
+
+const inquireServiceType = async (): Promise<string> => {
+    const validServiceTypes = [APIServiceContext, GatewayServiceContext];
+    return inquirer
+        .prompt([
+            {
+                type: 'list',
+                name: 'type',
+                message: 'Select service type',
+                choices: validServiceTypes.map((service) =>
+                    service.name.replace('ServiceContext', ''),
+                ),
+            },
+        ])
+        .then((data) => {
+            return data.type;
+        })
+        .catch((err) => {
+            throw Error(err);
+        });
+};
 
 export default (program: CommanderStatic): void => {
     program
-        .command('init [dirname]')
+        .command('init [serviceType]')
         .description('initialize a service')
         .option('-y, --yes', 'skip the confirm message')
-        .action((dirname: string, commandOptions) => {
+        .action(async (serviceType: string, commandOptions) => {
             // check if a service context exists
-            if (getServiceContext(commandOptions, dirname) != null)
+            if (getServiceContext(commandOptions) != null)
                 return console.error(ERRORS.SERVICE_EXISTS);
             const skipConfirm = commandOptions.yes;
             // get the name of the service
-            const servicePath = getServiceContextPath(commandOptions, dirname),
+            const servicePath = getServiceContextPath(commandOptions),
                 serviceIdentifier = path.basename(servicePath),
                 serviceLabel = titleCase(serviceIdentifier.replace(/-/g, ' '));
+
+            serviceType = serviceType || (await inquireServiceType());
+
+            console.log('you selected ' + serviceType);
+
+            return;
+
             // create the questions
             const defaults = {
                 identifier: serviceIdentifier,
