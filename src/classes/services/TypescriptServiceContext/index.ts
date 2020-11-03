@@ -1,5 +1,5 @@
 /*
- * File: APIServiceContext.ts
+ * File: index.ts
  * Created: 10/31/2020 12:55:00
  * ----
  * Copyright: 2020 Nix² Technologies
@@ -7,14 +7,16 @@
  */
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
-import { Info, Schema, ServiceContext } from '..';
-import { PACKAGES } from '../../constants';
-import PackageJSONType from '../../types/PackageJSONType';
-import { authed, user } from '../../user';
-import ServiceFile from '../ServiceFile';
+import { Info, Schema, ServiceContext } from '../..';
+import { PACKAGES } from '../../../constants';
+import PackageJSONType from '../../../types/PackageJSONType';
+import { authed, user } from '../../../user';
+import ServiceFile from '../../ServiceFile';
 
 type DependenciesType = Record<string, string>;
 export default abstract class TypescriptServiceContext extends ServiceContext {
+    NAME = 'Typescript';
+
     /**
      * Class to represent a Typescript Service context
      * @class TypescriptServiceContext

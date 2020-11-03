@@ -17,24 +17,22 @@ import fs = require('fs');
 import path = require('path');
 import colors = require('colors');
 import { InfoType, SchemaType, ServiceContextType } from '../types';
-import { APIServiceContext } from '../classes';
+import { APIServiceContext, VALID_SERVICE_TYPES } from '../classes';
 import { GatewayServiceContext } from '../classes/services';
 
-const gotTypeCallback = (type: string) => {
-    console.log(type);
-};
+const validServiceTypes: VALID_SERVICE_TYPES[] = [
+    APIServiceContext,
+    GatewayServiceContext,
+];
 
 const inquireServiceType = async (): Promise<string> => {
-    const validServiceTypes = [APIServiceContext, GatewayServiceContext];
     return inquirer
         .prompt([
             {
                 type: 'list',
                 name: 'type',
                 message: 'Select service type',
-                choices: validServiceTypes.map((service) =>
-                    service.name.replace('ServiceContext', ''),
-                ),
+                choices: validServiceTypes.map((service) => service.NAME),
             },
         ])
         .then((data) => {
@@ -59,7 +57,7 @@ export default (program: CommanderStatic): void => {
             const servicePath = getServiceContextPath(commandOptions),
                 serviceIdentifier = path.basename(servicePath),
                 serviceLabel = titleCase(serviceIdentifier.replace(/-/g, ' '));
-
+            // prompt the user for the type if none given
             serviceType = serviceType || (await inquireServiceType());
 
             console.log('you selected ' + serviceType);

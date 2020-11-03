@@ -1,16 +1,17 @@
 /*
- * File: APIServiceContext.ts
+ * File: index.ts
  * Created: 10/14/2020 13:03:39
  * ----
  * Copyright: 2020 Nix² Technologies
  * Author: Max Koon (maxk@nix2.io)
  */
-import { Info, TypescriptServiceContext } from '..';
-import { Schema, Path } from '..';
-import { APIServiceContextType } from '../../types';
-import ServiceFile from '../ServiceFile';
+import { Info, TypescriptServiceContext } from '../..';
+import { Schema, Path } from '../..';
+import { APIServiceContextType } from '../../../types';
+import ServiceFile from '../../ServiceFile';
 
 export default class APIServiceContext extends TypescriptServiceContext {
+    NAME = 'API Service';
     public paths: { [key: string]: Path };
 
     /**

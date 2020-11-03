@@ -14,7 +14,9 @@ import { ServiceContextType } from '../types';
 import ServiceFile from './ServiceFile';
 import { dirname } from 'path';
 
-export default class ServiceContext {
+export default abstract class ServiceContext {
+    static NAME: string;
+
     /**
      * Abstract class to represent a service context
      * @class ServiceContext
@@ -50,17 +52,17 @@ export default class ServiceContext {
      * @param   {object} data            Javascript object of the Info
      * @returns {ServiceContext}         Service context object
      */
-    static deserialize(
-        serviceFile: ServiceFile,
-        data: ServiceContextType,
-    ): ServiceContext {
-        return new ServiceContext(
-            serviceFile,
-            Info.deserialize(data.info),
-            data.type,
-            data.schemas.map((schema) => Schema.deserialize(schema)),
-        );
-    }
+    // static deserialize(
+    //     serviceFile: ServiceFile,
+    //     data: ServiceContextType,
+    // ): ServiceContext {
+    //     return new ServiceContext(
+    //         serviceFile,
+    //         Info.deserialize(data.info),
+    //         data.type,
+    //         data.schemas.map((schema) => Schema.deserialize(schema)),
+    //     );
+    // }
 
     /**
      * Serialize a ServiceContext instance into an object
