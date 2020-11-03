@@ -5,13 +5,14 @@
  * Copyright: 2020 Nix² Technologies
  * Author: Max Koon (maxk@nix2.io)
  */
-import { Info, TypescriptServiceContext } from '../..';
-import { Schema, Path } from '../..';
+import { TypescriptServiceContext } from '..';
+import { Info, Schema, Path } from '../..';
 import { APIServiceContextType } from '../../../types';
 import ServiceFile from '../../ServiceFile';
 
 export default class APIServiceContext extends TypescriptServiceContext {
-    NAME = 'API Service';
+    static NAME = 'api';
+
     public paths: { [key: string]: Path };
 
     /**

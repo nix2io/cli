@@ -15,7 +15,7 @@ import ServiceFile from '../../ServiceFile';
 
 type DependenciesType = Record<string, string>;
 export default abstract class TypescriptServiceContext extends ServiceContext {
-    NAME = 'Typescript';
+    static NAME = 'typescript';
 
     /**
      * Class to represent a Typescript Service context

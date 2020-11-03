@@ -10,20 +10,14 @@ import { CommanderStatic } from 'commander';
 import { titleCase, prettyPrint, getServiceContextPath } from '../util';
 import inquirer = require('inquirer');
 import { ERRORS, SERVICE_FILE_NAME, SYMBOLS } from '../constants';
-import { getServiceContext } from '../service';
+import { getServiceClassFromType, getServiceContext } from '../service';
 import { authed, user } from '../user';
 import yaml = require('js-yaml');
 import fs = require('fs');
 import path = require('path');
 import colors = require('colors');
 import { InfoType, SchemaType, ServiceContextType } from '../types';
-import { APIServiceContext, VALID_SERVICE_TYPES } from '../classes';
-import { GatewayServiceContext } from '../classes/services';
-
-const validServiceTypes: VALID_SERVICE_TYPES[] = [
-    APIServiceContext,
-    GatewayServiceContext,
-];
+import { SERVICE_TYPE_MAP, VALID_SERVICE_TYPES } from '../classes/services';
 
 const inquireServiceType = async (): Promise<string> => {
     return inquirer
@@ -32,7 +26,9 @@ const inquireServiceType = async (): Promise<string> => {
                 type: 'list',
                 name: 'type',
                 message: 'Select service type',
-                choices: validServiceTypes.map((service) => service.NAME),
+                choices: Object.values(SERVICE_TYPE_MAP).map(
+                    (service: unknown) => (<VALID_SERVICE_TYPES>service).NAME,
+                ),
             },
         ])
         .then((data) => {
@@ -41,6 +37,14 @@ const inquireServiceType = async (): Promise<string> => {
         .catch((err) => {
             throw Error(err);
         });
+};
+
+const getServiceClassFromTypeOrNull = (type: string) => {
+    try {
+        return getServiceClassFromType(type);
+    } catch (err) {
+        return null;
+    }
 };
 
 export default (program: CommanderStatic): void => {
@@ -58,12 +62,16 @@ export default (program: CommanderStatic): void => {
                 serviceIdentifier = path.basename(servicePath),
                 serviceLabel = titleCase(serviceIdentifier.replace(/-/g, ' '));
             // prompt the user for the type if none given
-            serviceType = serviceType || (await inquireServiceType());
-
-            console.log('you selected ' + serviceType);
-
+            const serviceClass = getServiceClassFromTypeOrNull(
+                serviceType || (await inquireServiceType()),
+            );
+            // give an error if the class is not found
+            if (serviceClass == null) {
+                return console.error(
+                    colors.red(`${serviceType} is not a valid service type`),
+                );
+            }
             return;
-
             // create the questions
             const defaults = {
                 identifier: serviceIdentifier,

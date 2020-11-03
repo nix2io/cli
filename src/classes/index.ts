@@ -15,4 +15,11 @@ export { default as Response } from './Response';
 // service contexts
 export { default as ServiceContext } from './ServiceContext';
 // export all the custom service contexts
-export * from './services';
+export {
+    TypescriptServiceContext,
+    GatewayServiceContext,
+    APIServiceContext,
+    VALID_SERVICE_TYPES,
+    VALID_SERVICE_TYPE_INSTANCES,
+    SERVICE_TYPE_MAP,
+} from './services';
