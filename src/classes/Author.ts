@@ -6,8 +6,8 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 import { AuthorType } from '../types';
-import parseAlert from '../cmds/parsers/alert';
-import { AlertRule } from '../cmds/parsers/alert/classes';
+import parseAlert from '../parsers/alert';
+import { AlertRule } from '../parsers/alert/classes';
 import colors = require('colors');
 
 const flagInheritence = {

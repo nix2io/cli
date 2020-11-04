@@ -7,16 +7,15 @@
  */
 
 import { CommanderStatic } from 'commander';
-import { titleCase, prettyPrint, getServiceContextPath } from '../util';
+import { prettyPrint, getServiceContextPath } from '../util';
 import inquirer = require('inquirer');
 import { ERRORS, SERVICE_FILE_NAME, SYMBOLS } from '../constants';
 import { getServiceClassFromType, getServiceContext } from '../service';
-import { authed, user } from '../user';
+import { user } from '../user';
 import yaml = require('js-yaml');
 import fs = require('fs');
 import path = require('path');
 import colors = require('colors');
-import { InfoType, SchemaType, ServiceContextType } from '../types';
 import { SERVICE_TYPE_MAP, VALID_SERVICE_TYPES } from '../classes/services';
 
 const inquireServiceType = async (): Promise<string> => {

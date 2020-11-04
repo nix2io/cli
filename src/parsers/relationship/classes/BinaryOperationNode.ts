@@ -9,7 +9,7 @@
 import { Node, Token } from '../../shared/classes';
 import { TOKEN_LINK } from '../constants';
 // Relationship specific
-import { CommandContext } from './';
+import { CommandContext } from '.';
 import { RelationshipNode } from '.';
 
 export default class BinaryOperationNode implements RelationshipNode {
