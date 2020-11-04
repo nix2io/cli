@@ -46,7 +46,7 @@ const inquireServiceData = async (
             prompt: inquirer.Question;
         }
     >,
-): Promise<any> => {
+): Promise<Record<string, unknown>> => {
     return inquirer
         .prompt(Object.values(data).map((question) => question.prompt))
         .then((response) => {

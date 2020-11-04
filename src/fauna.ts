@@ -20,7 +20,7 @@ export const getFaunaAccessToken = async (): Promise<string> => {
             'https://app.fauna.com/keys',
         )}\n`,
     );
-    return inquirer
+    const token = await inquirer
         .prompt([
             {
                 name: 'token',
@@ -29,44 +29,50 @@ export const getFaunaAccessToken = async (): Promise<string> => {
                 mask: '*',
             },
         ])
-        .then((data) => {
-            return data.token;
-        })
         .catch((err) => {
             console.error(err);
         });
+    return token.token;
 };
 
 /**
  * Save a token to the config
  * @param key FaunaDB access key
  */
-export const saveFaunaAccessToken = async (secret: string) => {
+export const saveFaunaAccessToken = async (
+    secret: string,
+): Promise<boolean> => {
     const { Get, Databases } = fauna.query;
-    new fauna.Client({ secret })
+    return await new fauna.Client({ secret })
         .query(Get(Databases()))
         .then(() => {
             config.set(FAUNA_TOKEN_NAME, secret);
             console.log(colors.green(`${SYMBOLS.CHECK} Key Saved`));
+            return true;
         })
         .catch((err) => {
             if (err.name == 'Unauthorized') {
                 console.error(colors.red('Invalid token'));
             }
+            return false;
         });
 };
 
-export const promptUserAuthentication = async () => {
+export const promptUserAuthentication = async (): Promise<boolean> => {
     const token = await getFaunaAccessToken();
-    await saveFaunaAccessToken(token);
+    return await saveFaunaAccessToken(token);
 };
 
-export const requireDBAuthentication = async () => {
-    if (config.get(FAUNA_TOKEN_NAME) == null) await promptUserAuthentication();
+export const requireDBAuthentication = async (): Promise<boolean> => {
+    if (config.get(FAUNA_TOKEN_NAME) == null)
+        return await promptUserAuthentication();
+    return true;
 };
 
-export const getClient = async () => {
-    await requireDBAuthentication();
+export const getClient = async (): Promise<fauna.Client | null> => {
+    if (!(await requireDBAuthentication())) {
+        return null;
+    }
     const token = config.get(FAUNA_TOKEN_NAME);
     return new fauna.Client({ secret: <string>token });
 };
