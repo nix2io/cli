@@ -7,7 +7,7 @@
  */
 
 import * as commander from 'commander';
-import { getFaunaAccessToken, saveFaunaAccessToken } from '../../fauna';
+import { getFaunaAccessToken, saveFaunaAccessToken } from '../../db';
 
 export default (db: commander.Command): void => {
     db.command('auth [key]')

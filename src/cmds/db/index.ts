@@ -9,6 +9,7 @@
 import { CommanderStatic } from 'commander';
 import auth from './auth';
 import list from './list';
+import create from './create';
 
 export default (program: CommanderStatic): void => {
     const db = program
@@ -18,4 +19,5 @@ export default (program: CommanderStatic): void => {
     // Apply all the functions to the program
     auth(db);
     list(db);
+    create(db);
 };

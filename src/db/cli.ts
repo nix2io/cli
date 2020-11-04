@@ -1,18 +1,15 @@
 /*
- * File: fauna.ts
- * Created: 10/11/2020 13:03:39
+ * File: cli.ts
+ * Created: 11/04/2020 12:25:00
  * ----
  * Copyright: 2020 Nix² Technologies
  * Author: Max Koon (maxk@nix2.io)
  */
-
 import inquirer = require('inquirer');
-import config from './config';
-import * as fauna from 'faunadb';
-import { SYMBOLS } from './constants';
+import config from '../config';
+import { SYMBOLS } from '../constants';
 import * as colors from 'colors';
-
-const FAUNA_TOKEN_NAME = 'fauna-token';
+import * as fauna from 'faunadb';
 
 export const getFaunaAccessToken = async (): Promise<string> => {
     console.log(
@@ -34,6 +31,8 @@ export const getFaunaAccessToken = async (): Promise<string> => {
         });
     return token.token;
 };
+
+const FAUNA_TOKEN_NAME = 'fauna-token';
 
 /**
  * Save a token to the config
@@ -76,11 +75,3 @@ export const getClient = async (): Promise<fauna.Client | null> => {
     const token = config.get(FAUNA_TOKEN_NAME);
     return new fauna.Client({ secret: <string>token });
 };
-
-export interface FaunaDBQueryResponse<T> {
-    ref: {
-        id: string;
-    };
-    data: T;
-    ts: number;
-}

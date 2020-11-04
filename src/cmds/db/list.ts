@@ -7,27 +7,10 @@
  */
 
 import * as commander from 'commander';
-import { getClient } from '../../fauna';
-import * as fauna from 'faunadb';
 import Table = require('cli-table');
 import ora = require('ora');
 import * as colors from 'colors';
-
-type DatabaseList = {
-    data: {
-        ref: object;
-        ts: number;
-        name: string;
-        global_id: string;
-    }[];
-};
-
-const getDatabases = async (client: fauna.Client): Promise<DatabaseList> => {
-    const { Databases, Paginate, Get, Map, Lambda, Var } = fauna.query;
-    return await client.query(
-        Map(Paginate(Databases()), Lambda('X', Get(Var('X')))),
-    );
-};
+import { getClient, getDatabases, DatabaseListType } from '../../db';
 
 export default (db: commander.Command): void => {
     db.command('list')
@@ -39,16 +22,17 @@ export default (db: commander.Command): void => {
             }
             const spinner = ora('Loading Databases').start();
             const startTime = new Date();
-            const databases = (await getDatabases(client)).data;
+            const databases = await getDatabases(client);
             spinner.stop();
             const table = new Table({
-                head: ['Name', 'Created At'],
+                head: ['Name', 'Active on'],
                 style: { head: ['cyan', 'bold'] },
             });
             for (const database of databases) {
                 table.push([
                     database.name,
-                    new Date(database.ts / 1000).toISOString(),
+                    Array.from(database.environments).join(', '),
+                    // new Date(database.ts / 1000).toISOString(),
                 ]);
             }
             console.log(table.toString());
