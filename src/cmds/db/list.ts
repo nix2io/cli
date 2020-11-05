@@ -7,10 +7,9 @@
  */
 
 import * as commander from 'commander';
-import Table = require('cli-table');
 import ora = require('ora');
 import * as colors from 'colors';
-import { getClient, getDatabases, DatabaseListType } from '../../db';
+import { getClient, getAllDatabases, DatabaseListType } from '../../db';
 
 export default (db: commander.Command): void => {
     db.command('list')
@@ -20,22 +19,21 @@ export default (db: commander.Command): void => {
             if (client == null) {
                 return console.log(colors.red('Aborted'));
             }
-            const spinner = ora('Loading Databases').start();
+            const spinner = ora('Loading All Databases').start();
             const startTime = new Date();
-            const databases = await getDatabases(client);
+            const databases = await getAllDatabases(client);
             spinner.stop();
-            const table = new Table({
-                head: ['Name', 'Active on'],
-                style: { head: ['cyan', 'bold'] },
-            });
+            console.log(`-----------------`.grey);
             for (const database of databases) {
-                table.push([
-                    database.name,
-                    Array.from(database.environments).join(', '),
-                    // new Date(database.ts / 1000).toISOString(),
-                ]);
+                console.log(
+                    ` ${
+                        database.environments.has('prod')
+                            ? colors.green('●')
+                            : '●'
+                    } ${database.name}`,
+                );
             }
-            console.log(table.toString());
+            console.log(`-----------------`.grey);
             console.log(
                 colors.grey(
                     `Loaded ${databases.length} databases in ${

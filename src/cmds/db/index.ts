@@ -10,6 +10,7 @@ import { CommanderStatic } from 'commander';
 import auth from './auth';
 import list from './list';
 import create from './create';
+import link from './link';
 
 export default (program: CommanderStatic): void => {
     const db = program
@@ -20,4 +21,5 @@ export default (program: CommanderStatic): void => {
     auth(db);
     list(db);
     create(db);
+    link(db);
 };

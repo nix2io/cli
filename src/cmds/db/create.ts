@@ -5,7 +5,6 @@
  * Copyright: 2020 Nix² Technologies
  * Author: Max Koon (maxk@nix2.io)
  */
-
 import * as commander from 'commander';
 import ora = require('ora');
 import * as colors from 'colors';
