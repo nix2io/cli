@@ -161,6 +161,34 @@ $ dev authors remove m@x.com
 
 You can also use the `-y` flag to skip the confirmation screen.
 
+### Environment
+
+There are multiple environments for deployed services such as development and production.
+With the `env` command you can manage your selected environment
+
+#### List
+
+List all the available environments
+
+```sh
+$ dev env list
+
+------------
+ - prod
+ - dev  (selected)
+------------
+
+```
+
+#### Switch Environments
+
+```sh
+$ dev env prod
+
+✔ switched to env: 'prod'
+
+```
+
 ### Cache
 
 #### Clear
