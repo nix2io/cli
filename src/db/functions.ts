@@ -1,7 +1,6 @@
 import { Client, query } from 'faunadb';
-import { env } from 'process';
-import { deprecate } from 'util';
 import { DatabaseListType, EnvironmentDatabasesType } from '.';
+import { ENVIRONMENTS } from '../constants';
 import { Database } from './classes';
 import { ServiceDatabaseType } from './types';
 const {
@@ -22,11 +21,6 @@ const {
     Not,
     If,
 } = query;
-
-const ENVIRONMENTS = {
-    PROD: 'prod',
-    DEV: 'dev',
-};
 
 export const getEnvironments = async (
     client: Client,

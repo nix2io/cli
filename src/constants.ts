@@ -28,6 +28,13 @@ export const SUPPORT_SYMBOLS =
     Object.keys(process.env).indexOf('VSCODE_GIT_IPC_HANDLE') != -1;
 export const SUPPORT_EMOJI = SUPPORT_SYMBOLS && !IS_WINDOWS;
 
+// environments
+export const ENVIRONMENTS = {
+    PROD: 'prod',
+    DEV: 'dev',
+};
+export const DEFAULT_ENVIRONMENT = ENVIRONMENTS.DEV;
+
 export const SYMBOLS = {
     // emojis
     ROBOT: SUPPORT_EMOJI ? '🤖' : ' ',
@@ -73,6 +80,7 @@ export const ERRORS = {
     NO_SERVICE_EXISTS: `${SERVICE_FILE_NAME} does not exist in this directory`,
     SERVICE_NOT_OF_TYPESCRIPT: `The service is not a Typescript service`,
     PACKAGE_EXISTS: 'package.json already exists in this directory',
+    ENV_VAL_NOT_STRING: 'the selected environment in config is not a string',
     ABORT: colors.red('\nAborted'),
 };
 

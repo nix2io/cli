@@ -17,10 +17,12 @@ import path = require('path');
 import { getServiceContextPath, titleCase } from '../util';
 import inquirer = require('inquirer');
 import { user } from '../user';
+import { getEnvironment } from '../environments';
 
 export default abstract class ServiceContext {
     static NAME: string;
     static DIRNAME: string = __dirname;
+    public environment: string;
 
     /**
      * Abstract class to represent a service context
@@ -36,7 +38,9 @@ export default abstract class ServiceContext {
         public info: Info,
         public type: string,
         public schemas: Schema[],
-    ) {}
+    ) {
+        this.environment = getEnvironment();
+    }
 
     /**
      * Returns the service directory
