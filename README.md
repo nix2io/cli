@@ -1,4 +1,4 @@
-<p align="center"><img height="220px" src="https://i.imgur.com/48BeKfE.png" alt="CLI Logo" /><p>
+<p align="center"><img height="220px" src="https://i.imgur.com/d3eyO62.png" alt="CLI Logo" /><p>
 
 <p align="center">
   <strong>Nix² CLI</strong><br />
