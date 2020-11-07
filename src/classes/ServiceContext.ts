@@ -229,7 +229,10 @@ export default abstract class ServiceContext {
     }
 
     getREADMELines(): string[] {
-        return [`# ${this.info.label}`, `${this.info.description}`];
+        return [
+            '<p align="center"><img height="220px" src="https://i.imgur.com/48BeKfE.png" alt="Logo" /><p>\n',
+            `<p align="center">\n\t<strong>${this.info.label}</strong><br />\n\t<sub>${this.info.description}</sub>\n</p>`,
+        ];
     }
 
     createREADME(): void {
