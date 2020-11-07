@@ -15,7 +15,7 @@ import {
 import fs = require('fs');
 import YAWN from './yawn';
 import ServiceFile from './classes/ServiceFile';
-import { getServiceContextFilePath } from './util';
+import { getRootOptions, getServiceContextFilePath } from './util';
 import { ServiceContextType } from './types';
 
 // check if the file exists
@@ -94,5 +94,11 @@ export const getServiceContext = (
     // get the file
     const serviceFile = getServiceFile(serviceFilePath);
     // parse and return the service context
-    return parseServiceObject(serviceFile, serviceFile.getJSON());
+    const serviceContext = parseServiceObject(
+        serviceFile,
+        serviceFile.getJSON(),
+    );
+    serviceContext.selectedEnvironmentName =
+        getRootOptions(options).env || serviceContext.selectedEnvironmentName;
+    return serviceContext;
 };

@@ -18,11 +18,13 @@ import { getServiceContextPath, titleCase } from '../util';
 import inquirer = require('inquirer');
 import { user } from '../user';
 import { getEnvironment } from '../environments';
+import Environment from './Environment';
 
 export default abstract class ServiceContext {
     static NAME: string;
     static DIRNAME: string = __dirname;
-    public environment: string;
+    public selectedEnvironmentName: string;
+    public environment: Environment;
 
     /**
      * Abstract class to represent a service context
@@ -39,7 +41,8 @@ export default abstract class ServiceContext {
         public type: string,
         public schemas: Schema[],
     ) {
-        this.environment = getEnvironment();
+        this.selectedEnvironmentName = getEnvironment();
+        this.environment = new Environment(this);
     }
 
     /**

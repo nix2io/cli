@@ -9,6 +9,8 @@
     "dependencies": {
         "cli-table": "^0.3.1",
         "commander": "^6.1.0",
+        "eol": "^0.9.1",
+        "escape-string-regexp": "^4.0.0",
         "faunadb": "^3.0.1",
         "friendly-time": "^1.1.1",
         "inquirer": "^7.3.3",

@@ -14,18 +14,20 @@ import {
 } from '../environments';
 import * as colors from 'colors';
 import { SYMBOLS } from '../constants';
+import { getServiceContext } from '../service';
+import { ServiceContext } from '../classes';
 
-const listAvailableEnvironments = (_: any) => {
-    const currentEnv = getEnvironment();
+const listAvailableEnvironments = (serviceContext: ServiceContext | null) => {
     const line = colors.grey('------------');
     console.log(line);
     for (const env of getAvailableEnvironments()) {
-        const isSelected = currentEnv == env;
+        const isSelected =
+            (serviceContext?.selectedEnvironmentName || getEnvironment()) ==
+            env;
         console.log(
             ` - ${env}${isSelected ? colors.green(' (selected)') : ''}`,
         );
     }
-
     console.log(line);
 };
 
@@ -34,11 +36,14 @@ export default (program: CommanderStatic): void => {
         .command('env [envName]')
         .description('manage your working environment')
         .action((envName: string | null, options) => {
+            const serviceContext = getServiceContext(options);
             if (envName == null || envName == 'list')
-                return listAvailableEnvironments(options);
-
+                return listAvailableEnvironments(serviceContext);
             try {
                 setEnvironment(envName);
+                if (serviceContext != null) {
+                    serviceContext.environment.makeDotEnv();
+                }
                 console.log(
                     colors.green(
                         `${SYMBOLS.CHECK} switched to env: '${envName}'`,

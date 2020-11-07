@@ -1,8 +1,8 @@
 import { Client, query } from 'faunadb';
 import { DatabaseListType, EnvironmentDatabasesType } from '.';
-import { ENVIRONMENTS } from '../constants';
-import { Database } from './classes';
-import { ServiceDatabaseType } from './types';
+import { DEFAULT_ENVIRONMENT, ENVIRONMENTS } from '../constants';
+import { Database, DatabaseInstance, Key } from './classes';
+import { DatabaseRef, ServiceDatabaseType, KeyType } from './types';
 const {
     Databases,
     Paginate,
@@ -30,38 +30,35 @@ export const getEnvironments = async (
     );
 };
 
+const explodeDatabaseName = (
+    dbName: string,
+): { dbEnv: string; dbName: string } => {
+    const dbEnv = dbName.split('-')[0];
+    dbName = dbName.replace(`${dbEnv}-`, '');
+    return { dbEnv, dbName };
+};
+
 export const getAllDatabases = async (client: Client): Promise<Database[]> => {
-    const result = <EnvironmentDatabasesType>(
+    const result = <DatabaseListType<DatabaseRef>>(
         await client
-            .query(
-                Map(
-                    Paginate(Databases()),
-                    Lambda(
-                        'env',
-                        Map(
-                            Paginate(Databases(Select('ref', Get(Var('env'))))),
-                            Lambda('db', Get(Var('db'))),
-                        ),
-                    ),
-                ),
-            )
+            .query(Map(Paginate(Databases()), Lambda('X', Get(Var('X')))))
             .catch((err) => {
                 console.error(err);
             })
     );
     let databases: Record<string, Database> = {};
     // TODO: make this better
-    let obj: EnvironmentDatabasesType = JSON.parse(JSON.stringify(result));
-    for (const env of obj.data) {
-        for (const dbObject of env.data) {
-            const dbId = dbObject.global_id;
-            const dbName = dbObject.name;
-            const dbEnv = dbObject.ref['@ref'].database['@ref'].id;
-            if (Object.keys(databases).indexOf(dbName) == -1) {
-                databases[dbName] = new Database(dbId, dbName);
-            }
-            databases[dbName].environments.add(dbEnv);
+    // let obj: EnvironmentDatabasesType = JSON.parse(JSON.stringify(result));
+    for (const database of result.data) {
+        const dbId = database.global_id;
+        const dbTS = database.ts;
+        const { dbEnv, dbName } = explodeDatabaseName(database.name);
+        if (Object.keys(databases).indexOf(dbName) == -1) {
+            databases[dbName] = new Database(dbName);
         }
+        databases[dbName].addInstance(
+            new DatabaseInstance(dbEnv, dbId, dbName, dbTS),
+        );
     }
     return Object.values(databases);
 };
@@ -79,16 +76,16 @@ export const getDatabases = async (client: Client, name: string) => {
                 console.error(err);
             })
     );
-    return new Database(result.global_id, result.name);
+    return new Database(result.global_id);
 };
 
 export const getDatabase = async (
     client: Client,
     name: string,
-    environment: string = 'dev',
-): Promise<Database | null> => {
+    environment: string = DEFAULT_ENVIRONMENT,
+): Promise<DatabaseInstance | null> => {
     const result = <ServiceDatabaseType>(
-        await client.query(Get(DB(name, DB(environment)))).catch((err) => {
+        await client.query(Get(DB(`${environment}-${name}`))).catch((err) => {
             if (err.message == 'invalid ref') {
                 return null;
             }
@@ -96,46 +93,46 @@ export const getDatabase = async (
         })
     );
     if (result == null) return null;
-    return new Database(result.global_id, result.name);
+    const { dbEnv, dbName } = explodeDatabaseName(result.name);
+    return new DatabaseInstance(dbEnv, result.global_id, dbName, result.ts);
 };
 
 export const createDatabase = async (
     client: Client,
     name: string,
-    environment: string = 'dev',
-): Promise<Database | null> => {
-    const existingDB = await getDatabase(client, name, environment);
-    if (existingDB != null) {
-        throw Error('DATABASE_EXISTS');
-    }
-    const result = <ServiceDatabaseType>await client
-        .query(CreateDatabase({ name }))
-        .then((db: any) => client.query(MoveDatabase(db.ref, DB(environment))))
-        .catch((err) => {
-            console.error(err);
-        });
-    return new Database(result.global_id, result.name);
+    environment: string = DEFAULT_ENVIRONMENT,
+): Promise<DatabaseInstance | null> => {
+    const result = <ServiceDatabaseType>(
+        await client
+            .query(CreateDatabase({ name: `${environment}-${name}` }))
+            .catch((err) => {
+                console.error(err);
+                throw err;
+            })
+    );
+    const { dbEnv, dbName } = explodeDatabaseName(result.name);
+    return new DatabaseInstance(dbEnv, result.global_id, dbName, result.ts);
 };
 
 export const createDatabaseKey = async (
     client: Client,
     name: string,
     environment: string,
+    keyName: string | null = null,
 ) => {
-    console.log(name);
-    console.log(environment);
-    const result = await client
+    keyName = keyName || `${name}-access`;
+    const result = <KeyType>(<unknown>await client
         .query(
             CreateKey({
                 role: 'server',
-                database: DB(name, DB(environment)),
+                database: DB(`${environment}-${name}`),
+                name: keyName,
             }),
         )
         .catch((err) => {
             console.error(err);
-        });
-
-    console.log(result);
+        }));
+    return new Key(keyName, result.secret);
 };
 
 // export const createKeys = async (client: Client, name: string) => {

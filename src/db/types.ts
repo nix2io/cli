@@ -17,7 +17,7 @@ export type DatabaseListType<T> = {
     data: DatabaseType<T>[];
 };
 
-export type ServiceDatabaseRef = {
+export type DatabaseRef = {
     '@ref': {
         id: string;
         collection: {
@@ -25,21 +25,20 @@ export type ServiceDatabaseRef = {
                 id: string;
             };
         };
-        database: {
-            '@ref': {
-                id: string;
-                collection: {
-                    '@ref': {
-                        id: string;
-                    };
-                };
-            };
-        };
     };
 };
 
-export type ServiceDatabaseType = DatabaseType<ServiceDatabaseRef>;
+export type ServiceDatabaseType = DatabaseType<DatabaseRef>;
 
 export type EnvironmentDatabasesType = {
-    data: DatabaseListType<ServiceDatabaseRef>[];
+    data: DatabaseListType<DatabaseRef>[];
+};
+
+export type KeyType = {
+    ref: DatabaseRef;
+    ts: number;
+    role: string;
+    database: DatabaseRef;
+    secret: string;
+    hashed_secret: string;
 };

@@ -11,13 +11,19 @@ import * as colors from 'colors';
 import { getClient, createDatabaseKey } from '../../db';
 import { getServiceContext } from '../../service';
 import { ERRORS } from '../../constants';
+import { ServiceContext } from '../../classes';
 
-const linkDatabase = async (dbName: string) => {
+const linkDatabase = async (serviceContext: ServiceContext, dbName: string) => {
     const client = await getClient();
     if (client == null) {
         return console.log(colors.red('Aborted'));
     }
-    await createDatabaseKey(client, dbName, 'dev');
+    if (serviceContext.environment.get('DB_KEY') != null) {
+        throw Error('ALREADY_LINKED');
+    }
+    const key = await createDatabaseKey(client, dbName, 'dev');
+    console.log(key);
+    serviceContext.environment.set('DB_KEY', key.key);
 };
 
 export default (db: commander.Command): void => {
@@ -27,7 +33,22 @@ export default (db: commander.Command): void => {
             const serviceContext = getServiceContext(options);
             if (serviceContext == null)
                 return console.error(ERRORS.NO_SERVICE_EXISTS);
-
-            await linkDatabase(serviceContext.info.identifier);
+            try {
+                await linkDatabase(
+                    serviceContext,
+                    serviceContext.info.identifier,
+                );
+            } catch (err) {
+                if (err.message == 'ALREADY_LINKED') {
+                    console.error(
+                        colors.red(
+                            'A Database is already linked to this service',
+                        ),
+                    );
+                } else {
+                    console.error(err);
+                    throw err;
+                }
+            }
         });
 };

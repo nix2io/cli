@@ -6,4 +6,5 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-export { default as Database } from './Database';
+export { Database, DatabaseInstance } from './Database';
+export { default as Key } from './Key';
