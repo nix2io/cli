@@ -43,6 +43,7 @@ export default abstract class ServiceContext {
     ) {
         this.selectedEnvironmentName = getEnvironment();
         this.environment = new Environment(this);
+        this.info.serviceContext = this;
     }
 
     /**
@@ -261,4 +262,6 @@ export default abstract class ServiceContext {
     postInitLogic(): void {
         this.createREADME();
     }
+
+    postVersionBump(): void {}
 }

@@ -81,6 +81,7 @@ export const ERRORS = {
     SERVICE_NOT_OF_TYPESCRIPT: `The service is not a Typescript service`,
     PACKAGE_EXISTS: 'package.json already exists in this directory',
     ENV_VAL_NOT_STRING: 'the selected environment in config is not a string',
+    INVALID_SEMVER: 'Invalid version, please follow semantic versioning',
     ABORT: colors.red('\nAborted'),
 };
 

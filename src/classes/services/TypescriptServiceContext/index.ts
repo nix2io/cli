@@ -94,11 +94,15 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
         return packageContent;
     }
 
-    createPackageFile() {
+    writePackageFile(pkg: PackageJSONType) {
         writeFileSync(
             join(this.serviceDirectory, 'package.json'),
-            JSON.stringify(this.createPackageContent(), null, 4),
+            JSON.stringify(pkg, null, 4),
         );
+    }
+
+    createPackageFile() {
+        this.writePackageFile(this.createPackageContent());
     }
 
     getFileHeader(fileName: string) {
@@ -138,5 +142,13 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
         this.createPackageFile();
         this.createSourceFiles();
         this.installPackages();
+    }
+
+    postVersionBump() {
+        super.postVersionBump();
+        const pkg = this.readPackageFile();
+        if (pkg == null) return;
+        pkg.version = this.info.version;
+        this.writePackageFile(pkg);
     }
 }

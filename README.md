@@ -28,6 +28,29 @@ The rest of the documentation uses `dev` but should be the same for `nix-cli`.
 
 When running the command with no arguments, it will default to `dev info`.
 
+### Table of Contents
+
+-   [Auth](#)
+-   [Init](#)
+-   [Info](#info)
+-   [Make](#)
+-   [Database](#)
+    -   [Auth](#)
+    -   [List](#)
+    -   [Create](#)
+    -   [Link](#)
+-   [Schemas](#)
+    -   [List](#)
+    -   [Add](#)
+    -   [Remove](#)
+-   [Authors](#)
+    -   [List](#)
+    -   [Add](#)
+    -   [Remove](#)
+-   [Version](#version)
+-   [Environment](#environment)
+-   [Cache](#cache)
+
 ### Commands
 
 This CLI is built with commander.js, which generates help screens based off the structure of the application.
@@ -177,7 +200,6 @@ $ dev env list
  - prod
  - dev  (selected)
 ------------
-
 ```
 
 #### Switch Environments
@@ -186,7 +208,34 @@ $ dev env list
 $ dev env prod
 
 ✔ switched to env: 'prod'
+```
 
+### Version
+
+Service versioning follows [Semantic Versioning](https://semver.org/)
+
+To get the current version you can run
+
+```sh
+$ dev version
+
+The 'example-service' is on version 2.0.1
+```
+
+You can bump the version manually by doing:
+
+```sh
+$ dev version 2.0.2
+
+Updated version to 2.0.2
+```
+
+You can also bump with `patch`, `minor`, or `major`.
+
+```sh
+$ dev version minor
+
+Updated version to 2.1.0
 ```
 
 ### Cache

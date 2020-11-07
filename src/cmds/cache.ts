@@ -16,7 +16,7 @@ export default (program: CommanderStatic): void => {
         .command('cache')
         .description('manage your cache');
 
-    cacheCommand.command('clearr', 'clear your cache').action(() => {
+    cacheCommand.command('clear', 'clear your cache').action(() => {
         const spinner = ora('Clearing cache').start();
         cache.clear();
         spinner.stop();

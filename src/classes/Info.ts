@@ -8,8 +8,12 @@
 
 import Author from './Author';
 import { InfoType } from '../types';
+import VersionBump from './VersionBump';
+import ServiceContext from './ServiceContext';
 
 export default class Info {
+    public versionBump: VersionBump;
+    public serviceContext: ServiceContext | null = null;
     /**
      * Class to represent info for a service
      * @class Info
@@ -27,13 +31,15 @@ export default class Info {
         public identifier: string,
         public label: string | null,
         public description: string | null,
-        public version: string | null,
+        public version: string,
         public authors: Author[],
         private createdTimestamp: number,
         private modifiedTimestamp: number,
         public license: string | null,
         public termsOfServiceURL: string | null,
-    ) {}
+    ) {
+        this.versionBump = new VersionBump(this);
+    }
 
     /**
      * Date object from the created timestamp
