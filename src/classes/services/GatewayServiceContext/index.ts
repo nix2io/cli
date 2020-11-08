@@ -8,13 +8,12 @@
 
 import { Info, Schema, ServiceContext } from '../..';
 import { ServiceContextType } from '../../../types';
-import ServiceFile from '../../ServiceFile';
 
 export default class GatewayServiceContext extends ServiceContext {
     static NAME = 'gateway';
 
-    constructor(serviceFile: ServiceFile, info: Info, schemas: Schema[]) {
-        super(serviceFile, info, 'gateway', schemas);
+    constructor(serviceFilePath: string, info: Info, schemas: Schema[]) {
+        super(serviceFilePath, info, 'gateway', schemas);
     }
 
     /**
@@ -27,7 +26,7 @@ export default class GatewayServiceContext extends ServiceContext {
      * @returns {GatewayServiceContext}      Service context object
      */
     static deserialize(
-        serviceFile: ServiceFile,
+        serviceFilePath: string,
         data: ServiceContextType,
     ): GatewayServiceContext {
         // Test if the values are present
@@ -38,7 +37,7 @@ export default class GatewayServiceContext extends ServiceContext {
         }
 
         return new GatewayServiceContext(
-            serviceFile,
+            serviceFilePath,
             Info.deserialize(data.info),
             Object.values(data.schemas).map((schema: any) =>
                 Schema.deserialize(schema),

@@ -8,7 +8,6 @@
 import { TypescriptServiceContext } from '..';
 import { Info, Schema, Path } from '../..';
 import { APIServiceContextType } from '../../../types';
-import ServiceFile from '../../ServiceFile';
 
 export default class APIServiceContext extends TypescriptServiceContext {
     static NAME = 'api';
@@ -24,12 +23,12 @@ export default class APIServiceContext extends TypescriptServiceContext {
      * @param {Record<string, Path>} paths    object of paths for the API
      */
     constructor(
-        serviceFile: ServiceFile,
+        serviceFilePath: string,
         info: Info,
         schemas: Schema[],
         paths: { [key: string]: Path },
     ) {
-        super(serviceFile, info, 'api', schemas);
+        super(serviceFilePath, info, 'api', schemas);
         this.paths = paths;
     }
 
@@ -43,7 +42,7 @@ export default class APIServiceContext extends TypescriptServiceContext {
      * @returns {APIServiceContext}      Service context object
      */
     static deserialize(
-        serviceFile: ServiceFile,
+        serviceFilePath: string,
         data: APIServiceContextType,
     ): APIServiceContext {
         // Test if the values are present
@@ -54,7 +53,7 @@ export default class APIServiceContext extends TypescriptServiceContext {
         }
 
         return new APIServiceContext(
-            serviceFile,
+            serviceFilePath,
             Info.deserialize(data.info),
             Object.values(data.schemas).map((schema: any) =>
                 Schema.deserialize(schema),

@@ -8,7 +8,6 @@
 import { TypescriptServiceContext } from '..';
 import { Info, Schema } from '../..';
 import { GraphQLServiceContextType } from '../../../types';
-import ServiceFile from '../../ServiceFile';
 
 type DependenciesType = Record<string, string>;
 export default class GraphQLServiceContext extends TypescriptServiceContext {
@@ -18,12 +17,12 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
     /**
      * Class to represent an GraphQL Service context
      * @class GraphQLServiceContext
-     * @param {string}               filePath path to the service.yaml
-     * @param {Info}                 info     info of the service
-     * @param {Array<Schema>}        schemas  list of service schemas
+     * @param {string}               serviceFilePath path to the service.yaml
+     * @param {Info}                 info            info of the service
+     * @param {Array<Schema>}        schemas         list of service schemas
      */
-    constructor(serviceFile: ServiceFile, info: Info, schemas: Schema[]) {
-        super(serviceFile, info, 'graphql', schemas);
+    constructor(serviceFilePath: string, info: Info, schemas: Schema[]) {
+        super(serviceFilePath, info, 'graphql', schemas);
     }
 
     /**
@@ -36,7 +35,7 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
      * @returns {GraphQLServiceContext}      Service context object
      */
     static deserialize(
-        serviceFile: ServiceFile,
+        serviceFilePath: string,
         data: GraphQLServiceContextType,
     ): GraphQLServiceContext {
         // Test if the values are present
@@ -47,7 +46,7 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
         }
 
         return new GraphQLServiceContext(
-            serviceFile,
+            serviceFilePath,
             Info.deserialize(data.info),
             Object.values(data.schemas).map((schema: any) =>
                 Schema.deserialize(schema),

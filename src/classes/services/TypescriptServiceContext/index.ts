@@ -11,7 +11,6 @@ import { Info, Schema, ServiceContext } from '../..';
 import { PACKAGES } from '../../../constants';
 import PackageJSONType from '../../../types/PackageJSONType';
 import { authed, user } from '../../../user';
-import ServiceFile from '../../ServiceFile';
 import { execSync } from 'child_process';
 
 export default abstract class TypescriptServiceContext extends ServiceContext {
@@ -20,7 +19,7 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
     /**
      * Class to represent a Typescript Service context
      * @class TypescriptServiceContext
-     * @param {string}                  filePath        path to the service.yaml
+     * @param {string}                  serviceFilePath path to the service.yaml
      * @param {Info}                    info            info of the service
      * @param {Array<Schema>}           schemas         list of service schemas
      * @param {Record<string, Path>}    paths           object of paths for the API
@@ -28,7 +27,7 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
      * @param {Record<string, string>} _devDependencies object of dev dependencies and their verision
      */
     constructor(
-        serviceFile: ServiceFile,
+        serviceFilePath: string,
         info: Info,
         type: string,
         schemas: Schema[],
@@ -36,7 +35,7 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
         private _devDependencies: Record<string, string> = {},
         private _scripts: Record<string, string> = {},
     ) {
-        super(serviceFile, info, type, schemas);
+        super(serviceFilePath, info, type, schemas);
     }
 
     /**

@@ -13,10 +13,9 @@ import {
     VALID_SERVICE_TYPES,
 } from './classes';
 import fs = require('fs');
-import YAWN from './yawn';
-import ServiceFile from './classes/ServiceFile';
 import { getRootOptions, getServiceContextFilePath } from './util';
 import { ServiceContextType } from './types';
+import { safeLoad } from 'js-yaml';
 
 // check if the file exists
 const serviceFileExists = (serviceFilePath: string): boolean => {
@@ -34,16 +33,6 @@ const getServiceFileContent = (serviceFilePath: string): string => {
     } catch (err) {
         throw new Error(ERRORS.NO_OPEN_FILE);
     }
-};
-
-/**
- * Returns a ServiceFile object from a path
- * @param serviceFilePath Path to the service object
- */
-const getServiceFile = (serviceFilePath: string): ServiceFile => {
-    const fileContent = getServiceFileContent(serviceFilePath);
-    const YAWNObject = new YAWN(fileContent);
-    return new ServiceFile(serviceFilePath, YAWNObject);
 };
 
 /**
@@ -70,11 +59,11 @@ export const getServiceClassFromType = (type: string): VALID_SERVICE_TYPES => {
  * @returns {ServiceContext}         new `ServiceContext` instance
  */
 export const parseServiceObject = (
-    serviceFile: ServiceFile,
+    serviceFilePath: string,
     serviceObject: ServiceContextType,
 ): VALID_SERVICE_TYPE_INSTANCES => {
     return getServiceClassFromType(serviceObject.type).deserialize(
-        serviceFile,
+        serviceFilePath,
         <any>serviceObject,
     );
 };
@@ -92,11 +81,14 @@ export const getServiceContext = (
     // return null if there is no file
     if (!serviceFileExists(serviceFilePath)) return null;
     // get the file
-    const serviceFile = getServiceFile(serviceFilePath);
+    const serviceFileContent = getServiceFileContent(serviceFilePath);
+    const serviceFileObject = <unknown>safeLoad(serviceFileContent);
+    if (serviceFileObject == null || serviceFileObject == undefined)
+        throw Error('INVALID YAML');
     // parse and return the service context
     const serviceContext = parseServiceObject(
-        serviceFile,
-        serviceFile.getJSON(),
+        serviceFilePath,
+        <ServiceContextType>serviceFileObject,
     );
     serviceContext.selectedEnvironmentName =
         getRootOptions(options).env || serviceContext.selectedEnvironmentName;
