@@ -55,7 +55,7 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
         );
     }
 
-    static createObject(
+    static makeObject(
         data: {
             identifier: string;
             label: string;
@@ -65,7 +65,7 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
         user: any,
     ): GraphQLServiceContextType {
         return {
-            ...super.createObject(data, user),
+            ...super.makeObject(data, user),
             ...{
                 type: 'graphql',
             },
@@ -126,8 +126,8 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
 
     /**
      * Object of the scripts
-     * @memberof GraphQLServiceContext
      * @function scripts
+     * @memberof GraphQLServiceContext
      * @returns {Record<string, string>} Object of the scripts
      */
     get scripts(): Record<string, string> {
@@ -139,14 +139,33 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
         };
     }
 
-    getTemplate = (fileName: string) =>
-        super.getTemplate('GraphQLServiceContext', fileName);
+    /**
+     * Read the contents of the template file for a GraphQL
+     * @function getTemplate
+     * @memberof GraphQLServiceContext
+     * @example
+     * // Returns the file content for index.ts
+     * serviceContext.getTemplate('index.ts') // import graphql from 'graphql'
+     * @param   {string} fileName Name of a file
+     * @returns {string}          graphql file template
+     */
+    readTemplate = (fileName: string): string =>
+        super.readTemplate('GraphQLServiceContext', fileName);
 
-    getMainIndexFileContext(): string {
-        return super.getMainIndexFileContext() + this.getTemplate('index.ts');
+    /**
+     * @function
+     */
+    makeMainIndexFileContext(): string {
+        return super.makeMainIndexFileContext() + this.readTemplate('index.ts');
     }
 
-    postInitLogic() {
-        super.postInitLogic();
+    /**
+     * Event listener for after an initialization
+     * @function postInit
+     * @memberof GraphQLServiceContext
+     * @returns {void}
+     */
+    postInit(): void {
+        super.postInit();
     }
 }

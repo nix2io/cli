@@ -11,18 +11,35 @@ import { ENVIRONMENTS, DEFAULT_ENVIRONMENT, ERRORS } from './constants';
 
 const ENVIRONMENT_CONFIG_NAME = 'selected-environment';
 
+/**
+ * Get a list of the available environments
+ * @function getAvailableEnvironments
+ * @returns {string[]} list of environments
+ */
 export const getAvailableEnvironments = (): string[] => {
     return Object.values(ENVIRONMENTS);
 };
 
-export const getEnvironment = (): string => {
+/**
+ * Read the current environment name from config
+ * @function readCurrentEnvironmentName
+ * @returns {string} current environment name
+ */
+export const readCurrentEnvironmentName = (): string => {
     let env = config.get(ENVIRONMENT_CONFIG_NAME);
-    if (env == null) env = setEnvironment(DEFAULT_ENVIRONMENT);
+    if (env == null) env = writeCurrentEnvironmentName(DEFAULT_ENVIRONMENT);
     if (typeof env != 'string') throw Error(ERRORS.ENV_VAL_NOT_STRING);
     return env;
 };
 
-export const setEnvironment = (environmentName: string): string => {
+/**
+ * Writes an environment name to the current config
+ * @param   {string} environmentName name of the new environment
+ * @returns {string} environment name
+ */
+export const writeCurrentEnvironmentName = (
+    environmentName: string,
+): string => {
     // verify valid env
     if (getAvailableEnvironments().indexOf(environmentName) == -1)
         throw Error('INVALID_ENV');

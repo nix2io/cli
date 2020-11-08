@@ -69,6 +69,13 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
         return { ...this._scripts, ...{} };
     }
 
+    /**
+     * Read and return the file contents of package.json
+     * @function readPackageFile
+     * @memberof TypescriptServiceContext
+     * @returns {PackageJSONType} Object of package.json
+     * @returns {null}            If no package.json exists
+     */
     readPackageFile(): PackageJSONType | null {
         const packagePath = join(this.serviceDirectory, 'package.json');
         if (!existsSync(packagePath)) {
@@ -79,7 +86,13 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
         return <PackageJSONType>fileObject;
     }
 
-    createPackageContent() {
+    /**
+     * Construct a package.json object
+     * @function makePackageContent
+     * @memberof Typescript
+     * @returns {PackageJSONType} package.json object
+     */
+    makePackageContent(): PackageJSONType {
         const packageContent: PackageJSONType = {
             name: this.info.identifier,
             description: this.info.description || '',
@@ -94,21 +107,39 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
         return packageContent;
     }
 
-    writePackageFile(pkg: PackageJSONType) {
+    /**
+     * Write the package.json object to the file
+     * @function writePackageFile
+     * @memberof Typescript
+     * @param {PackageJSONType} pkg package.json object
+     * @returns {void}
+     */
+    writePackageFile(pkg: PackageJSONType): void {
         writeFileSync(
             join(this.serviceDirectory, 'package.json'),
             JSON.stringify(pkg, null, 4),
         );
     }
 
-    createPackageFile() {
-        this.writePackageFile(this.createPackageContent());
+    /**
+     * Create the package.json file
+     * @function createPackageFile
+     * @memberof Typescript
+     * @returns {void}
+     */
+    createPackageFile(): void {
+        this.writePackageFile(this.makePackageContent());
     }
 
-    getFileHeader(fileName: string) {
+    /**
+     * Return the file header as a comment
+     * @function
+     * @param fileName
+     */
+    makeFileHeader(fileName: string) {
         return (
             '/*\n' +
-            this.getFileHeaderLines(fileName)
+            this.makeFileHeaderLines(fileName)
                 .map((line) => ` * ${line}`)
                 .join('\n') +
             '\n*/\n'
@@ -121,30 +152,68 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
         return sourceDir;
     }
 
-    getMainIndexFileContext(): string {
-        return this.getFileHeader('index.ts');
+    /**
+     * Make the file content for a new index.ts file
+     * @function makeMainIndexFileContext
+     * @memberof TypescriptServiceContext
+     * @returns {string} file content
+     */
+    makeMainIndexFileContext(): string {
+        return this.makeFileHeader('index.ts');
     }
 
-    createSourceFiles() {
+    /**
+     * Create all the files in `src/`
+     * @function createSourceFiles
+     * @memberof TypescriptServiceContext
+     * @returns {void}
+     */
+    createSourceFiles(): void {
         const sourceDir = this.createSourceDirectory();
         writeFileSync(
             join(sourceDir, 'index.ts'),
-            this.getMainIndexFileContext(),
+            this.makeMainIndexFileContext(),
         );
     }
 
-    installPackages() {
+    /**
+     * Install all packages using yarn
+     * @function installPackages
+     * @memberof TypescriptServiceContext
+     * @returns {void}
+     */
+    installPackages(): void {
         execSync(`yarn --cwd ${this.serviceDirectory}`);
     }
 
-    postInitLogic() {
-        super.postInitLogic();
+    /**
+     * Runs the post initialization commands
+     *
+     * 1. Runs the base post init commands
+     * 2. Create the `package.json`
+     * 3. Create the files for `src/`
+     * 4. Install the packages
+     * @function postInit
+     * @memberof TypescriptServiceContext
+     * @returns {void}
+     */
+    postInit(): void {
+        super.postInit();
         this.createPackageFile();
         this.createSourceFiles();
         this.installPackages();
     }
 
-    postVersionBump() {
+    /**
+     * Runs the post version bump commands
+     *
+     * 1. Runs the base version bump commands
+     * 2. Update the `package.json` version
+     * @function postVersionBump
+     * @memberof TypescriptServiceContext
+     * @returns {void}
+     */
+    postVersionBump(): void {
         super.postVersionBump();
         const pkg = this.readPackageFile();
         if (pkg == null) return;

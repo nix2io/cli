@@ -17,7 +17,7 @@ import path = require('path');
 import { getServiceContextPath, titleCase } from '../util';
 import inquirer = require('inquirer');
 import { user } from '../user';
-import { getEnvironment } from '../environments';
+import { readCurrentEnvironmentName } from '../environments';
 import Environment from './Environment';
 
 export default abstract class ServiceContext {
@@ -41,7 +41,7 @@ export default abstract class ServiceContext {
         public type: string,
         public schemas: Schema[],
     ) {
-        this.selectedEnvironmentName = getEnvironment();
+        this.selectedEnvironmentName = readCurrentEnvironmentName();
         this.environment = new Environment(this);
         this.info.serviceContext = this;
     }
@@ -114,7 +114,7 @@ export default abstract class ServiceContext {
         return data;
     }
 
-    static createObject(
+    static makeObject(
         data: {
             identifier: string;
             label: string;
@@ -220,7 +220,18 @@ export default abstract class ServiceContext {
         return true;
     }
 
-    getTemplate(scope: string, fileName: string) {
+    /**
+     * Read the contents of the template file
+     * @function readTemplate
+     * @memberof ServiceContext
+     * @example
+     * // Returns the file content for main.py
+     * serviceContext.getTemplate('ServiceContextType', 'main.py') // app.run('0.0.0.0', port=80)
+     * @param   {string} scope    scope of the service context
+     * @param   {string} fileName template name
+     * @returns {string}          template contents
+     */
+    readTemplate(scope: string, fileName: string): string {
         const templatePath = join(
             __dirname,
             `services/${scope}/templates/`,
@@ -229,26 +240,46 @@ export default abstract class ServiceContext {
         return fs.readFileSync(templatePath, 'utf-8');
     }
 
-    getREADMELines(): string[] {
+    /**
+     * Make the lines for the README file
+     * @function getREADMELines
+     * @memberof ServiceContext
+     * @returns {string[]} array of lines for the README
+     */
+    makeREADMELines(): string[] {
         return [
             '<p align="center"><img height="220px" src="https://i.imgur.com/48BeKfE.png" alt="Logo" /><p>\n',
             `<p align="center">\n\t<strong>${this.info.label}</strong><br />\n\t<sub>${this.info.description}</sub>\n</p>`,
         ];
     }
 
+    /**
+     * Create the README.md file
+     * @function createREADME
+     * @memberof ServiceContext
+     * @returns {void}
+     */
     createREADME(): void {
-        const READMEContent = this.getREADMELines().join('\n');
-        console.log(READMEContent);
-
+        const READMEContent = this.makeREADMELines().join('\n');
         fs.writeFileSync(
             join(this.serviceDirectory, 'README.md'),
             READMEContent,
         );
     }
 
-    getFileHeaderLines(file: string): string[] {
+    /**
+     * Makes the lines for file headers
+     * @function getFileHeaderLines
+     * @memberof ServiceContext
+     * @example
+     * // Example: returns file header for main.py
+     * serviceContext.getFileHeaderLines('main.py') // ['File: main.py', ...]
+     * @param   {string}   fileName name of the file
+     * @returns {string[]}          lines for file headers
+     */
+    makeFileHeaderLines(fileName: string): string[] {
         let lines = [
-            `File: ${file}`,
+            `File: ${fileName}`,
             `Created: ${new Date().toISOString()}`,
             '----',
             'Copyright: 2020 Nix² Technologies',
@@ -259,9 +290,21 @@ export default abstract class ServiceContext {
         return lines;
     }
 
-    postInitLogic(): void {
+    /**
+     * Event listener for after an initialization
+     * @function postInit
+     * @memberof ServiceContext
+     * @returns {void}
+     */
+    postInit(): void {
         this.createREADME();
     }
 
+    /**
+     * Event listener for after a version bump
+     * @function postVersionBump
+     * @memberof ServiceContext
+     * @returns {void}
+     */
     postVersionBump(): void {}
 }
