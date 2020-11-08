@@ -9,8 +9,8 @@
 import { CommanderStatic } from 'commander';
 import {
     getAvailableEnvironments,
-    getEnvironment,
-    setEnvironment,
+    readCurrentEnvironmentName,
+    writeCurrentEnvironmentName,
 } from '../environments';
 import * as colors from 'colors';
 import { SYMBOLS } from '../constants';
@@ -22,8 +22,8 @@ const listAvailableEnvironments = (serviceContext: ServiceContext | null) => {
     console.log(line);
     for (const env of getAvailableEnvironments()) {
         const isSelected =
-            (serviceContext?.selectedEnvironmentName || getEnvironment()) ==
-            env;
+            (serviceContext?.selectedEnvironmentName ||
+                readCurrentEnvironmentName()) == env;
         console.log(
             ` - ${env}${isSelected ? colors.green(' (selected)') : ''}`,
         );
@@ -40,7 +40,7 @@ export default (program: CommanderStatic): void => {
             if (envName == null || envName == 'list')
                 return listAvailableEnvironments(serviceContext);
             try {
-                setEnvironment(envName);
+                writeCurrentEnvironmentName(envName);
                 if (serviceContext != null) {
                     serviceContext.environment.makeDotEnv();
                 }

@@ -53,7 +53,7 @@ export const pkg = (make: commander.Command): void => {
                 ),
             );
 
-            prettyPrint(serviceContext.createPackageContent());
+            prettyPrint(serviceContext.makePackageContent());
             console.log();
             inquirer
                 .prompt([

@@ -78,7 +78,7 @@ export default class APIServiceContext extends TypescriptServiceContext {
         user: any,
     ): APIServiceContextType {
         return {
-            ...super.createObject(data, user),
+            ...super.makeObject(data, user),
             ...{
                 paths: {},
             },

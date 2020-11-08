@@ -98,7 +98,7 @@ export default (program: CommanderStatic): void => {
                       })),
                   )
                 : await inquireServiceData(initialData);
-            const serviceObject = serviceClass.createObject(data, user);
+            const serviceObject = serviceClass.makeObject(data, user);
             // define the initialize logic
             const initialize = () => {
                 const servicePath = path.join(
@@ -112,7 +112,7 @@ export default (program: CommanderStatic): void => {
                 console.log('Running post init logic');
                 // create the new instance
                 const service = getServiceContext(options);
-                service?.postInitLogic();
+                service?.postInit();
             };
             // initialize without confirmation
             if (skipConfirm) return initialize();
