@@ -7,20 +7,19 @@
  */
 
 import { CommanderStatic } from 'commander';
-import { formatString } from 'koontil';
+import { formatString, getRootOptions } from '../util';
 import { VERSION, SERVICE_DISPLAY_TEMPLATE, SYMBOLS } from '../constants';
 import { getServiceContext } from '../service';
 import { authed, user } from '../user';
 import colors = require('colors');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const friendlyTime = require('friendly-time');
-// const ora = require('ora');
 
 export default (program: CommanderStatic): void => {
     program
         .command('info')
         .description('display service context info')
-        .action(() => {
+        .action((options) => {
             console.log(
                 SYMBOLS.ROBOT +
                     ' ' +
@@ -38,7 +37,7 @@ export default (program: CommanderStatic): void => {
             }
             // get the service
             try {
-                const service = getServiceContext();
+                const service = getServiceContext(options);
                 if (service == null) {
                     console.log(colors.grey('No service in this directory'));
                     return;
@@ -60,7 +59,11 @@ export default (program: CommanderStatic): void => {
                     }),
                 );
             } catch (err) {
-                console.error(colors.red(`ERR: ${err.message}`));
+                if (getRootOptions(options).debug) {
+                    console.error(err);
+                } else {
+                    console.error(colors.red(`ERR: ${err.message}`));
+                }
             }
         });
 };

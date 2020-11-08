@@ -10,48 +10,154 @@ import Info from './Info';
 import Schema from './Schema';
 import yaml = require('js-yaml');
 import fs = require('fs');
+import { ServiceContextType } from '../types';
+import { dirname, join, resolve } from 'path';
+import path = require('path');
+import { getServiceContextPath, titleCase } from '../util';
+import inquirer = require('inquirer');
+import { user } from '../user';
+import { readCurrentEnvironmentName } from '../environments';
+import Environment from './Environment';
 
 export default abstract class ServiceContext {
+    static NAME: string;
+    static DIRNAME: string = __dirname;
+    public selectedEnvironmentName: string;
+    public environment: Environment;
+
     /**
      * Abstract class to represent a service context
      * @class ServiceContext
      * @abstract
-     * @param {string}        filePath path to the service.yaml
-     * @param {Info}          info     info of the service
-     * @param {string}        type     type of service
-     * @param {Array<Schema>} schemas  list of service schemas
+     * @param {string}        serviceFilePath path to the service.yaml
+     * @param {Info}          info            info of the service
+     * @param {string}        type            type of service
+     * @param {Array<Schema>} schemas         list of service schemas
      */
     constructor(
-        private filePath: string,
+        private serviceFilePath: string,
         public info: Info,
         public type: string,
         public schemas: Schema[],
-    ) {}
+    ) {
+        this.selectedEnvironmentName = readCurrentEnvironmentName();
+        this.environment = new Environment(this);
+        this.info.serviceContext = this;
+    }
 
     /**
-     * Deserialize an object into a `ServiceContext` instance
-     * @function deserialize
-     * @static
+     * Returns the service directory
      * @memberof ServiceContext
-     * @param   {string} serviceFilePath path to the service.yaml
-     * @param   {object} data            Javascript object of the Info
-     * @returns {ServiceContext}         Service context object
+     * @protected
+     * @returns {string} Path to the directory
      */
-    static deserialize(
-        serviceFilePath: string,
-        data: Record<string, unknown>,
-    ): ServiceContext {
-        throw Error('NOT IMPLEMENTED');
-        console.log(serviceFilePath, data);
+    get serviceDirectory(): string {
+        return dirname(this.serviceFilePath);
+    }
+
+    /**
+     * Return the inital data for the base Service Context
+     * @param options Options given by the cli
+     * @param user    User object
+     */
+    static getInitializeData(options: any, user: any) {
+        const authed = user != null,
+            serviceIdentifier = path.basename(getServiceContextPath(options)),
+            serviceLabel = titleCase(serviceIdentifier.replace(/-/g, ' ')),
+            serviceDescription = 'A Nix² Service';
+        const data: Record<
+            string,
+            {
+                value: string | boolean;
+                prompt: inquirer.Question;
+            }
+        > = {
+            identifier: {
+                value: serviceIdentifier,
+                prompt: {
+                    type: 'input',
+                    message: 'Identifier',
+                    name: 'identifier',
+                    default: serviceIdentifier,
+                },
+            },
+            label: {
+                value: serviceLabel,
+                prompt: {
+                    type: 'input',
+                    message: 'Label',
+                    name: 'label',
+                    default: serviceLabel,
+                },
+            },
+            description: {
+                value: serviceDescription,
+                prompt: {
+                    type: 'input',
+                    message: 'Description',
+                    name: 'description',
+                    default: serviceDescription,
+                },
+            },
+        };
+        if (authed) {
+            data.makeLeadDev = {
+                value: true,
+                prompt: {
+                    type: 'confirm',
+                    message: 'Make you the lead dev?',
+                    name: 'userLeadDev',
+                },
+            };
+        }
+        return data;
+    }
+
+    static makeObject(
+        data: {
+            identifier: string;
+            label: string;
+            description: string;
+            userLeadDev: boolean;
+        },
+        user: any,
+    ): ServiceContextType {
+        const currentTimestamp = Math.floor(new Date().getTime() / 1000);
+        const serviceObject: ServiceContextType = {
+            info: {
+                identifier: data.identifier,
+                label: data.label,
+                description: data.description,
+                version: '1.0.0',
+                authors: [],
+                created: currentTimestamp,
+                modified: currentTimestamp,
+                license: 'CC-BY-1.0',
+                termsOfServiceURL: 'nix2.io/tos',
+            },
+            schemas: [],
+            type: 'app',
+        };
+        if (data.userLeadDev) {
+            serviceObject.info.authors.push({
+                email: user.email,
+                name: user.name,
+                publicEmail: null,
+                url: null,
+                alert: '*',
+                flags: ['leadDev'],
+            });
+        }
+        return serviceObject;
     }
 
     /**
      * Serialize a ServiceContext instance into an object
      * @function serialize
      * @memberof ServiceContext
-     * @returns  {Record<string, unknown>} Javascript object
+     * @returns  {ServiceContextType} Javascript object
      */
-    serialize(): Record<string, unknown> {
+    serialize(): ServiceContextType {
         return {
             info: this.info.serialize(),
             type: this.type,
@@ -66,9 +172,7 @@ export default abstract class ServiceContext {
      * @returns  {boolean} `true` if successfull
      */
     write(): boolean {
-        const s = this.serialize();
-        const content = yaml.safeDump(s);
-        fs.writeFileSync(this.filePath, content);
+        fs.writeFileSync(this.serviceFilePath, yaml.safeDump(this.serialize()));
         return true;
     }
 
@@ -112,4 +216,92 @@ export default abstract class ServiceContext {
         this.schemas.splice(this.schemas.indexOf(schema), 1);
         return true;
     }
+
+    /**
+     * Read the contents of the template file
+     * @function readTemplate
+     * @memberof ServiceContext
+     * @example
+     * // Returns the file content for main.py
+     * serviceContext.getTemplate('ServiceContextType', 'main.py') // app.run('0.0.0.0', port=80)
+     * @param   {string} scope    scope of the service context
+     * @param   {string} fileName template name
+     * @returns {string}          template contents
+     */
+    readTemplate(scope: string, fileName: string): string {
+        const templatePath = join(
+            __dirname,
+            `services/${scope}/templates/`,
+            `${fileName}.template`,
+        );
+        return fs.readFileSync(templatePath, 'utf-8');
+    }
+
+    /**
+     * Make the lines for the README file
+     * @function getREADMELines
+     * @memberof ServiceContext
+     * @returns {string[]} array of lines for the README
+     */
+    makeREADMELines(): string[] {
+        return [
+            '<p align="center"><img height="220px" src="https://i.imgur.com/48BeKfE.png" alt="Logo" /><p>\n',
+            `<p align="center">\n\t<strong>${this.info.label}</strong><br />\n\t<sub>${this.info.description}</sub>\n</p>`,
+        ];
+    }
+
+    /**
+     * Create the README.md file
+     * @function createREADME
+     * @memberof ServiceContext
+     * @returns {void}
+     */
+    createREADME(): void {
+        const READMEContent = this.makeREADMELines().join('\n');
+        fs.writeFileSync(
+            join(this.serviceDirectory, 'README.md'),
+            READMEContent,
+        );
+    }
+
+    /**
+     * Makes the lines for file headers
+     * @function getFileHeaderLines
+     * @memberof ServiceContext
+     * @example
+     * // Example: returns file header for main.py
+     * serviceContext.getFileHeaderLines('main.py') // ['File: main.py', ...]
+     * @param   {string}   fileName name of the file
+     * @returns {string[]}          lines for file headers
+     */
+    makeFileHeaderLines(fileName: string): string[] {
+        let lines = [
+            `File: ${fileName}`,
+            `Created: ${new Date().toISOString()}`,
+            '----',
+            'Copyright: 2020 Nix² Technologies',
+        ];
+        if (user != null) {
+            lines.push(`Author: ${user.name} (${user.email})`);
+        }
+        return lines;
+    }
+
+    /**
+     * Event listener for after an initialization
+     * @function postInit
+     * @memberof ServiceContext
+     * @returns {void}
+     */
+    postInit(): void {
+        this.createREADME();
+    }
+
+    /**
+     * Event listener for after a version bump
+     * @function postVersionBump
+     * @memberof ServiceContext
+     * @returns {void}
+     */
+    postVersionBump(): void {}
 }

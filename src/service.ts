@@ -6,11 +6,16 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { SERVICE_FILE_NAME, ERRORS } from './constants';
-import * as services from './classes/services';
+import { ERRORS } from './constants';
+import {
+    VALID_SERVICE_TYPE_INSTANCES,
+    SERVICE_TYPE_MAP,
+    VALID_SERVICE_TYPES,
+} from './classes';
 import fs = require('fs');
-import path = require('path');
-import yaml = require('js-yaml');
+import { getRootOptions, getServiceContextFilePath } from './util';
+import { ServiceContextType } from './types';
+import { safeLoad } from 'js-yaml';
 
 // check if the file exists
 const serviceFileExists = (serviceFilePath: string): boolean => {
@@ -21,8 +26,8 @@ const serviceFileExists = (serviceFilePath: string): boolean => {
     }
 };
 
-// get the file from the path
-const getServiceFile = (serviceFilePath: string): string => {
+// get the file contents from the path
+const getServiceFileContent = (serviceFilePath: string): string => {
     try {
         return fs.readFileSync(serviceFilePath, 'utf-8');
     } catch (err) {
@@ -31,28 +36,21 @@ const getServiceFile = (serviceFilePath: string): string => {
 };
 
 /**
- * Returns a Javascript object from the service.yaml
- * @param   {string} content Content of the file
- * @returns {object}       service object
+ * Return the class from a service context type
+ * @param type Type of the service context
+ * @returns {ServiceContext} Class of a service context
  */
-const getServiceObject = (content: string): Record<string, unknown> => {
-    try {
-        // parse the file's yaml
-        const serviceObject = yaml.load(content);
-        // throw an error if the response is anything but an object
-        if (typeof serviceObject != 'object')
-            throw new Error(ERRORS.INVALID_YAML);
-        return serviceObject;
-    } catch (err) {
-        throw new Error(ERRORS.INVALID_YAML);
+export const getServiceClassFromType = (type: string): VALID_SERVICE_TYPES => {
+    // check if the type is valid
+    const typeIndex = Object.keys(SERVICE_TYPE_MAP).indexOf(type);
+    if (typeIndex == -1) {
+        throw new Error(`Service type ${type} is unsupported`);
     }
+    // return the deserialized service context instance
+    return <VALID_SERVICE_TYPES>(
+        (<unknown>Object.values(SERVICE_TYPE_MAP)[typeIndex])
+    );
 };
-
-type serviceTypeClasses =
-    | typeof services.APIServiceContext
-    | typeof services.GatewayServiceContext;
-
-type serviceTypes = services.APIServiceContext | services.GatewayServiceContext;
 
 /**
  * Parse a Javascript object to return a `ServiceContext` instance
@@ -60,26 +58,13 @@ type serviceTypes = services.APIServiceContext | services.GatewayServiceContext;
  * @param   {object} serviceObject   Javascript object of the service object
  * @returns {ServiceContext}         new `ServiceContext` instance
  */
-const parseServiceObject = (
+export const parseServiceObject = (
     serviceFilePath: string,
-    serviceObject: Record<string, unknown>,
-): serviceTypes => {
-    let serviceClass: serviceTypeClasses;
-    switch (serviceObject.type) {
-        case 'api':
-            serviceClass = services.APIServiceContext;
-            break;
-        case 'gateway':
-            serviceClass = services.GatewayServiceContext;
-            break;
-        default:
-            throw new Error(
-                `Service type ${serviceObject.type} is unsupported`,
-            );
-    }
-    return serviceClass.deserialize(
+    serviceObject: ServiceContextType,
+): VALID_SERVICE_TYPE_INSTANCES => {
+    return getServiceClassFromType(serviceObject.type).deserialize(
         serviceFilePath,
-        <Record<string, any>>serviceObject,
+        <any>serviceObject,
     );
 };
 
@@ -87,15 +72,25 @@ const parseServiceObject = (
  * Return the service object in the users current directory
  * @return {ServiceContext} Instance of the Service Context
  */
-export const getServiceContext = (): serviceTypes | null => {
+export const getServiceContext = (
+    options: any,
+    overwriteDir: string | undefined = undefined,
+): VALID_SERVICE_TYPE_INSTANCES | null => {
     // get the full file path
-    const serviceFilePath = path.join(process.cwd(), SERVICE_FILE_NAME);
+    const serviceFilePath = getServiceContextFilePath(options, overwriteDir);
     // return null if there is no file
     if (!serviceFileExists(serviceFilePath)) return null;
     // get the file
-    const content = getServiceFile(serviceFilePath);
-    // get the service object
-    const obj = getServiceObject(content);
+    const serviceFileContent = getServiceFileContent(serviceFilePath);
+    const serviceFileObject = <unknown>safeLoad(serviceFileContent);
+    if (serviceFileObject == null || serviceFileObject == undefined)
+        throw Error('INVALID YAML');
     // parse and return the service context
-    return parseServiceObject(serviceFilePath, obj);
+    const serviceContext = parseServiceObject(
+        serviceFilePath,
+        <ServiceContextType>serviceFileObject,
+    );
+    serviceContext.selectedEnvironmentName =
+        getRootOptions(options).env || serviceContext.selectedEnvironmentName;
+    return serviceContext;
 };

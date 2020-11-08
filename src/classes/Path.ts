@@ -7,6 +7,7 @@
  */
 
 import { Method } from '.';
+import { MethodType, PathType } from '../types';
 
 type methods = 'get' | 'post' | 'head' | 'delete' | 'put' | 'patch' | 'options';
 
@@ -31,7 +32,7 @@ export default class Path {
      */
     static deserialize(
         path: string,
-        methods: Record<string, Record<string, unknown>>,
+        methods: { [key: string]: MethodType },
     ): Path {
         return new Path(
             path,
@@ -48,13 +49,15 @@ export default class Path {
      * Serialize a Path instance into an object
      * @function serialize
      * @memberof Path
-     * @returns  {Record<string, unknown>} Javascript object
+     * @returns  {PathType} Javascript object
      */
-    serialize(): Record<string, unknown> {
+    serialize(): PathType {
         return Object.assign(
             {},
             ...Object.keys(this.methods).map((k: string) => ({
-                [k]: Object.values(this.methods)[Object.keys(this.methods).indexOf(k)].serialize(),
+                [k]: Object.values(this.methods)[
+                    Object.keys(this.methods).indexOf(k)
+                ].serialize(),
             })),
         );
     }

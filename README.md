@@ -1,12 +1,13 @@
-# Nix² CLI
+<p align="center"><img height="220px" src="https://i.imgur.com/d3eyO62.png" alt="CLI Logo" /><p>
 
-_Nix² Command Line Interface_
+<p align="center">
+  <strong>Nix² CLI</strong><br />
+  <sub>this cli will allow nix² developers to easily create, modify, and maintain their services</sub>
+</p>
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nix2io/cli/CI)
-[![Requirements Status](https://requires.io/github/nix2io/cli/requirements.svg?branch=master)](https://requires.io/github/nix2io/cli/requirements/?branch=master)
-![npm](https://img.shields.io/npm/v/@nix2/nix-cli?label=npm%20version)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/nix2io/cli?label=dev%20version)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+<p align="center">
+  [ <a href="#installation">Installation 💾</a> | <a href="#usage">Usage 🤓</a> | <a href="https://www.npmjs.com/package/@nix2/nix-cli">NPM 📦</a> | <a href="https://github.com/nix2io/cli">Github 🕸</a> ]
+</p>
 
 <p align="center">
   <img style="display: block; width: 100%; max-width: 700px" alt="CLI Screenshot" src="https://i.imgur.com/2N3YWHF.png">
@@ -27,7 +28,30 @@ The rest of the documentation uses `dev` but should be the same for `nix-cli`.
 
 When running the command with no arguments, it will default to `dev info`.
 
-### Help
+### Table of Contents
+
+-   [Auth](#)
+-   [Init](#)
+-   [Info](#info)
+-   [Make](#)
+-   [Database](#)
+    -   [Auth](#)
+    -   [List](#)
+    -   [Create](#)
+    -   [Link](#)
+-   [Schemas](#)
+    -   [List](#)
+    -   [Add](#)
+    -   [Remove](#)
+-   [Authors](#)
+    -   [List](#)
+    -   [Add](#)
+    -   [Remove](#)
+-   [Version](#version)
+-   [Environment](#environment)
+-   [Cache](#cache)
+
+### Commands
 
 This CLI is built with commander.js, which generates help screens based off the structure of the application.
 To get help on any commands, just run `dev help`.
@@ -159,6 +183,60 @@ $ dev authors remove m@x.com
 ```
 
 You can also use the `-y` flag to skip the confirmation screen.
+
+### Environment
+
+There are multiple environments for deployed services such as development and production.
+With the `env` command you can manage your selected environment
+
+#### List
+
+List all the available environments
+
+```sh
+$ dev env list
+
+------------
+ - prod
+ - dev  (selected)
+------------
+```
+
+#### Switch Environments
+
+```sh
+$ dev env prod
+
+✔ switched to env: 'prod'
+```
+
+### Version
+
+Service versioning follows [Semantic Versioning](https://semver.org/)
+
+To get the current version you can run
+
+```sh
+$ dev version
+
+The 'example-service' is on version 2.0.1
+```
+
+You can bump the version manually by doing:
+
+```sh
+$ dev version 2.0.2
+
+Updated version to 2.0.2
+```
+
+You can also bump with `patch`, `minor`, or `major`.
+
+```sh
+$ dev version minor
+
+Updated version to 2.1.0
+```
 
 ### Cache
 

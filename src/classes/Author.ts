@@ -5,6 +5,10 @@
  * Copyright: 2020 Nix² Technologies
  * Author: Max Koon (maxk@nix2.io)
  */
+import { AuthorType } from '../types';
+import parseAlert from '../parsers/alert';
+import { AlertRule } from '../parsers/alert/classes';
+import colors = require('colors');
 
 const flagInheritence = {
     dev: 'contributer',
@@ -23,6 +27,7 @@ export default class Author {
      * @param {Set<string>} flags        Set of flags for the author
      */
     public inherited_flags: Set<string>;
+    public alertRule: AlertRule;
 
     constructor(
         public email: string,
@@ -34,6 +39,7 @@ export default class Author {
     ) {
         this.inherited_flags;
         this.updateFlags();
+        this.updateAlertRule();
     }
 
     /**
@@ -44,22 +50,26 @@ export default class Author {
      * @param   data Javascript object of the Author
      * @returns      `Author` instance
      */
-    static deserialize(data: Record<string, unknown>): Author {
+    static deserialize(data: AuthorType): Author {
+        // Test if the values are present
+        const vals = ['email', 'name', 'publicEmail', 'url', 'alert', 'flags'];
+        for (const val of vals) {
+            if (Object.keys(data).indexOf(val) == -1)
+                throw Error(val + ' not given');
+        }
+
         // Test the given data
         if (typeof data.email != 'string')
             throw Error(`email: ${data.email} is not a string`);
-        if (typeof data.name != 'undefined' && typeof data.name != 'string')
+        if (typeof data.name != 'string')
             throw Error(`name: ${data.name} must be a string`);
-        if (
-            typeof data.publicEmail != 'undefined' &&
-            typeof data.publicEmail != 'string'
-        )
+        if (typeof data.publicEmail != 'string' && data.publicEmail != null)
             throw Error(`publicEmail: ${data.publicEmail} is not a string`);
-        if (typeof data.url != 'undefined' && typeof data.url != 'string')
+        if (typeof data.url != 'string' && data.url != null)
             throw Error(`url: ${data.url} is not a string`);
-        if (typeof data.alert != 'undefined' && typeof data.alert != 'string')
+        if (typeof data.alert != 'string' && data.alert != null)
             throw Error(`alert: ${data.alert} is not a string`);
-        if (typeof data.flags != 'undefined' && !Array.isArray(data.flags))
+        if (!Array.isArray(data.flags))
             throw Error(`flags: ${data.flags} is not a valid array`);
 
         return new Author(
@@ -78,7 +88,7 @@ export default class Author {
      * @memberof Author
      * @returns  {Record<string, unknown>} Javascript object
      */
-    serialize(): Record<string, unknown> {
+    serialize(): AuthorType {
         return {
             email: this.email,
             name: this.name,
@@ -101,10 +111,36 @@ export default class Author {
         for (const flag of flags) {
             let currentFlag = flag;
             while (Object.keys(flagInheritence).indexOf(currentFlag) != -1) {
-                currentFlag = Object.values(flagInheritence)[Object.keys(flagInheritence).indexOf(currentFlag)];
+                currentFlag = Object.values(flagInheritence)[
+                    Object.keys(flagInheritence).indexOf(currentFlag)
+                ];
                 flags.add(currentFlag);
             }
         }
         this.inherited_flags = flags;
     }
+
+    private updateAlertRule(): void {
+        let [rule, error] = parseAlert(this.alert);
+        if (error != null) {
+            console.log();
+            const arrows = colors.red.bold(
+                Array(error.positionStart + 1).join(' ') +
+                    Array(error.positionEnd - error.positionStart + 1).join(
+                        '^',
+                    ),
+            );
+            console.error(
+                `${colors.red('Error Parsing Alert Rule')} ${
+                    error.errorName
+                }: ${error.details}\n\n${this.alert}\n${arrows}\n`,
+            );
+            throw Error('Invalid Alert Rule');
+        }
+        // console.log(rule!);
+        // console.log(rule?.toString());
+        this.alertRule = rule!;
+    }
+
+    isListening() {}
 }

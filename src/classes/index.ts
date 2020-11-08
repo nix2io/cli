@@ -8,9 +8,18 @@
 
 export { default as Author } from './Author';
 export { default as Info } from './Info';
-export { default as ServiceContext } from './ServiceContext';
-export { default as APIServiceContext } from './services/APIServiceContext';
 export { default as Schema } from './Schema';
 export { default as Path } from './Path';
 export { default as Method } from './Method';
 export { default as Response } from './Response';
+// service contexts
+export { default as ServiceContext } from './ServiceContext';
+// export all the custom service contexts
+export {
+    TypescriptServiceContext,
+    GatewayServiceContext,
+    APIServiceContext,
+    VALID_SERVICE_TYPES,
+    VALID_SERVICE_TYPE_INSTANCES,
+    SERVICE_TYPE_MAP,
+} from './services';

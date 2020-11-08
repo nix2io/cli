@@ -28,6 +28,13 @@ export const SUPPORT_SYMBOLS =
     Object.keys(process.env).indexOf('VSCODE_GIT_IPC_HANDLE') != -1;
 export const SUPPORT_EMOJI = SUPPORT_SYMBOLS && !IS_WINDOWS;
 
+// environments
+export const ENVIRONMENTS = {
+    PROD: 'prod',
+    DEV: 'dev',
+};
+export const DEFAULT_ENVIRONMENT = ENVIRONMENTS.DEV;
+
 export const SYMBOLS = {
     // emojis
     ROBOT: SUPPORT_EMOJI ? '🤖' : ' ',
@@ -51,6 +58,16 @@ ${SYMBOLS.PAPER} Local data ${colors.grey(`from ${SERVICE_FILE_NAME}`)}
  - created {created}
 `;
 
+export const PACKAGES = {
+    TYPESCRIPT: {
+        pkg: {},
+        dev: {
+            typescript: '4.0.3',
+            '@types/node': '14.14.0',
+        },
+    },
+};
+
 // error messages
 export const ERRORS = {
     NO_CHECK_FOR_FILE: 'Could not check if file exists',
@@ -60,6 +77,11 @@ export const ERRORS = {
     SERVICE_EXISTS: colors.red(
         `${SERVICE_FILE_NAME} already exists in this directory`,
     ),
+    NO_SERVICE_EXISTS: `${SERVICE_FILE_NAME} does not exist in this directory`,
+    SERVICE_NOT_OF_TYPESCRIPT: `The service is not a Typescript service`,
+    PACKAGE_EXISTS: 'package.json already exists in this directory',
+    ENV_VAL_NOT_STRING: 'the selected environment in config is not a string',
+    INVALID_SEMVER: 'Invalid version, please follow semantic versioning',
     ABORT: colors.red('\nAborted'),
 };
 

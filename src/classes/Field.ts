@@ -6,6 +6,8 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
+import { FieldType } from '../types';
+
 export default class Field {
     /**
      * Class to represent the a service Schema
@@ -37,7 +39,21 @@ export default class Field {
      * @param    {Record<string, unknown>} data     Javascript object of the Field
      * @returns  {Field}                           `Field` instance
      */
-    static deserialize(name: string, data: Record<string, unknown>): Field {
+    static deserialize(name: string, data: FieldType): Field {
+        // Test if the values are present
+        const vals = [
+            'label',
+            'description',
+            'type',
+            'required',
+            'default',
+            'flags',
+        ];
+        for (const val of vals) {
+            if (Object.keys(data).indexOf(val) == -1)
+                throw Error(val + ' not given');
+        }
+
         // check the given data
         if (typeof data.label != 'undefined' && typeof data.label != 'string')
             throw Error(`label: ${data.label} is not a string`);
@@ -70,7 +86,7 @@ export default class Field {
      * @memberof Field
      * @returns  {Record<string, unknown>} Javascript object
      */
-    serialize(): Record<string, unknown> {
+    serialize(): FieldType {
         return {
             label: this.label,
             description: this.description,

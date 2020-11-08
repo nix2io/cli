@@ -13,8 +13,12 @@ import * as cmds from './cmds';
 import { VERSION } from './constants';
 
 // Program info
-program.name('nix-cli').version(VERSION, '-v', 'output cli version');
-
+program
+    .name('nix-cli')
+    .version(VERSION, '-v', 'output cli version')
+    .option('--dir <directory>', 'use a different specified directory', '.')
+    .option('--env <env>', 'set the env for the command')
+    .option('--debug', 'show traces for errors', false);
 // Apply all the functions to the program
 for (const func of Object.values(cmds)) func(program);
 
