@@ -101,6 +101,7 @@ export default (tokens: Token[]): RelationshipParseResult => {
     advance();
     // get the result as a bin op
     const result = binaryOperation();
+    // TODO: fix this
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     currentToken = currentToken!;
     if (result.error == null && currentToken.type != TOKEN_EOC) {
