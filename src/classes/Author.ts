@@ -42,7 +42,7 @@ export default class Author {
     ) {
         this.inherited_flags;
         this.updateFlags();
-        this.updateAlertRule();
+        // this.updateAlertRule();
     }
 
     /**

@@ -12,6 +12,7 @@ import { PACKAGES } from '../../../constants';
 import PackageJSONType from '../../../types/PackageJSONType';
 import { authed, user } from '../../../user';
 import { execSync } from 'child_process';
+import ESLintConfigType from '../../../types/ESLintConfigType';
 
 /**
  * Class to represent a Typescript Service context.
@@ -203,7 +204,8 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
      * 1. Runs the base post init commands.
      * 2. Create the `package.json`.
      * 3. Create the files for `src/`.
-     * 4. Install the packages.
+     * 4. Create an eslint config file.
+     * 5. Install the packages.
      * @function postInit
      * @memberof TypescriptServiceContext
      * @returns {void}
@@ -212,6 +214,7 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
         super.postInit();
         this.createPackageFile();
         this.createSourceFiles();
+        this.createESLintConfig();
         this.installPackages();
     }
 
@@ -240,5 +243,86 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
      */
     makeIgnoreComponents(): string[] {
         return super.makeIgnoreComponents().concat(['node']);
+    }
+
+    /**
+     * Makes an eslint config object.
+     * @function makeESLintConfig
+     * @memberof TypescriptServiceContext
+     * @returns {ESLintConfigType} ESLint config object.
+     */
+    makeESLintConfig(): ESLintConfigType {
+        return {
+            env: {
+                node: true,
+                es6: true,
+            },
+            extends: [
+                'eslint:recommended',
+                'plugin:@typescript-eslint/recommended',
+            ],
+            parser: '@typescript-eslint/parser',
+            parserOptions: {
+                ecmaVersion: 12,
+                sourceType: 'module',
+            },
+            plugins: ['@typescript-eslint', 'jsdoc'],
+            rules: {
+                '@typescript-eslint/ban-ts-comment': 1,
+                '@typescript-eslint/no-unused-vars': [
+                    2,
+                    {
+                        argsIgnorePattern: '^_',
+                    },
+                ],
+                '@typescript-eslint/explicit-module-boundary-types': 2,
+                'no-warning-comments': [
+                    1,
+                    {
+                        terms: ['todo', 'fixme', 'xxx'],
+                        location: 'start',
+                    },
+                ],
+                'jsdoc/require-jsdoc': [
+                    2,
+                    {
+                        require: {
+                            FunctionDeclaration: true,
+                            MethodDefinition: true,
+                            ClassDeclaration: true,
+                            ArrowFunctionExpression: false,
+                            FunctionExpression: false,
+                        },
+                    },
+                ],
+                'jsdoc/require-description': 2,
+                'jsdoc/require-description-complete-sentence': 2,
+                'jsdoc/implements-on-classes': 2,
+                'jsdoc/check-types': 2,
+                'jsdoc/valid-types': 2,
+                'jsdoc/require-param': 2,
+                'jsdoc/require-param-name': 2,
+                'jsdoc/require-param-type': 2,
+                'jsdoc/require-param-description': 2,
+                'jsdoc/check-param-names': 2,
+                'jsdoc/require-returns': 2,
+                'jsdoc/require-returns-type': 2,
+                'jsdoc/require-returns-description': 2,
+                'jsdoc/check-tag-names': 2,
+            },
+        };
+    }
+
+    /**
+     * Creates an ESLint config file.
+     * @function createESLintConfig
+     * @memberof TypescriptServiceContext
+     * @returns {void}
+     */
+    createESLintConfig(): void {
+        writeFileSync(
+            join(this.serviceDirectory, '.eslintrc.json'),
+            JSON.stringify(this.makeESLintConfig(), null, 4),
+        );
     }
 }

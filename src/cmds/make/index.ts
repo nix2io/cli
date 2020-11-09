@@ -9,6 +9,9 @@
 import { CommanderStatic } from 'commander';
 import type from './type';
 import { pkg } from './package';
+import gitignore from './gitignore';
+import readme from './readme';
+import eslint from './eslint';
 
 export default (program: CommanderStatic): void => {
     const make = program
@@ -17,6 +20,9 @@ export default (program: CommanderStatic): void => {
         .description('make things related to your service');
 
     // Apply all the functions to the program
-    type(make);
     pkg(make);
+    type(make);
+    readme(make);
+    eslint(make);
+    gitignore(make);
 };

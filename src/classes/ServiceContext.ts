@@ -316,7 +316,7 @@ export default abstract class ServiceContext {
     async createGitIgnore(): Promise<void> {
         const ignoreComponents = this.makeIgnoreComponents();
         const url = GIT_IGNORE_SERVICE_BASE_URL + ignoreComponents.join(',');
-        Axios.get(url)
+        await Axios.get(url)
             .then((response) => {
                 const ignoreContent = response.data;
                 fs.writeFileSync(
