@@ -8,17 +8,20 @@
 
 import { FieldType } from '../types';
 
+/**
+ * Class to represent the a schema Field.
+ * @class Field
+ */
 export default class Field {
     /**
-     * Class to represent the a service Schema
-     * @class Field
-     * @param {string}      name         field name
-     * @param {string}      label        field label (human format)
-     * @param {string}      description  field description
-     * @param {string}      type         datatype of the field
-     * @param {boolean}     required     `true` if the field is required
-     * @param {any}         defaultValue default value of the field
-     * @param {Set<string>} flags        field flags
+     * Constructor for the Field class.
+     * @param {string}      name         Field name.
+     * @param {string}      label        Field label (human format).
+     * @param {string}      description  Field description.
+     * @param {string}      type         Datatype of the field.
+     * @param {boolean}     required     `true` if the field is required.
+     * @param {any}         defaultValue Default value of the field.
+     * @param {Set<string>} flags        Field flags.
      */
     constructor(
         public name: string,
@@ -31,13 +34,13 @@ export default class Field {
     ) {}
 
     /**
-     * Deserialize an object into an `Field` instance
+     * Deserialize an object into an `Field` instance.
      * @function deserialize
      * @static
      * @memberof Field
-     * @param    {string}                  name     Name of the field
-     * @param    {Record<string, unknown>} data     Javascript object of the Field
-     * @returns  {Field}                           `Field` instance
+     * @param    {string}                  name     Name of the field.
+     * @param    {Record<string, unknown>} data     Javascript object of the Field.
+     * @returns  {Field}                           `Field` instance.
      */
     static deserialize(name: string, data: FieldType): Field {
         // Test if the values are present
@@ -81,10 +84,10 @@ export default class Field {
     }
 
     /**
-     * Serialize an Field instance into an object
+     * Serialize an Field instance into an object.
      * @function serialize
      * @memberof Field
-     * @returns  {Record<string, unknown>} Javascript object
+     * @returns  {Record<string, unknown>} Javascript object.
      */
     serialize(): FieldType {
         return {

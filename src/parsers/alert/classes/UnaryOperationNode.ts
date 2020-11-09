@@ -10,9 +10,22 @@ import { Token } from '../../shared/classes';
 // Relationship specific
 import { AlertNode, AlertRule } from '.';
 
+/**
+ * Class for representing a unary operation node.
+ * @class UnaryOperationNode
+ */
 export default class UnaryOperationNode implements AlertNode {
+    /**
+     * Constructor for a unary operation node.
+     * @param {Token}     operationToken The type of operation token.
+     * @param {AlertNode} node           The node that is getting affected.
+     */
     constructor(public operationToken: Token, public node: AlertNode) {}
 
+    /**
+     * Runs the node.
+     * @param {AlertRule} _ Alert rule.
+     */
     run(_: AlertRule): void {
         throw Error('not implemented');
     }

@@ -11,11 +11,15 @@ import { MethodType, PathType } from '../types';
 
 type methods = 'get' | 'post' | 'head' | 'delete' | 'put' | 'patch' | 'options';
 
+/**
+ * Class to represent a Path for an API.
+ * @class Path
+ */
 export default class Path {
     /**
-     * Class to represent a Path for an API
-     * @param {string}                 path    a string of the path
-     * @param {Record<string, Method>} methods An object of HTTP methods
+     * Constructor for an API Path.
+     * @param {string}                 path    A string of the path.
+     * @param {Record<string, Method>} methods An object of HTTP methods.
      */
     constructor(
         public path: string,
@@ -23,12 +27,13 @@ export default class Path {
     ) {}
 
     /**
-     * Deserialize an object into an `Info` instance
+     * Deserialize an object into an `Info` instance.
      * @function deserialize
      * @static
      * @memberof Path
-     * @param    {object} data Javascript object of the Path
-     * @returns  {Path}        `Path` instance
+     * @param    {string}                     path    Path string.
+     * @param    {Record<string, MethodType>} methods Object of methods.
+     * @returns  {Path}                               `Path` instance.
      */
     static deserialize(
         path: string,
@@ -46,10 +51,10 @@ export default class Path {
     }
 
     /**
-     * Serialize a Path instance into an object
+     * Serialize a Path instance into an object.
      * @function serialize
      * @memberof Path
-     * @returns  {PathType} Javascript object
+     * @returns  {PathType} Javascript object.
      */
     serialize(): PathType {
         return Object.assign(

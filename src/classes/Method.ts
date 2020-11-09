@@ -8,6 +8,10 @@
 import { Response } from '.';
 import { MethodType } from '../types';
 
+/**
+ * Class to represent a `method` for a `path` for an `API`.
+ * @class Method
+ */
 export default class Method {
     private internalServerError = new Response(
         '500',
@@ -16,45 +20,43 @@ export default class Method {
         'INTERNAL',
     );
     /**
-     * Class to represent a `method` for a `path` for an `API`
-     * @class Method
-     * @param {string}          type        method type
-     * @param {string}          label       label of the method
-     * @param {string}          description description of the method
-     * @param {array<Response>} _responses  responces for the method
+     * Contructor for an API Method.
+     * @param {string}                   type        Method type.
+     * @param {string}                   label       Label of the method.
+     * @param {string}                   description Description of the method.
+     * @param {Record<string, Response>} _responses  Responces for the method.
      */
     constructor(
         public type: string,
         public label: string,
         public description: string | null,
-        private _responses: { [key: string]: Response },
+        private _responses: Record<string, Response>,
     ) {}
 
     /**
-     * Deserialize an object into an `Method` instance
+     * Deserialize an object into an `Method` instance.
      * @function deserialize
      * @static
      * @memberof Method
-     * @param    {object} data Javascript object of the Method
-     * @returns  {Method}      `Method` instance
+     * @param    {string} type Type of the method.
+     * @param    {object} data Javascript object of the Method.
+     * @returns  {Method}      `Method` instance.
      */
     static deserialize(type: string, data: MethodType): Method {
         // test the datatypes
-        /**
-        type responsesType = Record<string, Record<string, unknown>>;
-        let responses: responsesType;
-        if (typeof data.label != 'string')
-            throw Error(`label: ${data.label} is not a string`);
-        if (
-            typeof data.description != 'undefined' &&
-            typeof data.description != 'string'
-        )
-            throw Error(`description: ${data.description} is not a string`);
-        if (typeof data.responses != 'object' && data.responses != null) {
-            throw Error(`responses: ${data.responses} is not an object`);
-        } else {
-            responses = <responsesType>data.responses;
-        }*/
+        // type responsesType = Record<string, Record<string, unknown>>;
+        // let responses: responsesType;
+        // if (typeof data.label != 'string')
+        //     throw Error(`label: ${data.label} is not a string`);
+        // if (
+        //     typeof data.description != 'undefined' &&
+        //     typeof data.description != 'string'
+        // )
+        //     throw Error(`description: ${data.description} is not a string`);
+        // if (typeof data.responses != 'object' && data.responses != null) {
+        //     throw Error(`responses: ${data.responses} is not an object`);
+        // } else {
+        //     responses = <responsesType>data.responses;
         // create the new method
         return new Method(
             type,
@@ -70,14 +72,14 @@ export default class Method {
     }
 
     /**
-     * Returns the given responses plus the default responces
+     * Returns the given responses plus the default responces.
      *
      * Default responces:
-     * - 500: Internal Server Error
+     * - 500: Internal Server Error.
      *
      * @function responces
      * @memberof Method
-     * @returns  {Record<string, Response>} object of all the responces
+     * @returns  {Record<string, Response>} Object of all the responces.
      */
     get responses(): Record<string, Response> {
         return {
@@ -89,10 +91,10 @@ export default class Method {
     }
 
     /**
-     * Serialize an Method instance into an object
+     * Serialize an Method instance into an object.
      * @function serialize
      * @memberof Method
-     * @returns  {MethodType} Javascript object
+     * @returns  {MethodType} Javascript object.
      */
     serialize(): MethodType {
         return {

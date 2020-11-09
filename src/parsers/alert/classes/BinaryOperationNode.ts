@@ -11,13 +11,28 @@ import { Token } from '../../shared/classes';
 import { AlertNode, AlertRule, NameNode } from '.';
 import { TOKEN_INDEX, TOKEN_COMMA } from '../constants';
 
+/**
+ * Class for representing a binary operation node.
+ * @class BinaryOperationNode
+ */
 export default class BinaryOperationNode implements AlertNode {
+    /**
+     * Constructor for a binary operation node.
+     * @param {AlertNode} leftNode   Left alert node.
+     * @param {Token} operationToken Token of the operator.
+     * @param {AlertNode} rightNode  Right alert node.
+     */
     constructor(
         public leftNode: AlertNode,
         public operationToken: Token,
         public rightNode: AlertNode,
     ) {}
 
+    /**
+     * Runs the alert rule.
+     * @param   {AlertRule} alertRule Alert rule.
+     * @returns {void}
+     */
     run(alertRule: AlertRule): void {
         const leftNode = <NameNode>this.leftNode;
         // create the left node rule

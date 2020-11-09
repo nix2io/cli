@@ -6,4 +6,9 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
+/**
+ * Base class to represent a Node.
+ * @class Node
+ * @abstract
+ */
 export default abstract class Node {}

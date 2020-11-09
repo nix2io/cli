@@ -70,8 +70,6 @@ const displayAuthors = (options: Obj): void => {
         style: { head: ['cyan', 'bold'] },
     });
     for (const author of serviceContext.info.authors) {
-        author.isListening();
-
         table.push([
             author.email,
             author.name || NONE,

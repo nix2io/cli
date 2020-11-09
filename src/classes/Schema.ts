@@ -10,19 +10,21 @@ import Field from './Field';
 import { titleCase } from '../util';
 import { SchemaType } from '../types';
 
+/**
+ * Class to represent the a service Schema.
+ * @class Schema
+ */
 export default class Schema {
-    /**
-     * Class to represent the a service Schema
-     * @class Schema
-     * @param {string} identifier  schema identifier (see docs for format)
-     * @param {string} label       label of the schema
-     * @param {string} description description of the schema
-     * @param {string} pluralName  plural name of the schema
-     * @param {object} _fields     dict of the fields
-     */
-
     private id: Field;
 
+    /**
+     * Constructor for a `Schema`.
+     * @param {string} identifier  Schema identifier (see docs for format).
+     * @param {string} label       Label of the schema.
+     * @param {string} description Description of the schema.
+     * @param {string} pluralName  Plural name of the schema.
+     * @param {object} _fields     Object of the fields.
+     */
     constructor(
         public identifier: string,
         public label: string,
@@ -42,12 +44,12 @@ export default class Schema {
     }
 
     /**
-     * Deserialize an object into an `Schema` instance
+     * Deserialize an object into an `Schema` instance.
      * @function deserialize
      * @static
      * @memberof Schema
-     * @param   data Javascript object of the Schema
-     * @returns      `Schema` instance
+     * @param   {SchemaType} data Javascript object of the Schema.
+     * @returns {Schema}          `Schema` instance.
      */
     static deserialize(data: SchemaType): Schema {
         // Test if the values are present
@@ -85,10 +87,10 @@ export default class Schema {
     }
 
     /**
-     * Serialize an Schema instance into an object
+     * Serialize an Schema instance into an object.
      * @function serialize
      * @memberof Schema
-     * @returns Javascript object
+     * @returns {SchemaType} Javascript object.
      */
     serialize(): SchemaType {
         return {
@@ -107,10 +109,10 @@ export default class Schema {
     }
 
     /**
-     * Get all fields including the identifier
+     * Get all fields including the identifier.
      * @function fields
      * @memberof Schema
-     * @returns  {Record<string, Field>} Object of all fields
+     * @returns  {Record<string, Field>} Object of all fields.
      */
     get fields(): { [id: string]: Field } {
         return Object.assign(
@@ -122,10 +124,10 @@ export default class Schema {
     }
 
     /**
-     * Returns the name of the schema in PascaleCase
+     * Returns the name of the schema in PascaleCase.
      * @function pascalCase
      * @memberof Schema
-     * @returns {string} Formatted schema name
+     * @returns {string} Formatted schema name.
      */
     get pascalCase(): string {
         return titleCase(this.label).replace(/ /g, '');

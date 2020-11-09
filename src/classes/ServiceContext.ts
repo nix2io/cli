@@ -10,7 +10,7 @@ import Info from './Info';
 import Schema from './Schema';
 import yaml = require('js-yaml');
 import fs = require('fs');
-import { Obj, ServiceContextType } from '../types';
+import { Obj, ServiceContextType, MakeObjectType } from '../types';
 import { dirname, join } from 'path';
 import path = require('path');
 import { getServiceContextPath, titleCase } from '../util';
@@ -26,12 +26,6 @@ type QuestionType = Record<
         prompt: inquirer.Question;
     }
 >;
-type MakeObjectType = {
-    identifier: string;
-    label: string;
-    description: string;
-    userLeadDev: boolean;
-};
 
 /**
  * Abstract class to represent a service context.
@@ -127,6 +121,7 @@ export default abstract class ServiceContext {
 
     /**
      * Make a `ServiceContext` object.
+     * @static
      * @param {MakeObjectType} data Data for the `ServiceContext` object.
      * @param {User}           user User instance.
      * @returns {ServiceContextType} New `ServiceContext` object.

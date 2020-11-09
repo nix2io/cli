@@ -7,16 +7,24 @@
  */
 import { TypescriptServiceContext } from '..';
 import { Info, Schema, User } from '../..';
-import { GraphQLServiceContextType, SchemaType } from '../../../types';
+import {
+    GraphQLServiceContextType,
+    MakeObjectType,
+    SchemaType,
+} from '../../../types';
 
 type DependenciesType = Record<string, string>;
+
+/**
+ * Class for representing a GraphQL Service.
+ * @class GraphQLServiceContext
+ */
 export default class GraphQLServiceContext extends TypescriptServiceContext {
     static NAME = 'graphql';
     static DIRNAME: string = __dirname;
 
     /**
-     * Class to represent an GraphQL Service context.
-     * @class GraphQLServiceContext
+     * Constructor for the GraphQL service context.
      * @param {string}               serviceFilePath Path to the service.yaml.
      * @param {Info}                 info            Info of the service.
      * @param {Array<Schema>}        schemas         List of service schemas.
@@ -54,13 +62,15 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
         );
     }
 
+    /**
+     * Make a `GraphQLServiceContext` object.
+     * @static
+     * @param   {MakeObjectType}       data Data for the `GraphQLServiceContext` object.
+     * @param   {User}                 user User instance.
+     * @returns {GraphQLServiceContextType} New `GraphQLServiceContext` object.
+     */
     static makeObject(
-        data: {
-            identifier: string;
-            label: string;
-            description: string;
-            userLeadDev: boolean;
-        },
+        data: MakeObjectType,
         user: User,
     ): GraphQLServiceContextType {
         return {

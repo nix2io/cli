@@ -15,10 +15,16 @@ const flagInheritence = {
     leadDev: 'dev',
 };
 
+/**
+ * Class to represent the a service Author.
+ * @class Author
+ */
 export default class Author {
+    public inherited_flags: Set<string>;
+    public alertRule: AlertRule;
+
     /**
-     * Class to represent the a service Author.
-     * @class Author
+     * Constructor for Author.
      * @param {string}      email        Email of the author (used as an identifier).
      * @param {string}      name         Full name of the author.
      * @param {string}      publicEmail  Email to display for public use.
@@ -26,9 +32,6 @@ export default class Author {
      * @param {string}      alert        String for alert options.
      * @param {Set<string>} flags        Set of flags for the author.
      */
-    public inherited_flags: Set<string>;
-    public alertRule: AlertRule;
-
     constructor(
         public email: string,
         public name: string | null,
@@ -148,9 +151,5 @@ export default class Author {
         // console.log(rule?.toString());
         if (rule == null) throw Error('rule is null');
         this.alertRule = rule;
-    }
-
-    isListening(): void {
-        throw Error('NOT IMPLEMENTED');
     }
 }

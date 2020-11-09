@@ -13,11 +13,15 @@ import PackageJSONType from '../../../types/PackageJSONType';
 import { authed, user } from '../../../user';
 import { execSync } from 'child_process';
 
+/**
+ * Class to represent a Typescript Service context.
+ * @class TypescriptServiceContext
+ */
 export default abstract class TypescriptServiceContext extends ServiceContext {
     static NAME = 'typescript';
 
     /**
-     * Class to represent a Typescript Service context.
+     * Constructor for the Typescript service context.
      * @class TypescriptServiceContext
      * @param {string}                  serviceFilePath Path to the service.yaml.
      * @param {Info}                    info            `Info` object of the service.

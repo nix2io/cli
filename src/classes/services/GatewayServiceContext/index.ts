@@ -9,21 +9,31 @@
 import { Info, Schema, ServiceContext } from '../..';
 import { SchemaType, ServiceContextType } from '../../../types';
 
+/**
+ * Class for representing a Gateway Service Context.
+ * @class GatewayServiceContext
+ */
 export default class GatewayServiceContext extends ServiceContext {
     static NAME = 'gateway';
 
+    /**
+     * Constructor for the `GatewayServiceContext`.
+     * @param {string} serviceFilePath Path to the service.yaml.
+     * @param {Info} info              `Info` for the service.
+     * @param {Schema[]} schemas        Array for of Schemas.
+     */
     constructor(serviceFilePath: string, info: Info, schemas: Schema[]) {
         super(serviceFilePath, info, 'gateway', schemas);
     }
 
     /**
-     * Deserialize an object into an `GatewayServiceContext` instance
+     * Deserialize an object into an `GatewayServiceContext` instance.
      * @function deserialize
      * @static
      * @memberof GatewayServiceContext
-     * @param   {string} serviceFilePath path to the service.yaml
-     * @param   {object} data            Javascript object of the Info
-     * @returns {GatewayServiceContext}      Service context object
+     * @param   {string} serviceFilePath Path to the service.yaml.
+     * @param   {object} data            Javascript object of the Info.
+     * @returns {GatewayServiceContext}  Service context object.
      */
     static deserialize(
         serviceFilePath: string,
