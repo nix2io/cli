@@ -9,42 +9,47 @@
 import { CONFIG_FILE_PATH } from './constants';
 import fs = require('fs');
 
+/**
+ * Class for managing config.
+ * @class Config
+ */
 class Config {
-    /**
-     * Class for managing config
-     * @class Config
-     */
     private config: Record<string, unknown>;
 
+    /**
+     * Constructor for config.
+     */
     constructor() {
         this.config = JSON.parse(fs.readFileSync(CONFIG_FILE_PATH, 'utf-8'));
     }
 
     /**
-     * Write the current config to disk
+     * Write the current config to disk.
      * @function write
      * @memberof Config
+     * @returns {void}
      */
-    write() {
+    write(): void {
         fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(this.config));
     }
 
     /**
-     * Test if a config key is set
+     * Test if a config key is set.
      * @function has
      * @memberof Config
-     * @param   {string} name Name of the config key
-     * @returns {boolean}     `true` if the config key exists
+     * @param   {string} name Name of the config key.
+     * @returns {boolean}     `true` if the config key exists.
      */
     has(name: string): boolean {
         return Object.keys(this.config).indexOf(name) != -1;
     }
 
     /**
-     * Get the value for a config key
+     * Get the value for a config key.
      * @function get
      * @memberof Config
-     * @param name
+     * @param   {string} name Name of the config variable.
+     * @returns {unknown}     The value from config.
      */
     get(name: string): unknown {
         if (!this.has(name)) return null;
@@ -52,11 +57,11 @@ class Config {
     }
 
     /**
-     * Set the value of a config key
+     * Set the value of a config key.
      * @function set
      * @memberof Config
-     * @param {string} name  Name of the config key
-     * @param {any}    value Value
+     * @param {string} name  Name of the config key.
+     * @param {any}    value Value that was set.
      */
     set(name: string, value: unknown) {
         this.config[name] = value;

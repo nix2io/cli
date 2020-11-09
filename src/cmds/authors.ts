@@ -14,24 +14,24 @@ import { getServiceContext } from '../service';
 import inquirer = require('inquirer');
 import colors = require('colors');
 import Table = require('cli-table');
+import { Obj } from '../types';
 
-/**
-const getAuthorData = (authorData: { [key: string]: any; }, callback: Function) => {
-    const cachedAuthors = cache.get('authors');
-    const email = authorData.email;
-    if (Object.keys(cachedAuthors).indexOf(email) != -1) {
-        const cachedAuthor = cachedAuthors[email]
-        authorData = {
-            email: authorData.email || cachedAuthor.email,
-            name: authorData.name || cachedAuthor.name || null,
-            publicEmail: authorData.publicEmail || cachedAuthor.publicEmail || null,
-            url: authorData.url || cachedAuthor.url || null,
-            alert: authorData.alert || cachedAuthor.alert || null,
-            flags: authorData.flags || cachedAuthor.flags
-        };
-    }
-    callback(authorData);
-} */
+// const getAuthorData = (authorData: { [key: string]: any; }, callback: Function) => {
+//     const cachedAuthors = cache.get('authors');
+//     const email = authorData.email;
+//     if (Object.keys(cachedAuthors).indexOf(email) != -1) {
+//         const cachedAuthor = cachedAuthors[email]
+//         authorData = {
+//             email: authorData.email || cachedAuthor.email,
+//             name: authorData.name || cachedAuthor.name || null,
+//             publicEmail: authorData.publicEmail || cachedAuthor.publicEmail || null,
+//             url: authorData.url || cachedAuthor.url || null,
+//             alert: authorData.alert || cachedAuthor.alert || null,
+//             flags: authorData.flags || cachedAuthor.flags
+//         };
+//     }
+//     callback(authorData);
+// }
 
 const createAuthorObject = (
     email: string,
@@ -57,18 +57,8 @@ const createAuthorObject = (
         flags,
     };
 };
-/**
-const colorsStrings = (obj: { [key: string]: any; }) => {
-    for (const key in obj) {
-        let value = obj[key];
-        if (typeof value == "string") value = colors.green(value);
-        if (typeof value == "object") value = colorsStrings(value);
-        obj[key] = value;
-    }
-    return obj;
-} */
 
-const displayAuthors = (options: any): void => {
+const displayAuthors = (options: Obj): void => {
     const serviceContext = getServiceContext(options);
     if (serviceContext == null) {
         console.error(colors.red('No service context'));
@@ -80,8 +70,6 @@ const displayAuthors = (options: any): void => {
         style: { head: ['cyan', 'bold'] },
     });
     for (const author of serviceContext.info.authors) {
-        author.isListening();
-
         table.push([
             author.email,
             author.name || NONE,

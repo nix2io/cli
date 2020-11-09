@@ -6,7 +6,17 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
+/**
+ * Class for representing a Token.
+ */
 export default class Token {
+    /**
+     * Constructor for a Token.
+     * @param {string}        type          Token type.
+     * @param {string | null} value         Token value.
+     * @param {number | null} positionStart Token starting position.
+     * @param {number | null} positionEnd   Token ending position.
+     */
     constructor(
         public type: string,
         public value: string | null = null,

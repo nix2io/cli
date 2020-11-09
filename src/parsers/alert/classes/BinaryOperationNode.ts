@@ -11,40 +11,42 @@ import { Token } from '../../shared/classes';
 import { AlertNode, AlertRule, NameNode } from '.';
 import { TOKEN_INDEX, TOKEN_COMMA } from '../constants';
 
+/**
+ * Class for representing a binary operation node.
+ * @class BinaryOperationNode
+ */
 export default class BinaryOperationNode implements AlertNode {
+    /**
+     * Constructor for a binary operation node.
+     * @param {AlertNode} leftNode   Left alert node.
+     * @param {Token} operationToken Token of the operator.
+     * @param {AlertNode} rightNode  Right alert node.
+     */
     constructor(
         public leftNode: AlertNode,
         public operationToken: Token,
         public rightNode: AlertNode,
     ) {}
 
+    /**
+     * Runs the alert rule.
+     * @param   {AlertRule} alertRule Alert rule.
+     * @returns {void}
+     */
     run(alertRule: AlertRule): void {
-        /**
-         * left  :  AlertNode("git")
-         * op    :  index
-         * right :  AlertNode("pr")
-         *
-         * AlertRuleName("git").addRule(AlertRuleName("pr"))
-         *
-         * *
-         * AlertRule().all = true
-         *
-         *
-         *
-         */
-        let leftNode = <NameNode>this.leftNode;
+        const leftNode = <NameNode>this.leftNode;
         // create the left node rule
-        let left = new AlertRule(leftNode.token.value!);
+        const left = new AlertRule(<string>leftNode.token.value);
 
         if (this.operationToken.type == TOKEN_INDEX) {
-            let rightNode = <NameNode>this.rightNode;
+            const rightNode = <NameNode>this.rightNode;
             // create the right node rule
-            let right = new AlertRule(rightNode.token.value!);
+            const right = new AlertRule(<string>rightNode.token.value);
             left.addRule(right);
         } else if (this.operationToken.type == TOKEN_COMMA) {
-            let rightNode = <NameNode>this.rightNode;
+            const rightNode = <NameNode>this.rightNode;
             // create the right node rule
-            let right = new AlertRule(rightNode.token.value!);
+            const right = new AlertRule(<string>rightNode.token.value);
             alertRule.addRule(right);
         }
 

@@ -15,20 +15,23 @@ const flagInheritence = {
     leadDev: 'dev',
 };
 
+/**
+ * Class to represent the a service Author.
+ * @class Author
+ */
 export default class Author {
-    /**
-     * Class to represent the a service Author
-     * @class Author
-     * @param {string}      email        Email of the author (used as an identifier)
-     * @param {string}      name         Full name of the author
-     * @param {string}      publicEmail  Email to display for public use
-     * @param {string}      url          URL of the author
-     * @param {string}      alert        String for alert options
-     * @param {Set<string>} flags        Set of flags for the author
-     */
     public inherited_flags: Set<string>;
     public alertRule: AlertRule;
 
+    /**
+     * Constructor for Author.
+     * @param {string}      email        Email of the author (used as an identifier).
+     * @param {string}      name         Full name of the author.
+     * @param {string}      publicEmail  Email to display for public use.
+     * @param {string}      url          URL of the author.
+     * @param {string}      alert        String for alert options.
+     * @param {Set<string>} flags        Set of flags for the author.
+     */
     constructor(
         public email: string,
         public name: string | null,
@@ -43,12 +46,12 @@ export default class Author {
     }
 
     /**
-     * Deserialize an object into an `Author` instance
+     * Deserialize an object into an `Author` instance.
      * @function deserialize
      * @static
      * @memberof Author
-     * @param   data Javascript object of the Author
-     * @returns      `Author` instance
+     * @param   {AuthorType} data Javascript object of the Author.
+     * @returns {Author}          `Author` instance.
      */
     static deserialize(data: AuthorType): Author {
         // Test if the values are present
@@ -83,10 +86,10 @@ export default class Author {
     }
 
     /**
-     * Serialize an Author instance into an object
+     * Serialize an Author instance into an object.
      * @function serialize
      * @memberof Author
-     * @returns  {Record<string, unknown>} Javascript object
+     * @returns  {Record<string, unknown>} Javascript object.
      */
     serialize(): AuthorType {
         return {
@@ -100,7 +103,7 @@ export default class Author {
     }
 
     /**
-     * Convert the given flags into flags that include all the inherited flags
+     * Convert the given flags into flags that include all the inherited flags.
      * @function updateFlags
      * @private
      * @memberof Author
@@ -120,8 +123,15 @@ export default class Author {
         this.inherited_flags = flags;
     }
 
+    /**
+     * Update the alert rule.
+     * @function updateAlertRule
+     * @memberof Author
+     * @private
+     * @returns {void}
+     */
     private updateAlertRule(): void {
-        let [rule, error] = parseAlert(this.alert);
+        const [rule, error] = parseAlert(this.alert);
         if (error != null) {
             console.log();
             const arrows = colors.red.bold(
@@ -139,8 +149,7 @@ export default class Author {
         }
         // console.log(rule!);
         // console.log(rule?.toString());
-        this.alertRule = rule!;
+        if (rule == null) throw Error('rule is null');
+        this.alertRule = rule;
     }
-
-    isListening() {}
 }

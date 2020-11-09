@@ -17,9 +17,9 @@ import Table = require('cli-table');
 import pluralize = require('pluralize');
 import { parseRelationship } from '../parsers';
 import { CommandContext } from '../parsers/relationship/classes';
-import { FieldType, SchemaType } from '../types';
+import { FieldType, Obj, SchemaType } from '../types';
 
-const displaySchemas = (options: any): void => {
+const displaySchemas = (options: Obj): void => {
     const serviceContext = getServiceContext(options);
     if (serviceContext == null) {
         console.error(colors.red('No service context'));

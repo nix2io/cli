@@ -1,34 +1,26 @@
 import { Client, query } from 'faunadb';
-import { DatabaseListType, EnvironmentDatabasesType } from '.';
+import { DatabaseListType } from '.';
 import { DEFAULT_ENVIRONMENT, ENVIRONMENTS } from '../constants';
 import { Database, DatabaseInstance, Key } from './classes';
 import { DatabaseRef, ServiceDatabaseType, KeyType } from './types';
 const {
     Databases,
     Paginate,
-    Select,
+    // Select,
     Get,
     Map,
     Lambda,
     Var,
     CreateDatabase,
-    MoveDatabase,
+    // MoveDatabase,
     Database: DB,
     CreateKey,
-    Let,
-    Exists,
-    Equals,
-    Not,
-    If,
+    // Let,
+    // Exists,
+    // Equals,
+    // Not,
+    // If,
 } = query;
-
-export const getEnvironments = async (
-    client: Client,
-): Promise<DatabaseListType<object>> => {
-    return await client.query(
-        Map(Paginate(Databases()), Lambda('X', Get(Var('X')))),
-    );
-};
 
 const explodeDatabaseName = (
     dbName: string,
@@ -46,9 +38,7 @@ export const getAllDatabases = async (client: Client): Promise<Database[]> => {
                 console.error(err);
             })
     );
-    let databases: Record<string, Database> = {};
-    // TODO: make this better
-    // let obj: EnvironmentDatabasesType = JSON.parse(JSON.stringify(result));
+    const databases: Record<string, Database> = {};
     for (const database of result.data) {
         const dbId = database.global_id;
         const dbTS = database.ts;
@@ -63,7 +53,10 @@ export const getAllDatabases = async (client: Client): Promise<Database[]> => {
     return Object.values(databases);
 };
 
-export const getDatabases = async (client: Client, name: string) => {
+export const getDatabases = async (
+    client: Client,
+    name: string,
+): Promise<Database> => {
     const result = <ServiceDatabaseType>(
         await client
             .query(
@@ -119,7 +112,7 @@ export const createDatabaseKey = async (
     name: string,
     environment: string,
     keyName: string | null = null,
-) => {
+): Promise<Key> => {
     keyName = keyName || `${name}-access`;
     const result = <KeyType>(<unknown>await client
         .query(

@@ -12,6 +12,8 @@ export { default as Schema } from './Schema';
 export { default as Path } from './Path';
 export { default as Method } from './Method';
 export { default as Response } from './Response';
+export { default as Environment } from './Environment';
+export { default as User } from './User';
 // service contexts
 export { default as ServiceContext } from './ServiceContext';
 // export all the custom service contexts

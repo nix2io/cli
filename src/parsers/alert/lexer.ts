@@ -30,14 +30,18 @@ export default (command: string): [Token[], IllegalCharacterError | null] => {
     let currentCharacter: string | null = null;
 
     /**
-     * Test a string for a valid schema id
-     * TODO: make it the identifier regex
-     * @param {string} str
+     * Test a string for a valid schema id.
+     *
+     * TODO: make it the identifier regex.
+     * @param {string} str String to test.
+     * @returns {boolean} True if the string is a letter, false if not.
      */
-    const isLetter = (str: string | null): boolean => /^[a-zA-Z*]$/.test(str!);
+    const isLetter = (str: string | null): boolean =>
+        str != null && /^[a-zA-Z*]$/.test(str);
 
     /**
-     * Advance the lexer position and char
+     * Advance the lexer position and char.
+     * @returns {void}
      */
     const advance = (): void => {
         position++;
@@ -48,7 +52,8 @@ export default (command: string): [Token[], IllegalCharacterError | null] => {
     };
 
     /**
-     * Make a Alert name
+     * Make a Alert name.
+     * @returns {Token} New Alert Name token.
      */
     const makeName = (): Token => {
         const positionStart = position;
@@ -63,7 +68,7 @@ export default (command: string): [Token[], IllegalCharacterError | null] => {
     advance();
 
     // create the tokens list
-    let tokens: Token[] = [];
+    const tokens: Token[] = [];
     // advance through the command till the char is null
     while (currentCharacter != null) {
         // ignore spaces

@@ -9,8 +9,24 @@
 import { Token } from '../../shared/classes';
 import { AlertNode, AlertRule } from '.';
 
-export default class NameNode implements AlertNode {
+/**
+ * Class for representing an alert name node.
+ * @class AlertNameNode
+ */
+export default class AlertNameNode implements AlertNode {
+    /**
+     * Constructor for an alert name node.
+     * @param {Token} token Token with the value of the alert name.
+     */
     constructor(public token: Token) {}
 
-    run(_: AlertRule): void {}
+    /**
+     * Runs the node.
+     * @function run
+     * @memberof RelationshipNameNode
+     * @param {AlertRUle} _ Alert rule.
+     */
+    run(_: AlertRule): void {
+        throw Error('not implemented');
+    }
 }

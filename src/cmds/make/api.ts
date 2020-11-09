@@ -123,6 +123,7 @@ const generateOpenAPI = (serviceContext: APIServiceContext) => {
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data: Record<string, any> = {
         openapi: '3.0.0',
         info: {

@@ -7,10 +7,7 @@
  */
 
 import config from './config';
-
-class User {
-    constructor(public email: string, public name: string) {}
-}
+import { User } from './classes';
 
 const userObj = <
     {

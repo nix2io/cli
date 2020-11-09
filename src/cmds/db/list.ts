@@ -9,7 +9,7 @@
 import * as commander from 'commander';
 import ora = require('ora');
 import * as colors from 'colors';
-import { getClient, getAllDatabases, DatabaseListType } from '../../db';
+import { getClient, getAllDatabases } from '../../db';
 
 export default (db: commander.Command): void => {
     db.command('list')

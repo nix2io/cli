@@ -6,21 +6,28 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 import { TypescriptServiceContext } from '..';
-import { Info, Schema, Path } from '../..';
-import { APIServiceContextType } from '../../../types';
+import { Info, Schema, Path, User } from '../..';
+import {
+    APIServiceContextType,
+    SchemaType,
+    MakeObjectType,
+} from '../../../types';
 
+/**
+ * Class for representing an API Service Context.
+ * @class APIServiceContext
+ */
 export default class APIServiceContext extends TypescriptServiceContext {
     static NAME = 'api';
 
     public paths: { [key: string]: Path };
 
     /**
-     * Class to represent an API Service context
-     * @class APIServiceContext
-     * @param {string}               filePath path to the service.yaml
-     * @param {Info}                 info     info of the service
-     * @param {Array<Schema>}        schemas  list of service schemas
-     * @param {Record<string, Path>} paths    object of paths for the API
+     * Constructer for an API Service context.
+     * @param {string}               serviceFilePath Path to the service.yaml.
+     * @param {Info}                 info            Info of the service.
+     * @param {Array<Schema>}        schemas         List of service schemas.
+     * @param {Record<string, Path>} paths           Object of paths for the API.
      */
     constructor(
         serviceFilePath: string,
@@ -33,13 +40,13 @@ export default class APIServiceContext extends TypescriptServiceContext {
     }
 
     /**
-     * Deserialize an object into an `APIServiceContext` instance
+     * Deserialize an object into an `APIServiceContext` instance.
      * @function deserialize
      * @static
      * @memberof APIServiceContext
-     * @param   {string} serviceFilePath path to the service.yaml
-     * @param   {object} data            Javascript object of the Info
-     * @returns {APIServiceContext}      Service context object
+     * @param   {string} serviceFilePath Path to the service.yaml.
+     * @param   {object} data            Javascript object of the Info.
+     * @returns {APIServiceContext}      Service context object.
      */
     static deserialize(
         serviceFilePath: string,
@@ -55,7 +62,7 @@ export default class APIServiceContext extends TypescriptServiceContext {
         return new APIServiceContext(
             serviceFilePath,
             Info.deserialize(data.info),
-            Object.values(data.schemas).map((schema: any) =>
+            Object.values(data.schemas).map((schema: SchemaType) =>
                 Schema.deserialize(schema),
             ),
             Object.assign(
@@ -67,14 +74,15 @@ export default class APIServiceContext extends TypescriptServiceContext {
         );
     }
 
+    /**
+     * Make a `APIServiceContext` object.
+     * @param {MakeObjectType} data Data for the `ServiceContext` object.
+     * @param {User}           user User instance.
+     * @returns {APIServiceContextType} New `APIServiceContext` object.
+     */
     static createObject(
-        data: {
-            identifier: string;
-            label: string;
-            description: string;
-            userLeadDev: boolean;
-        },
-        user: any,
+        data: MakeObjectType,
+        user: User,
     ): APIServiceContextType {
         return {
             ...super.makeObject(data, user),
@@ -85,10 +93,10 @@ export default class APIServiceContext extends TypescriptServiceContext {
     }
 
     /**
-     * Serialize a `APIServiceContext` instance into an object
+     * Serialize a `APIServiceContext` instance into an object.
      * @function serialize
      * @memberof APIServiceContext
-     * @returns  {APIServiceContextType} Javascript object
+     * @returns  {APIServiceContextType} Javascript object.
      */
     serialize(): APIServiceContextType {
         return {

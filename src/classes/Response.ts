@@ -14,6 +14,10 @@ type statusClasses =
     | 'success'
     | 'informational';
 
+/**
+ * Class to represent an api response for a method.
+ * @class Response
+ */
 export default class Response {
     public codeInfo: {
         label: string;
@@ -21,12 +25,11 @@ export default class Response {
     };
 
     /**
-     * Class to represent an api response for a method
-     * @class Response
-     * @param {string} code         the HTTP status code of the response
-     * @param {string} description  a description of the response
-     * @param {string} returnType   the return type of the response
-     * @param {string} errorMessage the message to display on an error
+     * Constructor for an API response.
+     * @param {string} code         The HTTP status code of the response.
+     * @param {string} description  A description of the response.
+     * @param {string} returnType   The return type of the response.
+     * @param {string} errorMessage The message to display on an error.
      */
     constructor(
         public code: string,
@@ -44,13 +47,13 @@ export default class Response {
     }
 
     /**
-     * Deserialize an object into an `Method` instance
+     * Deserialize an object into an `Method` instance.
      * @function deserialize
      * @static
      * @memberof Response
-     * @param    {string}       code HTTP status code
-     * @param    {ResponseType} data Javascript object of the Method
-     * @returns  {Response}    `Response` instance
+     * @param    {string}       code HTTP status code.
+     * @param    {ResponseType} data Javascript object of the `Method`.
+     * @returns  {Response}          `Response` instance.
      */
     static deserialize(code: string, data: ResponseType): Response {
         // Test if the values are present
@@ -79,20 +82,20 @@ export default class Response {
     }
 
     /**
-     * The response successfull code
+     * The response successfull code.
      * @function isOK
      * @memberof Response
-     * @returns  {boolean} `true` if the response is a successful code
+     * @returns  {boolean} `true` if the response is a successful code.
      */
     get isOK(): boolean {
         return this.isStatusClass('success');
     }
 
     /**
-     * The response an error code
+     * The response an error code.
      * @function isError
      * @memberof Response
-     * @returns  {boolean} `true` if the response is an error code
+     * @returns  {boolean} `true` if the response is an error code.
      */
     get isError(): boolean {
         return (
@@ -102,10 +105,10 @@ export default class Response {
     }
 
     /**
-     * Serialize a Response instance into an object
+     * Serialize a Response instance into an object.
      * @function serialize
      * @memberof Response
-     * @returns  {ResponseType} Response type shape
+     * @returns  {ResponseType} Response type shape.
      */
     serialize(): ResponseType {
         return {
@@ -116,10 +119,10 @@ export default class Response {
     }
 
     /**
-     * Returns the class based off the status code
+     * Returns the class based off the status code.
      * @function getStatusClass
      * @memberof Response
-     * @returns  {string} class of the status code
+     * @returns  {string} Class of the status code.
      */
     getStatusClass(): statusClasses {
         const code = parseInt(this.code);
@@ -132,11 +135,11 @@ export default class Response {
     }
 
     /**
-     * Compaires a given status class to the Response's status class
+     * Compaires a given status class to the Response's status class.
      * @function isStatusClass
      * @memberof Response
-     * @param   {string} _class string of the response class to check
-     * @returns {boolean}       `true` if the given class is what the response class is
+     * @param   {string} _class String of the response class to check.
+     * @returns {boolean}       `true` if the given class is what the response class is.
      */
     isStatusClass(_class: statusClasses): boolean {
         return this.getStatusClass() == _class;

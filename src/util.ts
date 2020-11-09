@@ -1,20 +1,26 @@
 import path = require('path');
 import colors = require('colors');
 import { SERVICE_FILE_NAME } from './constants';
+import { Obj, Any } from './types';
 
-export const getRootOptions = (options: any): any => {
-    while (options.name() != 'nix-cli') {
-        options = options.parent;
+export const getRootOptions = (options: Obj): Obj => {
+    while (
+        !!options.name && // name is defined
+        typeof options.name == 'function' && // name is a function
+        options.name() != 'nix-cli'
+    ) {
+        options = <Obj>options.parent;
     }
     return options;
 };
 
 // get a path to the service directory
 export const getServiceContextPath = (
-    options: any,
+    options: Obj,
     overwriteDir: string | undefined = undefined,
-) => {
-    const pathChange = overwriteDir || getRootOptions(options).dir || '.';
+): string => {
+    const pathChange =
+        overwriteDir || <string>getRootOptions(options).dir || '.';
     return path.join(
         path.isAbsolute(pathChange)
             ? pathChange
@@ -23,9 +29,9 @@ export const getServiceContextPath = (
 };
 
 export const getServiceContextFilePath = (
-    options: any,
+    options: Obj,
     overwriteDir: string | undefined = undefined,
-) => {
+): string => {
     return path.join(
         getServiceContextPath(options, overwriteDir),
         SERVICE_FILE_NAME,
@@ -34,24 +40,26 @@ export const getServiceContextFilePath = (
 
 export const formatString = (
     string: string,
-    obj: { [key: string]: any },
+    obj: Record<string, string | null>,
 ): string => {
-    for (let key in obj) {
+    for (const key in obj) {
         let value = obj[key];
+        if (value == null) value = 'null';
         string = string.replace(new RegExp(`{${key}}`, 'g'), value);
     }
     return string;
 };
 
-export const titleCase = (str: string) =>
+export const titleCase = (str: string): string =>
     str.replace(/\w\S*/g, function (txt) {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
 
-export const prettyPrint = (v: any) => console.log(prettyFormat(v));
+export const prettyPrint = (v: unknown): void =>
+    console.log(prettyFormat(<Any>v));
 
 const prettyFormat = (
-    v: any,
+    v: Any,
     tabIndex = 0,
     lastElementList = false,
 ): string => {
@@ -72,7 +80,8 @@ const prettyFormat = (
     if (typeof v == 'object') {
         let s = '';
         let i = 0;
-        for (let key in v) {
+        if (v instanceof Set) throw Error('should not be a set');
+        for (const key in v) {
             s += `${
                 i == 0 && lastElementList ? '' : `\n${tab}`
             }${key}: ${prettyFormat(v[key], tabIndex + 1)}`;

@@ -3,8 +3,6 @@ import { strict } from 'assert';
 import { step } from 'mocha-steps';
 import { WORKING_SERVICES } from './const_service';
 import { Schema, ServiceContext } from '../src/classes';
-import ServiceFile from '../src/classes/ServiceFile';
-import YAWN from '../src/yawn';
 
 describe('Service Context', () => {
     for (const i in WORKING_SERVICES) {
@@ -12,7 +10,7 @@ describe('Service Context', () => {
         describe('Mock Service ' + i, () => {
             let serviceContext: ServiceContext;
             step('deserialize returns a ServiceContext instance', () => {
-                serviceContext = ServiceContext.deserialize(new ServiceFile('', new YAWN('')), MOCK_INFO_DATA);
+                serviceContext = ServiceContext.deserialize('', MOCK_INFO_DATA);
                 strict.ok(serviceContext instanceof ServiceContext);
             });
 

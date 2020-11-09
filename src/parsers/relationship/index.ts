@@ -21,6 +21,6 @@ export default (
     const ast = parser(tokens);
     if (ast.error != null) return [null, ast.error];
     const ctx = new CommandContext();
-    ast.node!.run(ctx);
+    ast.node?.run(ctx);
     return [ctx, null];
 };

@@ -10,15 +10,28 @@ import Info from './Info';
 import Schema from './Schema';
 import yaml = require('js-yaml');
 import fs = require('fs');
-import { ServiceContextType } from '../types';
-import { dirname, join, resolve } from 'path';
+import { Obj, ServiceContextType, MakeObjectType } from '../types';
+import { dirname, join } from 'path';
 import path = require('path');
 import { getServiceContextPath, titleCase } from '../util';
 import inquirer = require('inquirer');
 import { user } from '../user';
 import { readCurrentEnvironmentName } from '../environments';
-import Environment from './Environment';
+import { Environment, User } from '.';
 
+type QuestionType = Record<
+    string,
+    {
+        value: string | boolean;
+        prompt: inquirer.Question;
+    }
+>;
+
+/**
+ * Abstract class to represent a service context.
+ * @class ServiceContext
+ * @abstract
+ */
 export default abstract class ServiceContext {
     static NAME: string;
     static DIRNAME: string = __dirname;
@@ -26,13 +39,11 @@ export default abstract class ServiceContext {
     public environment: Environment;
 
     /**
-     * Abstract class to represent a service context
-     * @class ServiceContext
-     * @abstract
-     * @param {string}        serviceFilePath path to the service.yaml
-     * @param {Info}          info            info of the service
-     * @param {string}        type            type of service
-     * @param {Array<Schema>} schemas         list of service schemas
+     * Constructor for the `ServiceContext`.
+     * @param {string}        serviceFilePath Path to the service.yaml.
+     * @param {Info}          info            Info of the service.
+     * @param {string}        type            Type of service.
+     * @param {Array<Schema>} schemas         List of service schemas.
      */
     constructor(
         private serviceFilePath: string,
@@ -46,32 +57,27 @@ export default abstract class ServiceContext {
     }
 
     /**
-     * Returns the service directory
+     * Returns the service directory.
      * @memberof ServiceContext
      * @protected
-     * @returns {string} Path to the directory
+     * @returns {string} Path to the directory.
      */
     get serviceDirectory(): string {
         return dirname(this.serviceFilePath);
     }
 
     /**
-     * Return the inital data for the base Service Context
-     * @param options Options given by the cli
-     * @param user    User object
+     * Return the inital data for the base Service Context.
+     * @param {Obj}  options Options given by the CLI.
+     * @param {User} user    User object.
+     * @returns {QuestionType} Object of questions for inquierer.js.
      */
-    static getInitializeData(options: any, user: any) {
+    static getInitializeData(options: Obj, user: User | null): QuestionType {
         const authed = user != null,
             serviceIdentifier = path.basename(getServiceContextPath(options)),
             serviceLabel = titleCase(serviceIdentifier.replace(/-/g, ' ')),
             serviceDescription = 'A Nix² Service';
-        const data: Record<
-            string,
-            {
-                value: string | boolean;
-                prompt: inquirer.Question;
-            }
-        > = {
+        const data: QuestionType = {
             identifier: {
                 value: serviceIdentifier,
                 prompt: {
@@ -113,14 +119,16 @@ export default abstract class ServiceContext {
         return data;
     }
 
+    /**
+     * Make a `ServiceContext` object.
+     * @static
+     * @param {MakeObjectType} data Data for the `ServiceContext` object.
+     * @param {User}           user User instance.
+     * @returns {ServiceContextType} New `ServiceContext` object.
+     */
     static makeObject(
-        data: {
-            identifier: string;
-            label: string;
-            description: string;
-            userLeadDev: boolean;
-        },
-        user: any,
+        data: MakeObjectType,
+        user: User | null,
     ): ServiceContextType {
         const currentTimestamp = Math.floor(new Date().getTime() / 1000);
         const serviceObject: ServiceContextType = {
@@ -138,7 +146,7 @@ export default abstract class ServiceContext {
             schemas: [],
             type: 'app',
         };
-        if (data.userLeadDev) {
+        if (data.userLeadDev && user != null) {
             serviceObject.info.authors.push({
                 email: user.email,
                 name: user.name,
@@ -152,10 +160,10 @@ export default abstract class ServiceContext {
     }
 
     /**
-     * Serialize a ServiceContext instance into an object
+     * Serialize a ServiceContext instance into an object.
      * @function serialize
      * @memberof ServiceContext
-     * @returns  {ServiceContextType} Javascript object
+     * @returns  {ServiceContextType} Javascript object.
      */
     serialize(): ServiceContextType {
         return {
@@ -166,10 +174,10 @@ export default abstract class ServiceContext {
     }
 
     /**
-     * Writes the current ServiceContext from memory to disk
+     * Writes the current ServiceContext from memory to disk.
      * @function write
      * @memberof ServiceContext
-     * @returns  {boolean} `true` if successfull
+     * @returns  {boolean} `true` if successfull.
      */
     write(): boolean {
         fs.writeFileSync(this.serviceFilePath, yaml.safeDump(this.serialize()));
@@ -177,11 +185,11 @@ export default abstract class ServiceContext {
     }
 
     /**
-     * Get a schema based on the `identifier`
+     * Get a schema based on the `identifier`.
      * @function getSchema
      * @memberof ServiceContext
-     * @param   {string} identifier Identifier of the `Schema` to get
-     * @returns {Schema}            `Schema` to return
+     * @param   {string} identifier Identifier of the `Schema` to get.
+     * @returns {Schema}            `Schema` to return.
      */
     getSchema(identifier: string): Schema | null {
         const match = this.schemas.filter((s) => s.identifier == identifier);
@@ -190,11 +198,11 @@ export default abstract class ServiceContext {
     }
 
     /**
-     * Adds a `Schema` based off a `Schema` object
+     * Adds a `Schema` based off a `Schema` object.
      * @function addSchema
      * @memberof ServiceContext
-     * @param   {Schema} schema `Schema` to add
-     * @returns {Schema}        returns the `Schema` given
+     * @param   {Schema} schema `Schema` to add.
+     * @returns {Schema}        The given `Schema`.
      */
     addSchema(schema: Schema): Schema {
         if (this.getSchema(schema.identifier) != null)
@@ -204,11 +212,11 @@ export default abstract class ServiceContext {
     }
 
     /**
-     * Removes a `Schema` from it's `identifier`
+     * Removes a `Schema` from it's `identifier`.
      * @function removeSchema
      * @memberof ServiceContext
-     * @param    {string} identifier `identifier` of the `Schema` to remove
-     * @returns  {boolean}           `true` if the `Schema` was removed
+     * @param    {string} identifier `identifier` of the `Schema` to remove.
+     * @returns  {boolean}           `true` if the `Schema` was removed.
      */
     removeSchema(identifier: string): boolean {
         const schema = this.getSchema(identifier);
@@ -218,15 +226,15 @@ export default abstract class ServiceContext {
     }
 
     /**
-     * Read the contents of the template file
+     * Read the contents of the template file.
      * @function readTemplate
      * @memberof ServiceContext
      * @example
      * // Returns the file content for main.py
      * serviceContext.getTemplate('ServiceContextType', 'main.py') // app.run('0.0.0.0', port=80)
-     * @param   {string} scope    scope of the service context
-     * @param   {string} fileName template name
-     * @returns {string}          template contents
+     * @param   {string} scope    Scope of the service context.
+     * @param   {string} fileName Template name.
+     * @returns {string}          Template contents.
      */
     readTemplate(scope: string, fileName: string): string {
         const templatePath = join(
@@ -238,10 +246,10 @@ export default abstract class ServiceContext {
     }
 
     /**
-     * Make the lines for the README file
+     * Make the lines for the README file.
      * @function getREADMELines
      * @memberof ServiceContext
-     * @returns {string[]} array of lines for the README
+     * @returns {string[]} Array of lines for the README.
      */
     makeREADMELines(): string[] {
         return [
@@ -251,7 +259,7 @@ export default abstract class ServiceContext {
     }
 
     /**
-     * Create the README.md file
+     * Create the README.md file.
      * @function createREADME
      * @memberof ServiceContext
      * @returns {void}
@@ -265,17 +273,17 @@ export default abstract class ServiceContext {
     }
 
     /**
-     * Makes the lines for file headers
+     * Makes the lines for file headers.
      * @function getFileHeaderLines
      * @memberof ServiceContext
      * @example
      * // Example: returns file header for main.py
      * serviceContext.getFileHeaderLines('main.py') // ['File: main.py', ...]
-     * @param   {string}   fileName name of the file
-     * @returns {string[]}          lines for file headers
+     * @param   {string}   fileName Name of the file.
+     * @returns {string[]}          Lines for file headers.
      */
     makeFileHeaderLines(fileName: string): string[] {
-        let lines = [
+        const lines = [
             `File: ${fileName}`,
             `Created: ${new Date().toISOString()}`,
             '----',
@@ -288,7 +296,7 @@ export default abstract class ServiceContext {
     }
 
     /**
-     * Event listener for after an initialization
+     * Event listener for after an initialization.
      * @function postInit
      * @memberof ServiceContext
      * @returns {void}
@@ -298,10 +306,12 @@ export default abstract class ServiceContext {
     }
 
     /**
-     * Event listener for after a version bump
+     * Event listener for after a version bump.
      * @function postVersionBump
      * @memberof ServiceContext
      * @returns {void}
      */
-    postVersionBump(): void {}
+    postVersionBump(): void {
+        return;
+    }
 }

@@ -20,6 +20,6 @@ export default (command: string): [AlertRule, null] | [null, ParseError] => {
     if (ast.error != null) return [null, ast.error];
     // console.log(JSON.stringify(ast, null, 2));
     const rule = new AlertRule('');
-    ast.node!.run(rule);
+    ast.node?.run(rule);
     return [rule, null];
 };

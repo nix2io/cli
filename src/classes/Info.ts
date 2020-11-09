@@ -11,21 +11,24 @@ import { InfoType } from '../types';
 import VersionBump from './VersionBump';
 import ServiceContext from './ServiceContext';
 
+/**
+ * Class to represent info for a service.
+ * @class Info
+ */
 export default class Info {
     public versionBump: VersionBump;
     public serviceContext: ServiceContext | null = null;
     /**
-     * Class to represent info for a service
-     * @class Info
-     * @param {string}        identifier        Service identifier *see spec for format*
-     * @param {string}        label             service label
-     * @param {string}        description       description of the service
-     * @param {string}        version           version
-     * @param {array<Author>} authors           list of Authors
-     * @param {number}        createdTimestamp  timestamp of service creation
-     * @param {number}        modifiedTimestamp timestamp of service last modified
-     * @param {string}        license           spdx license expression
-     * @param {string}        termsOfServiceURL url for terms of service
+     * Constructor for Info.
+     * @param {string}        identifier        Service identifier *see spec for format*.
+     * @param {string}        label             Service label.
+     * @param {string}        description       Description of the service.
+     * @param {string}        version           Semantic Version.
+     * @param {Author[]}      authors           List of Authors.
+     * @param {number}        createdTimestamp  Timestamp of service creation.
+     * @param {number}        modifiedTimestamp Timestamp of service last modified.
+     * @param {string}        license           Valid SPDX license expression.
+     * @param {string}        termsOfServiceURL Url for terms of service.
      */
     constructor(
         public identifier: string,
@@ -42,30 +45,30 @@ export default class Info {
     }
 
     /**
-     * Date object from the created timestamp
+     * Date object from the created timestamp.
      * @memberof Info
-     * @returns {Data} Date object
+     * @returns {Data} Date object.
      */
     get created(): Date {
         return new Date(this.createdTimestamp * 1000);
     }
 
     /**
-     * Date object from the modified timestamp
+     * Date object from the modified timestamp.
      * @memberof Info
-     * @returns {Data} Date object
+     * @returns {Data} Date object.
      */
     get modified(): Date {
         return new Date(this.modifiedTimestamp * 1000);
     }
 
     /**
-     * Deserialize an object into an `Info` instance
+     * Deserialize an object into an `Info` instance.
      * @function deserialize
      * @static
      * @memberof Info
-     * @param    {object} data Javascript object of the Info
-     * @returns  {Info}        `Info` instance
+     * @param    {object} data Javascript object of the `Info`.
+     * @returns  {Info}        `Info` instance.
      */
     static deserialize(data: InfoType): Info {
         // Test if the values are present
@@ -123,10 +126,10 @@ export default class Info {
     }
 
     /**
-     * Serialize an Author instance into an object
+     * Serialize an Author instance into an object.
      * @function serialize
      * @memberof Author
-     * @returns  {InfoType} Javascript object
+     * @returns  {InfoType} Javascript object.
      */
     serialize(): InfoType {
         return {
@@ -143,11 +146,11 @@ export default class Info {
     }
 
     /**
-     * Returns a list of authors if they have all given flags
+     * Returns a list of authors if they have all given flags.
      * @function getAuthorsByFlags
      * @memberof Info
-     * @param   {Array<string>} flags list of flags
-     * @returns {Array<Author>}       results of authors with the given flags
+     * @param   {Array<string>} flags List of flags.
+     * @returns {Array<Author>}       Results of authors with the given flags.
      */
     getAuthorsByFlags(...flags: string[]): Author[] {
         return this.authors.filter((author) =>
@@ -156,41 +159,41 @@ export default class Info {
     }
 
     /**
-     * Returns a list of authors with the `contributer` flag
+     * Returns a list of authors with the `contributer` flag.
      * @function getContributers
      * @memberof Info
-     * @returns {Array<Author>} results of authors with the `contributer` flag
+     * @returns {Author[]} Results of authors with the `contributer` flag.
      */
     getContributers(): Author[] {
         return this.getAuthorsByFlags('contributer');
     }
 
     /**
-     * Returns a list of authors with the `dev` flag
+     * Returns a list of authors with the `dev` flag.
      * @function getDevs
      * @memberof Info
-     * @returns {Array<Author>} results of authors with the `dev` flag
+     * @returns {Author[]} Results of authors with the `dev` flag.
      */
     getDevs(): Author[] {
         return this.getAuthorsByFlags('dev');
     }
 
     /**
-     * Returns a list of authors with the `leadDev` flag
+     * Returns a list of authors with the `leadDev` flag.
      * @function getLeadDevs
      * @memberof Info
-     * @returns {Array<Author>} results of authors with the `leadDev` flag
+     * @returns {Author[]} Results of authors with the `leadDev` flag.
      */
     getLeadDevs(): Author[] {
         return this.getAuthorsByFlags('leadDev');
     }
 
     /**
-     * Returns an author with a given email address
+     * Returns an author with a given email address.
      * @function getAuthor
      * @memberof Info
-     * @param   {string} email Authors email address
-     * @returns {Author}       results of authors with the `leadDev` flag
+     * @param   {string}        email Authors email address.
+     * @returns {Author | null}       Results of authors with the `leadDev` flag.
      */
     getAuthor(email: string): Author | null {
         const match = this.authors.filter((a) => a.email == email);
@@ -199,16 +202,16 @@ export default class Info {
     }
 
     /**
-     * Create and add an author to the service info
+     * Create and add an author to the service info.
      * @function createAndAddAuthor
      * @memberof Info
-     * @param   {string}      email        Email of the author (used as an identifier)
-     * @param   {string}      name         Full name of the author
-     * @param   {string}      publicEmail  Email to display for public use
-     * @param   {string}      url          URL of the author
-     * @param   {string}      alert        String for alert options
-     * @param   {Set<string>} flags        Set of flags for the author
-     * @returns {Author}                   Created author
+     * @param   {string}      email        Email of the author (used as an identifier).
+     * @param   {string}      name         Full name of the author.
+     * @param   {string}      publicEmail  Email to display for public use.
+     * @param   {string}      url          URL of the author.
+     * @param   {string}      alert        String for alert options.
+     * @param   {Set<string>} flags        Set of flags for the author.
+     * @returns {Author}                   Created author.
      */
     createAndAddAuthor(
         email: string,
@@ -224,11 +227,11 @@ export default class Info {
     }
 
     /**
-     * Add an author to the service info
+     * Add an author to the service info.
      * @function addAuthor
      * @memberof Info
-     * @param   {Author} author Author object to be added
-     * @returns {Author}        Same author given
+     * @param   {Author} author Author object to be added.
+     * @returns {Author}        Same author given.
      */
     addAuthor(author: Author): Author {
         // throw an error if an author w the same email
@@ -239,11 +242,11 @@ export default class Info {
     }
 
     /**
-     * Remove an author with a given email address
+     * Remove an author with a given email address.
      * @function removeAuthor
      * @memberof Info
-     * @param   {string} email Author's email address
-     * @returns {boolean}      `true` if successfully removed
+     * @param   {string} email Author's email address.
+     * @returns {boolean}      `true` if successfully removed.
      */
     removeAuthor(email: string): boolean {
         const author = this.getAuthor(email);

@@ -13,18 +13,23 @@ import PackageJSONType from '../../../types/PackageJSONType';
 import { authed, user } from '../../../user';
 import { execSync } from 'child_process';
 
+/**
+ * Class to represent a Typescript Service context.
+ * @class TypescriptServiceContext
+ */
 export default abstract class TypescriptServiceContext extends ServiceContext {
     static NAME = 'typescript';
 
     /**
-     * Class to represent a Typescript Service context
+     * Constructor for the Typescript service context.
      * @class TypescriptServiceContext
-     * @param {string}                  serviceFilePath path to the service.yaml
-     * @param {Info}                    info            info of the service
-     * @param {Array<Schema>}           schemas         list of service schemas
-     * @param {Record<string, Path>}    paths           object of paths for the API
-     * @param {Record<string, string>} _dependencies    object of dependencies and their verision
-     * @param {Record<string, string>} _devDependencies object of dev dependencies and their verision
+     * @param {string}                  serviceFilePath Path to the service.yaml.
+     * @param {Info}                    info            `Info` object of the service.
+     * @param {string}                  type            The type of Typescript service.
+     * @param {Array<Schema>}           schemas         List of service schemas.
+     * @param {Record<string, string>} _dependencies    Object of dependencies and their verision.
+     * @param {Record<string, string>} _devDependencies Object of dev dependencies and their verision.
+     * @param {Record<string, string>} _scripts         Service defined scrips for package.json.
      */
     constructor(
         serviceFilePath: string,
@@ -39,41 +44,40 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
     }
 
     /**
-     * Object of dependencies and their version
+     * Object of dependencies and their version.
      * @memberof TypescriptServiceContext
      * @function dependencies
-     * @returns {Record<string, string>} Object of package name and version
+     * @returns {Record<string, string>} Object of package name and version.
      */
     get dependencies(): Record<string, string> {
         return { ...this._dependencies, ...{} };
     }
 
     /**
-     * Object of dev dependencies and their version
+     * Object of dev dependencies and their version.
      * @memberof TypescriptServiceContext
      * @function devDependencies
-     * @returns {Record<string, string>} Object of package name and version
+     * @returns {Record<string, string>} Object of package name and version.
      */
     get devDependencies(): Record<string, string> {
         return { ...this._devDependencies, ...PACKAGES.TYPESCRIPT.dev };
     }
 
     /**
-     * Object of the scripts
+     * Object of the scripts.
      * @memberof TypescriptServiceContext
      * @function scripts
-     * @returns {Record<string, string>} Object of the scripts
+     * @returns {Record<string, string>} Object of the scripts.
      */
     get scripts(): Record<string, string> {
         return { ...this._scripts, ...{} };
     }
 
     /**
-     * Read and return the file contents of package.json
+     * Read and return the file contents of package.json.
      * @function readPackageFile
      * @memberof TypescriptServiceContext
-     * @returns {PackageJSONType} Object of package.json
-     * @returns {null}            If no package.json exists
+     * @returns {PackageJSONType | null} Object of package.json or null if package.json does not exist.
      */
     readPackageFile(): PackageJSONType | null {
         const packagePath = join(this.serviceDirectory, 'package.json');
@@ -86,10 +90,10 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
     }
 
     /**
-     * Construct a package.json object
+     * Construct a package.json object.
      * @function makePackageContent
      * @memberof Typescript
-     * @returns {PackageJSONType} package.json object
+     * @returns {PackageJSONType} Package.json object.
      */
     makePackageContent(): PackageJSONType {
         const packageContent: PackageJSONType = {
@@ -107,10 +111,10 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
     }
 
     /**
-     * Write the package.json object to the file
+     * Write the package.json object to the file.
      * @function writePackageFile
      * @memberof Typescript
-     * @param {PackageJSONType} pkg package.json object
+     * @param {PackageJSONType} pkg Package.json object.
      * @returns {void}
      */
     writePackageFile(pkg: PackageJSONType): void {
@@ -121,7 +125,7 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
     }
 
     /**
-     * Create the package.json file
+     * Create the package.json file.
      * @function createPackageFile
      * @memberof Typescript
      * @returns {void}
@@ -131,11 +135,13 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
     }
 
     /**
-     * Return the file header as a comment
-     * @function
-     * @param fileName
+     * Return the file header as a comment.
+     * @function makeFileHeader
+     * @memberof TypescriptServiceContext
+     * @param   {string} fileName File name for the header.
+     * @returns {string}          Header for the Typescript file.
      */
-    makeFileHeader(fileName: string) {
+    makeFileHeader(fileName: string): string {
         return (
             '/*\n' +
             this.makeFileHeaderLines(fileName)
@@ -145,24 +151,30 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
         );
     }
 
-    createSourceDirectory() {
+    /**
+     * Creates the `src/` directory.
+     * @function createSourceDirectory
+     * @memberof TypescriptServiceContext
+     * @returns {string} Path to the source dir.
+     */
+    createSourceDirectory(): string {
         const sourceDir = join(this.serviceDirectory, '/src');
         if (!existsSync(sourceDir)) mkdirSync(sourceDir);
         return sourceDir;
     }
 
     /**
-     * Make the file content for a new index.ts file
+     * Make the file content for a new index.ts file.
      * @function makeMainIndexFileContext
      * @memberof TypescriptServiceContext
-     * @returns {string} file content
+     * @returns {string} File content.
      */
     makeMainIndexFileContext(): string {
         return this.makeFileHeader('index.ts');
     }
 
     /**
-     * Create all the files in `src/`
+     * Create all the files in `src/`.
      * @function createSourceFiles
      * @memberof TypescriptServiceContext
      * @returns {void}
@@ -176,7 +188,7 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
     }
 
     /**
-     * Install all packages using yarn
+     * Install all packages using yarn.
      * @function installPackages
      * @memberof TypescriptServiceContext
      * @returns {void}
@@ -186,12 +198,12 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
     }
 
     /**
-     * Runs the post initialization commands
+     * Runs the post initialization commands.
      *
-     * 1. Runs the base post init commands
-     * 2. Create the `package.json`
-     * 3. Create the files for `src/`
-     * 4. Install the packages
+     * 1. Runs the base post init commands.
+     * 2. Create the `package.json`.
+     * 3. Create the files for `src/`.
+     * 4. Install the packages.
      * @function postInit
      * @memberof TypescriptServiceContext
      * @returns {void}
@@ -204,10 +216,10 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
     }
 
     /**
-     * Runs the post version bump commands
+     * Runs the post version bump commands.
      *
-     * 1. Runs the base version bump commands
-     * 2. Update the `package.json` version
+     * 1. Runs the base version bump commands.
+     * 2. Update the `package.json` version.
      * @function postVersionBump
      * @memberof TypescriptServiceContext
      * @returns {void}
