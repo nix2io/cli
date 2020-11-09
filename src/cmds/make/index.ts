@@ -7,8 +7,6 @@
  */
 
 import { CommanderStatic } from 'commander';
-import gateway from './gateway';
-import api from './api';
 import type from './type';
 import { pkg } from './package';
 
@@ -19,8 +17,6 @@ export default (program: CommanderStatic): void => {
         .description('make things related to your service');
 
     // Apply all the functions to the program
-    gateway(make);
-    api(make);
     type(make);
     pkg(make);
 };

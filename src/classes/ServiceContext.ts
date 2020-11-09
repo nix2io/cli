@@ -18,6 +18,8 @@ import inquirer = require('inquirer');
 import { user } from '../user';
 import { readCurrentEnvironmentName } from '../environments';
 import { Environment, User } from '.';
+import { EDITOR_TYPES, GIT_IGNORE_SERVICE_BASE_URL } from '../constants';
+import Axios from 'axios';
 
 type QuestionType = Record<
     string,
@@ -296,6 +298,49 @@ export default abstract class ServiceContext {
     }
 
     /**
+     * Make the ingore components to get sent to the ignore generation service.
+     * @function makeIgnoreComponents
+     * @memberof ServiceContext
+     * @returns {string[]} Ignore components.
+     */
+    makeIgnoreComponents(): string[] {
+        return ['git'].concat(EDITOR_TYPES);
+    }
+
+    /**
+     * Create the .gitignore file.
+     * @function createGitIgnore
+     * @memberof ServiceContext
+     * @returns {void}
+     */
+    async createGitIgnore(): Promise<void> {
+        const ignoreComponents = this.makeIgnoreComponents();
+        const url = GIT_IGNORE_SERVICE_BASE_URL + ignoreComponents.join(',');
+        Axios.get(url)
+            .then((response) => {
+                const ignoreContent = response.data;
+                fs.writeFileSync(
+                    join(this.serviceDirectory, '.gitignore'),
+                    ignoreContent,
+                );
+            })
+            .catch((err) => {
+                console.error('could not create .gitignore');
+                throw err;
+            });
+    }
+
+    /**
+     * Creates ignore files.
+     * @function createIgnoreFiles
+     * @memberof ServiceContext
+     * @returns {void}
+     */
+    createIgnoreFiles(): void {
+        this.createGitIgnore();
+    }
+
+    /**
      * Event listener for after an initialization.
      * @function postInit
      * @memberof ServiceContext
@@ -303,6 +348,7 @@ export default abstract class ServiceContext {
      */
     postInit(): void {
         this.createREADME();
+        this.createIgnoreFiles();
     }
 
     /**

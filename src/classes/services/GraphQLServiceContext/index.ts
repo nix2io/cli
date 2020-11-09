@@ -71,7 +71,7 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
      */
     static makeObject(
         data: MakeObjectType,
-        user: User,
+        user: User | null,
     ): GraphQLServiceContextType {
         return {
             ...super.makeObject(data, user),
@@ -166,8 +166,8 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
      * @function makeMainIndexFileContext
      * @returns {string} `index.ts` file content.
      */
-    makeMainIndexFileContext(): string {
-        return super.makeMainIndexFileContext() + this.readTemplate('index.ts');
+    makeMainIndexFileContent(): string {
+        return super.makeMainIndexFileContent() + this.readTemplate('index.ts');
     }
 
     /**

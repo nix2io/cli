@@ -169,7 +169,7 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
      * @memberof TypescriptServiceContext
      * @returns {string} File content.
      */
-    makeMainIndexFileContext(): string {
+    makeMainIndexFileContent(): string {
         return this.makeFileHeader('index.ts');
     }
 
@@ -183,7 +183,7 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
         const sourceDir = this.createSourceDirectory();
         writeFileSync(
             join(sourceDir, 'index.ts'),
-            this.makeMainIndexFileContext(),
+            this.makeMainIndexFileContent(),
         );
     }
 
@@ -230,5 +230,15 @@ export default abstract class TypescriptServiceContext extends ServiceContext {
         if (pkg == null) return;
         pkg.version = this.info.version;
         this.writePackageFile(pkg);
+    }
+
+    /**
+     * Make the ingore components to get sent to the ignore generation service.
+     * @function makeIgnoreComponents
+     * @memberof TypescriptServiceContext
+     * @returns {string[]} Ignore components.
+     */
+    makeIgnoreComponents(): string[] {
+        return super.makeIgnoreComponents().concat(['node']);
     }
 }

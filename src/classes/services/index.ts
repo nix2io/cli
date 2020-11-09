@@ -5,38 +5,29 @@
  * Copyright: 2020 Nix² Technologies
  * Author: Max Koon (maxk@nix2.io)
  */
-// TODO: redo this
 // this is the ugliest shit ever holy fuck
+
+// Typescript
 import TypescriptServiceContext from './TypescriptServiceContext';
 export { TypescriptServiceContext };
-// api service
-import APIServiceContext from './APIServiceContext';
-export { APIServiceContext };
-// gateway
-import GatewayServiceContext from './GatewayServiceContext';
-export { GatewayServiceContext };
-// graph ql
+// GraphQL
 import GraphQLServiceContext from './GraphQLServiceContext';
 export { GraphQLServiceContext };
+// Python
+import PythonServiceContext from './PythonServiceContext';
+export { PythonServiceContext };
 
 // add any new types to here
-// TODO: find a better way to do this
 
 // valid types
 export type VALID_SERVICE_TYPE_INSTANCES =
-    | APIServiceContext
-    | GatewayServiceContext
-    | GraphQLServiceContext;
+    | GraphQLServiceContext
+    | PythonServiceContext;
 export type VALID_SERVICE_TYPES =
-    | typeof APIServiceContext
-    | typeof GatewayServiceContext
-    | typeof GraphQLServiceContext;
+    | typeof GraphQLServiceContext
+    | typeof PythonServiceContext;
 
-const VALID_SERVICES = [
-    APIServiceContext,
-    GatewayServiceContext,
-    GraphQLServiceContext,
-];
+const VALID_SERVICES = [GraphQLServiceContext, PythonServiceContext];
 
 // create a new hash table for the service types and their classes
 export const SERVICE_TYPE_MAP = Object.assign(

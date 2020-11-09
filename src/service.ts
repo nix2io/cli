@@ -44,7 +44,7 @@ export const getServiceClassFromType = (type: string): VALID_SERVICE_TYPES => {
     // check if the type is valid
     const typeIndex = Object.keys(SERVICE_TYPE_MAP).indexOf(type);
     if (typeIndex == -1) {
-        throw new Error(`Service type ${type} is unsupported`);
+        throw new Error(`Service type '${type}' is unsupported`);
     }
     // return the deserialized service context instance
     return <VALID_SERVICE_TYPES>(
