@@ -33,7 +33,7 @@
                     "FunctionDeclaration": true,
                     "MethodDefinition": true,
                     "ClassDeclaration": true,
-                    "ArrowFunctionExpression": false,
+                    "ArrowFunctionExpression": true,
                     "FunctionExpression": false
                 }
             }

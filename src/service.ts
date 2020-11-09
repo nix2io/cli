@@ -17,7 +17,10 @@ import { getRootOptions, getServiceContextFilePath } from './util';
 import { Obj, ServiceContextType } from './types';
 import { safeLoad } from 'js-yaml';
 
-// check if the file exists
+/**
+ *
+ * @param serviceFilePath
+ */
 const serviceFileExists = (serviceFilePath: string): boolean => {
     try {
         return fs.existsSync(serviceFilePath);
@@ -26,7 +29,11 @@ const serviceFileExists = (serviceFilePath: string): boolean => {
     }
 };
 
-// get the file contents from the path
+/**
+ * Return the content from a service file.
+ * @param   {string} serviceFilePath Path to the file.
+ * @returns {string}                 File contents.
+ */
 const getServiceFileContent = (serviceFilePath: string): string => {
     try {
         return fs.readFileSync(serviceFilePath, 'utf-8');
