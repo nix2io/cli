@@ -19,32 +19,19 @@ export default class BinaryOperationNode implements AlertNode {
     ) {}
 
     run(alertRule: AlertRule): void {
-        /**
-         * left  :  AlertNode("git")
-         * op    :  index
-         * right :  AlertNode("pr")
-         *
-         * AlertRuleName("git").addRule(AlertRuleName("pr"))
-         *
-         * *
-         * AlertRule().all = true
-         *
-         *
-         *
-         */
-        let leftNode = <NameNode>this.leftNode;
+        const leftNode = <NameNode>this.leftNode;
         // create the left node rule
-        let left = new AlertRule(leftNode.token.value!);
+        const left = new AlertRule(<string>leftNode.token.value);
 
         if (this.operationToken.type == TOKEN_INDEX) {
-            let rightNode = <NameNode>this.rightNode;
+            const rightNode = <NameNode>this.rightNode;
             // create the right node rule
-            let right = new AlertRule(rightNode.token.value!);
+            const right = new AlertRule(<string>rightNode.token.value);
             left.addRule(right);
         } else if (this.operationToken.type == TOKEN_COMMA) {
-            let rightNode = <NameNode>this.rightNode;
+            const rightNode = <NameNode>this.rightNode;
             // create the right node rule
-            let right = new AlertRule(rightNode.token.value!);
+            const right = new AlertRule(<string>rightNode.token.value);
             alertRule.addRule(right);
         }
 

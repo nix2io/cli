@@ -14,7 +14,7 @@ import {
 } from './classes';
 import fs = require('fs');
 import { getRootOptions, getServiceContextFilePath } from './util';
-import { ServiceContextType } from './types';
+import { Obj, ServiceContextType } from './types';
 import { safeLoad } from 'js-yaml';
 
 // check if the file exists
@@ -36,9 +36,9 @@ const getServiceFileContent = (serviceFilePath: string): string => {
 };
 
 /**
- * Return the class from a service context type
- * @param type Type of the service context
- * @returns {ServiceContext} Class of a service context
+ * Return the class from a service context type.
+ * @param   {string}    type Type of the service context.
+ * @returns {ServiceContext} Class of a service context.
  */
 export const getServiceClassFromType = (type: string): VALID_SERVICE_TYPES => {
     // check if the type is valid
@@ -53,10 +53,10 @@ export const getServiceClassFromType = (type: string): VALID_SERVICE_TYPES => {
 };
 
 /**
- * Parse a Javascript object to return a `ServiceContext` instance
- * @param   {string} serviceFilePath Path to the `service.yaml`
- * @param   {object} serviceObject   Javascript object of the service object
- * @returns {ServiceContext}         new `ServiceContext` instance
+ * Parse a Javascript object to return a `ServiceContext` instance.
+ * @param   {string} serviceFilePath Path to the `service.yaml`.
+ * @param   {object} serviceObject   Javascript object of the service object.
+ * @returns {ServiceContext}         New `ServiceContext` instance.
  */
 export const parseServiceObject = (
     serviceFilePath: string,
@@ -64,16 +64,19 @@ export const parseServiceObject = (
 ): VALID_SERVICE_TYPE_INSTANCES => {
     return getServiceClassFromType(serviceObject.type).deserialize(
         serviceFilePath,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         <any>serviceObject,
     );
 };
 
 /**
- * Return the service object in the users current directory
- * @return {ServiceContext} Instance of the Service Context
+ * Return the service object in the users current directory.
+ * @param {Obj} options Options from Commander.js.
+ * @param {string | undefined} overwriteDir Dir to be overwritten from CLI flag.
+ * @returns {ServiceContext} Instance of the Service Context.
  */
 export const getServiceContext = (
-    options: any,
+    options: Obj,
     overwriteDir: string | undefined = undefined,
 ): VALID_SERVICE_TYPE_INSTANCES | null => {
     // get the full file path
@@ -90,7 +93,10 @@ export const getServiceContext = (
         serviceFilePath,
         <ServiceContextType>serviceFileObject,
     );
+    const specifiedEnvironment = getRootOptions(options).env;
+    if (typeof specifiedEnvironment != 'string' && specifiedEnvironment != null)
+        throw Error('invalid environment');
     serviceContext.selectedEnvironmentName =
-        getRootOptions(options).env || serviceContext.selectedEnvironmentName;
+        specifiedEnvironment || serviceContext.selectedEnvironmentName;
     return serviceContext;
 };

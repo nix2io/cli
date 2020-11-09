@@ -8,28 +8,30 @@
 import * as semver from 'semver';
 import { ERRORS } from '../constants';
 import Info from './Info';
-
+/**
+ * Class for managing the service version.
+ * @class VersionBump
+ */
 export default class VersionBump {
     /**
-     * Version bump class
-     * @class
-     * @param {Info} info Info object for the service
+     * Constructor for the `VersionBump` class.
+     * @param {Info} info Info object for the service.
      */
     constructor(private info: Info) {}
 
     /**
-     * Get the version from the info
+     * Get the version from the info.
      * @function version
      * @memberof VersionBump
      * @private
-     * @returns {string} version
+     * @returns {string} Version.
      */
     private get version(): string {
         return this.info.version;
     }
 
     /**
-     * Increment the version of the service by a release type
+     * Increment the version of the service by a release type.
      * @function inc
      * @memberof VersionBump
      * @private
@@ -38,8 +40,8 @@ export default class VersionBump {
      * this.inc('minor'); // '1.0.2'
      * // 'major' upgrade
      * this.inc('major'); // '2.0.0'
-     * @param   {string} release semver upgrade type
-     * @returns {string}         new version set
+     * @param   {string} release Semver upgrade type.
+     * @returns {string}         The new version set.
      */
     private inc = (release: 'patch' | 'minor' | 'major'): string => {
         const version = semver.inc(this.version, release);
@@ -48,35 +50,35 @@ export default class VersionBump {
     };
 
     /**
-     * Patch upgrade
+     * Patch upgrade.
      * @function patch
      * @memberof VersionBump
-     * @returns {string} new version
+     * @returns {string} New version.
      */
     patch = (): string => this.inc('patch');
 
     /**
-     * Minor upgrade
+     * Minor upgrade.
      * @function patch
      * @memberof VersionBump
-     * @returns {string} new version
+     * @returns {string} New version.
      */
     minor = (): string => this.inc('minor');
 
     /**
-     * Major upgrade
+     * Major upgrade.
      * @function patch
      * @memberof VersionBump
-     * @returns {string} new version
+     * @returns {string} New version.
      */
     major = (): string => this.inc('major');
 
     /**
-     * Set the version to a specific version
+     * Set the version to a specific version.
      * @function set
      * @memberof VersionBump
-     * @param   {string} version new version
-     * @returns {string} new version
+     * @param   {string} version New version.
+     * @returns {string}         New version.
      */
     set(version: string): string {
         if (!semver.valid(version)) throw Error(ERRORS.INVALID_SEMVER);

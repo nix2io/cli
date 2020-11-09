@@ -13,7 +13,7 @@
     "rules": {
         "@typescript-eslint/ban-ts-comment": 1,
         "@typescript-eslint/no-unused-vars": [
-            1,
+            2,
             {
                 "argsIgnorePattern": "^_"
             }
@@ -25,32 +25,32 @@
                 "terms": ["todo", "fixme", "xxx"],
                 "location": "start"
             }
-        ]
-        // "jsdoc/check-alignment": 1, // Recommended
-        // "jsdoc/check-examples": 1,
-        // "jsdoc/check-indentation": 1,
-        // "jsdoc/check-param-names": 1, // Recommended
-        // "jsdoc/check-syntax": 1,
-        // "jsdoc/check-tag-names": 1, // Recommended
-        // "jsdoc/check-types": 1, // Recommended
-        // "jsdoc/implements-on-classes": 1, // Recommended
-        // "jsdoc/match-description": 1,
-        // "jsdoc/newline-after-description": 1, // Recommended
-        // "jsdoc/no-types": 1,
-        // "jsdoc/no-undefined-types": 1, // Recommended
-        // "jsdoc/require-description": 1,
-        // "jsdoc/require-description-complete-sentence": 1,
-        // "jsdoc/require-example": 1,
-        // "jsdoc/require-hyphen-before-param-description": 1,
-        // "jsdoc/require-jsdoc": 1, // Recommended
-        // "jsdoc/require-param": 1, // Recommended
-        // "jsdoc/require-param-description": 1, // Recommended
-        // "jsdoc/require-param-name": 1, // Recommended
-        // "jsdoc/require-param-type": 1, // Recommended
-        // "jsdoc/require-returns": 1, // Recommended
-        // "jsdoc/require-returns-check": 1, // Recommended
-        // "jsdoc/require-returns-description": 1, // Recommended
-        // "jsdoc/require-returns-type": 1, // Recommended
-        // "jsdoc/valid-types": 1 // Recommended
+        ],
+        "jsdoc/require-jsdoc": [
+            "error",
+            {
+                "require": {
+                    "FunctionDeclaration": true,
+                    "MethodDefinition": true,
+                    "ClassDeclaration": true,
+                    "ArrowFunctionExpression": false,
+                    "FunctionExpression": false
+                }
+            }
+        ],
+        "jsdoc/require-description": 2,
+        "jsdoc/require-description-complete-sentence": 2,
+        "jsdoc/implements-on-classes": 2,
+        "jsdoc/check-types": 2,
+        "jsdoc/valid-types": 2,
+        "jsdoc/require-param": 2,
+        "jsdoc/require-param-name": 2,
+        "jsdoc/require-param-type": 2,
+        "jsdoc/require-param-description": 2,
+        "jsdoc/check-param-names": 2,
+        "jsdoc/require-returns": 2,
+        "jsdoc/require-returns-type": 2,
+        "jsdoc/require-returns-description": 2,
+        "jsdoc/check-tag-names": 2
     }
 }

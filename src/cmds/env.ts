@@ -42,7 +42,7 @@ export default (program: CommanderStatic): void => {
             try {
                 writeCurrentEnvironmentName(envName);
                 if (serviceContext != null) {
-                    serviceContext.environment.makeDotEnv();
+                    serviceContext.environment.createDotEnv();
                 }
                 console.log(
                     colors.green(

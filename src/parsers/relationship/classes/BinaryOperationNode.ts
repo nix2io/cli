@@ -6,7 +6,7 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { Node, Token } from '../../shared/classes';
+import { Token } from '../../shared/classes';
 import { TOKEN_LINK } from '../constants';
 // Relationship specific
 import { CommandContext } from '.';

@@ -6,14 +6,15 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { Node, Token } from '../../shared/classes';
-import { CommandContext } from '.';
+import { Token } from '../../shared/classes';
+import { CommandContext, RelationshipNode } from '.';
 
-export default class NameNode implements Node {
+export default class RelationshipNameNode implements RelationshipNode {
     constructor(public token: Token) {}
 
     run(context: CommandContext): string[] {
-        let value = this.token.value!;
+        const value = this.token.value;
+        if (value == null) throw Error('value of token is null');
         context.schemas.add(value);
         return [value];
     }

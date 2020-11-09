@@ -7,8 +7,11 @@
  */
 
 import { Token } from '../shared/classes';
-import { BinaryOperationNode } from './classes';
-import NameNode from './classes/NameNode';
+import {
+    BinaryOperationNode,
+    RelationshipNode,
+    RelationshipNameNode,
+} from './classes';
 import {
     SYMBOL_COMMA,
     SYMBOL_LINK,
@@ -25,7 +28,7 @@ import RelationshipParseResult from './classes/RelationshipParseResult';
 
 export default (tokens: Token[]): RelationshipParseResult => {
     // current token index
-    let position: number = -1;
+    let position = -1;
     // current token of the parser
     let currentToken: Token | null = null;
 
@@ -39,18 +42,19 @@ export default (tokens: Token[]): RelationshipParseResult => {
 
     const binaryOperation = (): RelationshipParseResult => {
         const result = new RelationshipParseResult();
-        let left = result.register(name()!);
+        let left = <RelationshipNode>result.register(name());
         if (result.error != null) {
             return result;
         }
-
         while (
             currentToken?.type == TOKEN_COMMA ||
             currentToken?.type == TOKEN_LINK
         ) {
             const binaryOperationToken = currentToken;
-            result.register(advance()!);
-            const right = result.register(name());
+            const advanceResult = advance();
+            if (advanceResult == null) throw 'advance is null';
+            result.register(advanceResult);
+            const right = <RelationshipNode>result.register(name());
             if (result.error != null) {
                 return result;
             }
@@ -61,24 +65,24 @@ export default (tokens: Token[]): RelationshipParseResult => {
 
     const name = (): RelationshipParseResult => {
         const result = new RelationshipParseResult();
-        const token = currentToken!;
+        const token = <Token>currentToken;
         if (token.type == TOKEN_NAME) {
-            result.register(advance()!);
-            return result.success(new NameNode(token));
+            result.register(<Token>advance());
+            return result.success(new RelationshipNameNode(token));
         } else if (token.type == TOKEN_LPAR) {
-            result.register(advance()!);
+            result.register(<Token>advance());
             const binaryOperationResult = result.register(binaryOperation());
             if (result.error != null) {
                 return result;
             }
             if (currentToken?.type == TOKEN_RPAR) {
-                result.register(advance()!);
+                result.register(<Token>advance());
                 return result.success(binaryOperationResult);
             } else {
                 return result.failure(
                     new InvalidSyntaxError(
-                        currentToken!.positionStart!,
-                        currentToken!.positionEnd!,
+                        <number>currentToken?.positionStart,
+                        <number>currentToken?.positionEnd,
                         `expected ${SYMBOL_RPAR}`,
                     ),
                 );
@@ -86,8 +90,8 @@ export default (tokens: Token[]): RelationshipParseResult => {
         } else {
             return result.failure(
                 new InvalidSyntaxError(
-                    currentToken!.positionStart!,
-                    currentToken!.positionEnd!,
+                    <number>currentToken?.positionStart,
+                    <number>currentToken?.positionEnd,
                     'expected schema name',
                 ),
             );
@@ -97,11 +101,14 @@ export default (tokens: Token[]): RelationshipParseResult => {
     advance();
     // get the result as a bin op
     const result = binaryOperation();
-    if (result.error == null && currentToken!.type != TOKEN_EOC) {
+    // TODO: fix this
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    currentToken = currentToken!;
+    if (result.error == null && currentToken.type != TOKEN_EOC) {
         return result.failure(
             new InvalidSyntaxError(
-                currentToken!.positionStart!,
-                currentToken!.positionEnd!,
+                <number>currentToken?.positionStart,
+                <number>currentToken?.positionEnd,
                 `expected ${SYMBOL_COMMA} or ${SYMBOL_LINK}`,
             ),
         );

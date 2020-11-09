@@ -15,11 +15,12 @@ export default class ParseResult {
         public node: Node | null = null,
     ) {}
 
-    register(result: ParseResult | Token): any {
+    register(result: ParseResult | Token): ParseResult | Node {
         if (result instanceof ParseResult) {
             if (result.error != null) {
                 this.error = result.error;
             }
+            if (result.node == null) throw Error('node is null');
             return result.node;
         }
         return result;

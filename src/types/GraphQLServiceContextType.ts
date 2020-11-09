@@ -8,4 +8,6 @@
 
 import { ServiceContextType } from '.';
 
-export default interface GraphQLServiceContextType extends ServiceContextType {}
+export default interface GraphQLServiceContextType extends ServiceContextType {
+    type: 'graphql';
+}

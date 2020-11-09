@@ -6,8 +6,8 @@ export default class AlertRule {
         private _all: boolean = false,
     ) {}
 
-    toString() {
-        let str = `${this.name}`;
+    toString(): string {
+        const str = `${this.name}`;
 
         let rls: string = this.rules.map((rule) => rule.toString()).join(',');
         if (rls != '') rls = '.' + rls;
@@ -15,16 +15,16 @@ export default class AlertRule {
         return str + rls;
     }
 
-    get all() {
+    get all(): boolean {
         return this._all;
     }
 
-    setAll(state = true) {
+    setAll(state = true): AlertRule {
         this._all = state;
         return this;
     }
 
-    addRule(rule: AlertRule) {
+    addRule(rule: AlertRule): AlertRule {
         this.rules.push(rule);
         return this;
     }

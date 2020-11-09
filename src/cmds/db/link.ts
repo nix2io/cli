@@ -6,7 +6,7 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 import * as commander from 'commander';
-import ora = require('ora');
+// import ora = require('ora');
 import * as colors from 'colors';
 import { getClient, createDatabaseKey } from '../../db';
 import { getServiceContext } from '../../service';

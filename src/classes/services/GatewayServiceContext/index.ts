@@ -7,7 +7,7 @@
  */
 
 import { Info, Schema, ServiceContext } from '../..';
-import { ServiceContextType } from '../../../types';
+import { SchemaType, ServiceContextType } from '../../../types';
 
 export default class GatewayServiceContext extends ServiceContext {
     static NAME = 'gateway';
@@ -39,7 +39,7 @@ export default class GatewayServiceContext extends ServiceContext {
         return new GatewayServiceContext(
             serviceFilePath,
             Info.deserialize(data.info),
-            Object.values(data.schemas).map((schema: any) =>
+            Object.values(data.schemas).map((schema: SchemaType) =>
                 Schema.deserialize(schema),
             ),
         );

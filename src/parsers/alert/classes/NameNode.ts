@@ -12,5 +12,7 @@ import { AlertNode, AlertRule } from '.';
 export default class NameNode implements AlertNode {
     constructor(public token: Token) {}
 
-    run(_: AlertRule): void {}
+    run(_: AlertRule): void {
+        throw Error('not implemented');
+    }
 }

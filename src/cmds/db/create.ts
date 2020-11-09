@@ -28,7 +28,7 @@ export default (db: commander.Command): void => {
             // set the database name to the service identifier
             const databaseName = serviceContext.info.identifier;
 
-            let database = await createDatabase(client, databaseName).catch(
+            const database = await createDatabase(client, databaseName).catch(
                 (err) => {
                     spinner.stop();
                     if (err.message == 'DATABASE_EXISTS') {

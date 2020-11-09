@@ -13,5 +13,7 @@ import { AlertNode, AlertRule } from '.';
 export default class UnaryOperationNode implements AlertNode {
     constructor(public operationToken: Token, public node: AlertNode) {}
 
-    run(_: AlertRule): void {}
+    run(_: AlertRule): void {
+        throw Error('not implemented');
+    }
 }

@@ -6,8 +6,8 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 import { TypescriptServiceContext } from '..';
-import { Info, Schema, Path } from '../..';
-import { APIServiceContextType } from '../../../types';
+import { Info, Schema, Path, User } from '../..';
+import { APIServiceContextType, SchemaType } from '../../../types';
 
 export default class APIServiceContext extends TypescriptServiceContext {
     static NAME = 'api';
@@ -55,7 +55,7 @@ export default class APIServiceContext extends TypescriptServiceContext {
         return new APIServiceContext(
             serviceFilePath,
             Info.deserialize(data.info),
-            Object.values(data.schemas).map((schema: any) =>
+            Object.values(data.schemas).map((schema: SchemaType) =>
                 Schema.deserialize(schema),
             ),
             Object.assign(
@@ -74,7 +74,7 @@ export default class APIServiceContext extends TypescriptServiceContext {
             description: string;
             userLeadDev: boolean;
         },
-        user: any,
+        user: User,
     ): APIServiceContextType {
         return {
             ...super.makeObject(data, user),

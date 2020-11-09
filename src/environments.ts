@@ -12,18 +12,18 @@ import { ENVIRONMENTS, DEFAULT_ENVIRONMENT, ERRORS } from './constants';
 const ENVIRONMENT_CONFIG_NAME = 'selected-environment';
 
 /**
- * Get a list of the available environments
+ * Get a list of the available environments.
  * @function getAvailableEnvironments
- * @returns {string[]} list of environments
+ * @returns {string[]} List of environments.
  */
 export const getAvailableEnvironments = (): string[] => {
     return Object.values(ENVIRONMENTS);
 };
 
 /**
- * Read the current environment name from config
+ * Read the current environment name from config.
  * @function readCurrentEnvironmentName
- * @returns {string} current environment name
+ * @returns {string} Current environment name.
  */
 export const readCurrentEnvironmentName = (): string => {
     let env = config.get(ENVIRONMENT_CONFIG_NAME);
@@ -33,9 +33,9 @@ export const readCurrentEnvironmentName = (): string => {
 };
 
 /**
- * Writes an environment name to the current config
- * @param   {string} environmentName name of the new environment
- * @returns {string} environment name
+ * Writes an environment name to the current config.
+ * @param   {string} environmentName Name of the new environment.
+ * @returns {string} Name of the new environment.
  */
 export const writeCurrentEnvironmentName = (
     environmentName: string,

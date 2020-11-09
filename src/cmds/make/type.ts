@@ -58,10 +58,10 @@ export default (make: commander.Command): void => {
                 name: 'ObjectType',
                 arguments: [],
             });
-            let newProperties: OptionalKind<
-                    PropertyDeclarationStructure
-                >[] = [],
-                fieldIndex = 0;
+            const newProperties: OptionalKind<
+                PropertyDeclarationStructure
+            >[] = [];
+            let fieldIndex = 0;
 
             for (const fieldName in schema.fields) {
                 const field = schema.fields[fieldName];

@@ -6,8 +6,8 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 import { TypescriptServiceContext } from '..';
-import { Info, Schema } from '../..';
-import { GraphQLServiceContextType } from '../../../types';
+import { Info, Schema, User } from '../..';
+import { GraphQLServiceContextType, SchemaType } from '../../../types';
 
 type DependenciesType = Record<string, string>;
 export default class GraphQLServiceContext extends TypescriptServiceContext {
@@ -15,24 +15,24 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
     static DIRNAME: string = __dirname;
 
     /**
-     * Class to represent an GraphQL Service context
+     * Class to represent an GraphQL Service context.
      * @class GraphQLServiceContext
-     * @param {string}               serviceFilePath path to the service.yaml
-     * @param {Info}                 info            info of the service
-     * @param {Array<Schema>}        schemas         list of service schemas
+     * @param {string}               serviceFilePath Path to the service.yaml.
+     * @param {Info}                 info            Info of the service.
+     * @param {Array<Schema>}        schemas         List of service schemas.
      */
     constructor(serviceFilePath: string, info: Info, schemas: Schema[]) {
         super(serviceFilePath, info, 'graphql', schemas);
     }
 
     /**
-     * Deserialize an object into an `GraphQLServiceContext` instance
+     * Deserialize an object into an `GraphQLServiceContext` instance.
      * @function deserialize
      * @static
      * @memberof GraphQLServiceContext
-     * @param   {string} serviceFilePath path to the service.yaml
-     * @param   {object} data            Javascript object of the Info
-     * @returns {GraphQLServiceContext}      Service context object
+     * @param   {string} serviceFilePath Path to the service.yaml.
+     * @param   {object} data            Javascript object of the `Info`.
+     * @returns {GraphQLServiceContext}  Service context object.
      */
     static deserialize(
         serviceFilePath: string,
@@ -48,7 +48,7 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
         return new GraphQLServiceContext(
             serviceFilePath,
             Info.deserialize(data.info),
-            Object.values(data.schemas).map((schema: any) =>
+            Object.values(data.schemas).map((schema: SchemaType) =>
                 Schema.deserialize(schema),
             ),
         );
@@ -61,7 +61,7 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
             description: string;
             userLeadDev: boolean;
         },
-        user: any,
+        user: User,
     ): GraphQLServiceContextType {
         return {
             ...super.makeObject(data, user),
@@ -72,10 +72,10 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
     }
 
     /**
-     * Serialize a `GraphQLServiceContext` instance into an object
+     * Serialize a `GraphQLServiceContext` instance into an object.
      * @function serialize
      * @memberof GraphQLServiceContext
-     * @returns  {GraphQLServiceContextType} Javascript object
+     * @returns  {GraphQLServiceContextType} Javascript object.
      */
     serialize(): GraphQLServiceContextType {
         return {
@@ -87,10 +87,10 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
     }
 
     /**
-     * GraphQL specifc dependencies
+     * GraphQL specifc dependencies.
      * @memberof GraphQLServiceContext
      * @function dependencies
-     * @returns {Record<string, string>} Object of package name and version
+     * @returns {Record<string, string>} Object of package name and version.
      */
     get dependencies(): DependenciesType {
         return {
@@ -107,10 +107,10 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
     }
 
     /**
-     * Object of dev dependencies and their version
+     * Object of dev dependencies and their version.
      * @memberof GraphQLServiceContext
      * @function devDependencies
-     * @returns {Record<string, string>} Object of package name and version
+     * @returns {Record<string, string>} Object of package name and version.
      */
     get devDependencies(): DependenciesType {
         return {
@@ -124,10 +124,10 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
     }
 
     /**
-     * Object of the scripts
+     * Object of the scripts.
      * @function scripts
      * @memberof GraphQLServiceContext
-     * @returns {Record<string, string>} Object of the scripts
+     * @returns {Record<string, string>} Object of the scripts.
      */
     get scripts(): Record<string, string> {
         return {
@@ -139,27 +139,29 @@ export default class GraphQLServiceContext extends TypescriptServiceContext {
     }
 
     /**
-     * Read the contents of the template file for a GraphQL
+     * Read the contents of the template file for a GraphQL.
      * @function getTemplate
      * @memberof GraphQLServiceContext
      * @example
      * // Returns the file content for index.ts
      * serviceContext.getTemplate('index.ts') // import graphql from 'graphql'
-     * @param   {string} fileName Name of a file
-     * @returns {string}          graphql file template
+     * @param   {string} fileName Name of a file.
+     * @returns {string}          GraphQL file template.
      */
     readTemplate = (fileName: string): string =>
         super.readTemplate('GraphQLServiceContext', fileName);
 
     /**
-     * @function
+     * Make the main `index.ts` file content.
+     * @function makeMainIndexFileContext
+     * @returns {string} `index.ts` file content.
      */
     makeMainIndexFileContext(): string {
         return super.makeMainIndexFileContext() + this.readTemplate('index.ts');
     }
 
     /**
-     * Event listener for after an initialization
+     * Event listener for after an initialization.
      * @function postInit
      * @memberof GraphQLServiceContext
      * @returns {void}

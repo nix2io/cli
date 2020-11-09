@@ -25,7 +25,7 @@ export class Database {
         this.calculateEnvironments();
     }
 
-    private calculateEnvironments() {
+    private calculateEnvironments(): void {
         this.environments = new Set(this._instances.map((db) => db.env));
     }
 
@@ -33,13 +33,14 @@ export class Database {
         return this._instances;
     }
 
-    set instances(instances) {
+    set instances(instances: DatabaseInstance[]) {
         this._instances = instances;
         this.calculateEnvironments();
     }
 
-    addInstance(instance: DatabaseInstance) {
+    addInstance(instance: DatabaseInstance): DatabaseInstance {
         this._instances.push(instance);
         this.calculateEnvironments();
+        return instance;
     }
 }

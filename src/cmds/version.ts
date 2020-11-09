@@ -44,11 +44,7 @@ export default (program: CommanderStatic): void => {
                     throw err;
                 }
             }
-            try {
-                serviceContext.write();
-                console.log(colors.green(`Updated version to ${response}`));
-            } catch (err) {
-                throw err;
-            }
+            serviceContext.write();
+            console.log(colors.green(`Updated version to ${response}`));
         });
 };

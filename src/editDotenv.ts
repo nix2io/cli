@@ -14,7 +14,7 @@ const h = '[^\\S\\r\\n]'; // simulate `\h`
 const returnPattern = /\r/g;
 const returnReplacement = '\\r';
 
-export default (envString: string, changes: Record<string, string>) => {
+export default (envString: string, changes: Record<string, string>): string => {
     let hasAppended = false;
 
     return Object.keys(changes).reduce((result, varname) => {

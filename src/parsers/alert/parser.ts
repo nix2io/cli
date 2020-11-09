@@ -23,11 +23,12 @@ import {
     NameNode,
     BinaryOperationNode,
     UnaryOperationNode,
+    AlertNode,
 } from './classes';
 
 export default (tokens: Token[]): AlertParseResult => {
     // current token index
-    let position: number = -1;
+    let position = -1;
     // current token of the parser
     let currentToken: Token | null = null;
 
@@ -41,7 +42,7 @@ export default (tokens: Token[]): AlertParseResult => {
 
     const binaryOperation = (): AlertParseResult => {
         const result = new AlertParseResult();
-        let left = result.register(name()!);
+        let left = result.register(name());
         if (result.error != null) {
             return result;
         }
@@ -51,11 +52,13 @@ export default (tokens: Token[]): AlertParseResult => {
             currentToken?.type == TOKEN_INDEX
         ) {
             const binaryOperationToken = currentToken;
-            result.register(advance()!);
+            result.register(<Token>advance());
             const right = result.register(name());
             if (result.error != null) {
                 return result;
             }
+            if (!(left instanceof AlertNode)) throw 'left not alert node';
+            if (!(right instanceof AlertNode)) throw 'right not alert node';
             left = new BinaryOperationNode(left, binaryOperationToken, right);
         }
         return result.success(left);
@@ -63,32 +66,35 @@ export default (tokens: Token[]): AlertParseResult => {
 
     const name = (): AlertParseResult => {
         const result = new AlertParseResult();
-        const token = currentToken!;
+        const token = currentToken;
+        if (token == null) throw Error('token is null');
 
         if (token.type == TOKEN_EXCLUDE) {
-            result.register(advance()!);
-            let factor = result.register(name());
+            result.register(<Token>advance());
+            const factor = result.register(name());
             if (result.error != null) {
                 return result;
             }
+            if (!(factor instanceof AlertNode))
+                throw 'factor is not alert node';
             return result.success(new UnaryOperationNode(token, factor));
         } else if (token.type == TOKEN_NAME) {
-            result.register(advance()!);
+            result.register(<Token>advance());
             return result.success(new NameNode(token));
         } else if (token.type == TOKEN_LPAR) {
-            result.register(advance()!);
+            result.register(<Token>advance());
             const binaryOperationResult = result.register(binaryOperation());
             if (result.error != null) {
                 return result;
             }
             if (currentToken?.type == TOKEN_RPAR) {
-                result.register(advance()!);
+                result.register(<Token>advance());
                 return result.success(binaryOperationResult);
             } else {
                 return result.failure(
                     new InvalidSyntaxError(
-                        currentToken!.positionStart!,
-                        currentToken!.positionEnd!,
+                        <number>currentToken?.positionStart,
+                        <number>currentToken?.positionEnd,
                         `expected ${SYMBOL_RPAR}`,
                     ),
                 );
@@ -96,8 +102,8 @@ export default (tokens: Token[]): AlertParseResult => {
         } else {
             return result.failure(
                 new InvalidSyntaxError(
-                    currentToken!.positionStart!,
-                    currentToken!.positionEnd!,
+                    <number>currentToken?.positionStart,
+                    <number>currentToken?.positionEnd,
                     'expected schema name',
                 ),
             );
@@ -107,12 +113,14 @@ export default (tokens: Token[]): AlertParseResult => {
     // advance to the first token
     advance();
     // get the result as a bin op
-    let result = binaryOperation();
-    if (result.error == null && currentToken!.type != TOKEN_EOC) {
+    const result = binaryOperation();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    currentToken = currentToken!;
+    if (result.error == null && currentToken.type != TOKEN_EOC) {
         return result.failure(
             new InvalidSyntaxError(
-                currentToken!.positionStart!,
-                currentToken!.positionEnd!,
+                <number>currentToken?.positionStart,
+                <number>currentToken?.positionEnd,
                 `expected `,
             ),
         );
