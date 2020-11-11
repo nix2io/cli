@@ -47,10 +47,14 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@nix2/service-core@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@nix2/service-core/-/service-core-1.0.1.tgz#5b61ee4e2a645dfe5469a7f1e34c44ffed242a55"
-  integrity sha512-Z+r3Svojiy/EE1w40TPOT/TQspeckusvSg2Bx+RQrl9n2DYYNkI5wLv3cgMmn499vZMYtiw1vsTnZCDUUNLCUw==
+"@nix2/service-core@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@nix2/service-core/-/service-core-1.0.2.tgz#12c4c201f67578c54c578c0ad9071b678f490fb1"
+  integrity sha512-DpqY6/lkoJKNnDTKTJYoh4SDGSJDGkcYNhQiY0i0PuoPuKd+Is1agET4DG75j8Uyu80nNgztWZdMUkot6ogmtg==
+  dependencies:
+    axios "^0.21.0"
+    js-yaml "^3.14.0"
+    semver "^7.3.2"
 
 "@nodelib/fs.scandir@2.1.3":
   version "2.1.3"

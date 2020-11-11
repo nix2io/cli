@@ -6,6 +6,7 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
+import { Service } from '@nix2/service-core';
 import { ERRORS } from './constants';
 import {
     VALID_SERVICE_TYPE_INSTANCES,
