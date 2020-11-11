@@ -21,11 +21,9 @@ export { PythonServiceContext };
 
 // valid types
 export type VALID_SERVICE_TYPE_INSTANCES =
-    | TypescriptServiceContext
     | GraphQLServiceContext
     | PythonServiceContext;
 export type VALID_SERVICE_TYPES =
-    | typeof TypescriptServiceContext
     | typeof GraphQLServiceContext
     | typeof PythonServiceContext;
 

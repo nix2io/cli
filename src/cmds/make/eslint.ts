@@ -8,6 +8,5 @@ export default (make: commander.Command): void => {
         ['eslint', 'eslintrc'],
         '.eslintrc.json',
         TypescriptServiceContext.prototype.createESLintConfig,
-        TypescriptServiceContext,
     );
 };

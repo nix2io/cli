@@ -6,8 +6,7 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import Author from './Author';
-import { InfoType } from '../types';
+import { Author, InfoType } from '@nix2/service-core';
 import VersionBump from './VersionBump';
 import ServiceContext from './ServiceContext';
 
