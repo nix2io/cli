@@ -17,9 +17,10 @@ export const SERVICE_FILE_NAME = 'service.yaml';
 
 // config schema
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-export const CONFIG_PATH = path.join(require('os').homedir(), '.nix-cli/');
-export const CONFIG_FILE_PATH = path.join(CONFIG_PATH, 'config.json');
-export const CACHE_PATH = path.join(CONFIG_PATH, 'cache/');
+export const CLI_PATH = path.join(require('os').homedir(), '.nix-cli/');
+export const CONFIG_FILE_PATH = path.join(CLI_PATH, 'config.json');
+export const CACHE_PATH = path.join(CLI_PATH, 'cache/');
+export const PLUGIN_PATH = path.join(CLI_PATH, 'plugins/');
 
 export const IS_WINDOWS = process.platform == 'win32';
 // make a better options for this
@@ -57,16 +58,6 @@ ${SYMBOLS.PAPER} Local data ${colors.grey(`from ${SERVICE_FILE_NAME}`)}
  - modified {modified}
  - created {created}
 `;
-
-export const PACKAGES = {
-    TYPESCRIPT: {
-        pkg: {},
-        dev: {
-            typescript: '4.0.3',
-            '@types/node': '14.14.0',
-        },
-    },
-};
 
 export const EDITOR_TYPES = [
     'vscode',

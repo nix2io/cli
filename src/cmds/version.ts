@@ -7,7 +7,8 @@
  */
 import { CommanderStatic } from 'commander';
 import colors = require('colors');
-import { getServiceContext } from '../service';
+
+import { getService } from '../service';
 import { ERRORS } from '../constants';
 
 export default (program: CommanderStatic): void => {
@@ -15,28 +16,26 @@ export default (program: CommanderStatic): void => {
         .command('version [version]')
         .description('version your service')
         .action((version: string | null, options) => {
-            const serviceContext = getServiceContext(options);
-            if (serviceContext == null)
+            const service = getService(options);
+            if (service == null)
                 return console.error(colors.red(ERRORS.NO_SERVICE_EXISTS));
             // if no version was given, print the current version
             if (version == null)
                 return console.log(
                     `The '${
-                        serviceContext.info.identifier
-                    }' is on version ${colors.bold(
-                        serviceContext.info.version,
-                    )}`,
+                        service.info.identifier
+                    }' is on version ${colors.bold(service.info.version)}`,
                 );
             let response;
             if (version == 'patch') {
-                response = serviceContext.info.versionBump.patch();
+                response = service.info.versionManager.patch();
             } else if (version == 'minor') {
-                response = serviceContext.info.versionBump.minor();
+                response = service.info.versionManager.minor();
             } else if (version == 'major') {
-                response = serviceContext.info.versionBump.major();
+                response = service.info.versionManager.major();
             } else {
                 try {
-                    response = serviceContext.info.versionBump.set(version);
+                    response = service.info.versionManager.set(version);
                 } catch (err) {
                     if (err.message == ERRORS.INVALID_SEMVER) {
                         return console.error(colors.red(err.message));
@@ -44,7 +43,7 @@ export default (program: CommanderStatic): void => {
                     throw err;
                 }
             }
-            serviceContext.write();
+            service.write();
             console.log(colors.green(`Updated version to ${response}`));
         });
 };

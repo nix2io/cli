@@ -1,7 +1,9 @@
 import path = require('path');
 import colors = require('colors');
+
+import { Obj, Any } from '@nix2/service-core';
+
 import { SERVICE_FILE_NAME } from './constants';
-import { Obj, Any } from './types';
 
 export const getRootOptions = (options: Obj): Obj => {
     while (
@@ -15,7 +17,7 @@ export const getRootOptions = (options: Obj): Obj => {
 };
 
 // get a path to the service directory
-export const getServiceContextPath = (
+export const getServicePath = (
     options: Obj,
     overwriteDir: string | undefined = undefined,
 ): string => {
@@ -28,32 +30,12 @@ export const getServiceContextPath = (
     );
 };
 
-export const getServiceContextFilePath = (
+export const getServiceFilePath = (
     options: Obj,
     overwriteDir: string | undefined = undefined,
 ): string => {
-    return path.join(
-        getServiceContextPath(options, overwriteDir),
-        SERVICE_FILE_NAME,
-    );
+    return path.join(getServicePath(options, overwriteDir), SERVICE_FILE_NAME);
 };
-
-export const formatString = (
-    string: string,
-    obj: Record<string, string | null>,
-): string => {
-    for (const key in obj) {
-        let value = obj[key];
-        if (value == null) value = 'null';
-        string = string.replace(new RegExp(`{${key}}`, 'g'), value);
-    }
-    return string;
-};
-
-export const titleCase = (str: string): string =>
-    str.replace(/\w\S*/g, function (txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
 
 export const prettyPrint = (v: unknown): void =>
     console.log(prettyFormat(<Any>v));
@@ -91,3 +73,20 @@ const prettyFormat = (
     }
     throw new Error('unsupported pretty print');
 };
+
+export const formatString = (
+    string: string,
+    obj: Record<string, string | null>,
+): string => {
+    for (const key in obj) {
+        let value = obj[key];
+        if (value == null) value = 'null';
+        string = string.replace(new RegExp(`{${key}}`, 'g'), value);
+    }
+    return string;
+};
+
+export const titleCase = (str: string): string =>
+    str.replace(/\w\S*/g, function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });

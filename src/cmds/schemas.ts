@@ -6,21 +6,29 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
+// CLI packages
 import { CommanderStatic } from 'commander';
-import { getServiceContext } from '../service';
-import { ERRORS, NONE } from '../constants';
 import inquirer = require('inquirer');
-import { prettyPrint, titleCase } from '../util';
-import { Schema, ServiceContext } from '../classes';
 import colors = require('colors');
 import Table = require('cli-table');
 import pluralize = require('pluralize');
-import { parseRelationship } from '../parsers';
-import { CommandContext } from '../parsers/relationship/classes';
-import { FieldType, Obj, SchemaType } from '../types';
+// From service core
+import {
+    Schema,
+    Service,
+    FieldType,
+    Obj,
+    SchemaType,
+    CommandContext,
+    relationshipParser,
+} from '@nix2/service-core';
+// CLI Specific imports
+import { getService } from '../service';
+import { ERRORS, NONE } from '../constants';
+import { prettyPrint, titleCase } from '../util';
 
 const displaySchemas = (options: Obj): void => {
-    const serviceContext = getServiceContext(options);
+    const serviceContext = getService(options);
     if (serviceContext == null) {
         console.error(colors.red('No service context'));
         return;
@@ -48,7 +56,7 @@ const displaySchemas = (options: Obj): void => {
 };
 
 const createSchemaObject = (
-    serviceContext: ServiceContext,
+    serviceContext: Service,
     identifier: string,
     options: Record<string, string | null>,
     context: CommandContext,
@@ -85,7 +93,7 @@ const createSchemaObject = (
 
 const getSchemaCreationContext = (query: string): CommandContext | null => {
     try {
-        const [context, error] = parseRelationship(query);
+        const [context, error] = relationshipParser(query);
         if (error != null) {
             console.log();
             const arrows = colors.red.bold(
@@ -128,7 +136,7 @@ export default (program: CommanderStatic): void => {
         .option('-d, --desc [description]', 'description of the schema')
         .action((query: string, options) => {
             // check if there is a service context
-            const serviceContext = getServiceContext(options);
+            const serviceContext = getService(options);
             if (serviceContext == null)
                 return console.error(colors.red('No service context'));
             const confirmAdd = options.yes;
@@ -216,7 +224,7 @@ export default (program: CommanderStatic): void => {
         .option('-y, --yes', 'skip the confirmation message')
         .action((identifier: string, options) => {
             // check if there is a service context
-            const serviceContext = getServiceContext(options);
+            const serviceContext = getService(options);
             if (serviceContext == null)
                 return console.error(colors.red('No service context'));
             const confirmRemove = options.yes;

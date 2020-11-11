@@ -47,10 +47,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@nix2/service-core@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@nix2/service-core/-/service-core-1.0.2.tgz#12c4c201f67578c54c578c0ad9071b678f490fb1"
-  integrity sha512-DpqY6/lkoJKNnDTKTJYoh4SDGSJDGkcYNhQiY0i0PuoPuKd+Is1agET4DG75j8Uyu80nNgztWZdMUkot6ogmtg==
+"@nix2/service-core@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@nix2/service-core/-/service-core-1.0.6.tgz#805bb200bbba9f012a0cb4a50ec33fd9036f3c80"
+  integrity sha512-M3GgxYG7NqeW0onE8z5SMPUhwm9l8miujEu4RMbDzAbVYfQm6nIYZaXA4s7f8GNadgtx4Czd8+uO7Ee7kXnoKA==
   dependencies:
     axios "^0.21.0"
     js-yaml "^3.14.0"
