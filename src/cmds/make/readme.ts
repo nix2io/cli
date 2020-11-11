@@ -1,12 +1,8 @@
 import * as commander from 'commander';
-import { ServiceContext } from '../../classes';
+
+import { Service } from '@nix2/service-core';
 import { makeCommand } from './makeFile';
 
 export default (make: commander.Command): void => {
-    makeCommand(
-        make,
-        'readme',
-        'README.md',
-        ServiceContext.prototype.createREADME,
-    );
+    makeCommand(make, 'readme', 'README.md', Service.prototype.createREADME);
 };

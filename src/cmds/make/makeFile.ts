@@ -1,12 +1,12 @@
 import * as commander from 'commander';
 import colors = require('colors');
-import { getServiceContext } from '../../service';
+import { getService } from '../../service';
 import { ERRORS, SYMBOLS } from '../../constants';
 import { join } from 'path';
 import inquirer = require('inquirer');
 import { existsSync } from 'fs';
 import ora = require('ora');
-import { VALID_SERVICE_TYPES } from '../../classes';
+import { Service } from '@nix2/service-core';
 
 export const makeCommand = (
     make: commander.Command,
@@ -14,7 +14,7 @@ export const makeCommand = (
     fileName: string,
     // eslint-disable-next-line @typescript-eslint/ban-types
     creationFunction: Function,
-    serviceContextType: VALID_SERVICE_TYPES | null = null,
+    serviceContextType: typeof Service | null = null,
 ): void => {
     let aliases: string[] = [];
     if (Array.isArray(command)) {
@@ -29,7 +29,7 @@ export const makeCommand = (
         .option('--overwrite', `overwrite ${fileName}`)
         .action((options) => {
             // Make sure there is a service context.
-            const serviceContext = getServiceContext(options);
+            const serviceContext = getService(options);
             if (serviceContext == null)
                 return console.error(colors.red(ERRORS.NO_SERVICE_EXISTS));
             // If a specific service is defined, check to be sure it is the right service context.

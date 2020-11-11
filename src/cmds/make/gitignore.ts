@@ -1,5 +1,6 @@
 import * as commander from 'commander';
-import { ServiceContext } from '../../classes';
+
+import { Service } from '@nix2/service-core';
 import { makeCommand } from './makeFile';
 
 export default (make: commander.Command): void => {
@@ -7,6 +8,6 @@ export default (make: commander.Command): void => {
         make,
         'gitignore',
         '.gitignore',
-        ServiceContext.prototype.createGitIgnore,
+        Service.prototype.createGitIgnore,
     );
 };

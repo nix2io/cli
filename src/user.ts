@@ -6,8 +6,8 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
+import { User } from '@nix2/service-core';
 import config from './config';
-import { User } from './classes';
 
 const userObj = <
     {

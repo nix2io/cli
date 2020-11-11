@@ -8,17 +8,18 @@
 // Node packages
 import fs = require('fs');
 import path = require('path');
-// Service Core
-// import { Service } from '@nix2/service-core';
-// Other packages
-import { CommanderStatic } from 'commander';
-import * as inquirer from 'inquirer';
-import { safeDump } from 'js-yaml';
+
 import * as colors from 'colors';
-// CLI specific
-import { getService, services, serviceCore } from '../service';
-import { prettyPrint, getServicePath } from '../util';
+import * as inquirer from 'inquirer';
+
 import { ERRORS, SERVICE_FILE_NAME, SYMBOLS } from '../constants';
+import { getService, serviceCore, services } from '../service';
+import { getServicePath, prettyPrint, titleCase } from '../util';
+
+// import { Service } from '@nix2/service-core';
+import { InitializeServiceDataType } from '@nix2/service-core';
+import { CommanderStatic } from 'commander';
+import { safeDump } from 'js-yaml';
 import { user } from '../user';
 
 const inquireServiceType = async (): Promise<string> => {
@@ -82,15 +83,26 @@ export default (program: CommanderStatic): void => {
                 );
             }
             // get the initial data from the selected class
-            const initialData = serviceClass.getInitializeData(options, user);
+            const identifier = path.basename(getServicePath(options));
+            const initialData = serviceClass.makeInitialData(identifier, user);
             const data = skipConfirm
-                ? Object.assign(
-                      {},
-                      ...Object.keys(initialData).map((k: string) => ({
-                          [k]: initialData[k].value,
-                      })),
-                  )
-                : await inquireServiceData(initialData);
+                ? initialData
+                : <InitializeServiceDataType>(<unknown>await inquireServiceData(
+                      Object.assign(
+                          {},
+                          ...Object.keys(initialData).map((k: string) => ({
+                              [k]: {
+                                  type: 'input',
+                                  message: titleCase(k),
+                                  name: k,
+                                  default:
+                                      initialData[
+                                          <keyof InitializeServiceDataType>k
+                                      ],
+                              },
+                          })),
+                      ),
+                  ));
             const serviceObject = serviceClass.makeObject(data, user);
             // define the initialize logic
             const initialize = () => {
@@ -104,7 +116,7 @@ export default (program: CommanderStatic): void => {
                 );
                 console.log('Running post init logic');
                 // create the new instance
-                const service = getServiceContext(options);
+                const service = getService(options);
                 service?.postInit();
             };
             // initialize without confirmation

@@ -47,12 +47,15 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@nix2/service-core@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@nix2/service-core/-/service-core-1.0.6.tgz#805bb200bbba9f012a0cb4a50ec33fd9036f3c80"
-  integrity sha512-M3GgxYG7NqeW0onE8z5SMPUhwm9l8miujEu4RMbDzAbVYfQm6nIYZaXA4s7f8GNadgtx4Czd8+uO7Ee7kXnoKA==
+"@nix2/service-core@1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@nix2/service-core/-/service-core-1.0.8.tgz#ad09012f15051f39735b2fa6a85d70002071f228"
+  integrity sha512-sCBqnMjBn0cqKDUgznlttxm0oAw/w78ch++pfI5LjmTjQ3PQQDhI6XnVVEWuo7E4Fej6kjnW2qOFm7o0V07idA==
   dependencies:
     axios "^0.21.0"
+    dotenv "^8.2.0"
+    eol "^0.9.1"
+    escape-string-regexp "^4.0.0"
     js-yaml "^3.14.0"
     semver "^7.3.2"
 
@@ -144,22 +147,12 @@
   resolved "https://registry.yarnpkg.com/@types/pluralize/-/pluralize-0.0.29.tgz#6ffa33ed1fc8813c469b859681d09707eb40d03c"
   integrity sha512-BYOID+l2Aco2nBik+iYS4SZX0Lf20KPILP5RGmM1IgzdwNdTs0eebiFriOPcej1sX9mLnSoiNte5zcFxssgpGA==
 
-"@types/semver@7.3.4":
-  version "7.3.4"
-  resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.3.4.tgz#43d7168fec6fa0988bb1a513a697b29296721afb"
-  integrity sha512-+nVsLKlcUCeMzD2ufHEYuJ9a2ovstb6Dp52A5VsoKxDXgvE051XgHI/33I1EymwkRGQkwnA0LkhnUzituGs4EQ==
-
 "@types/through@*":
   version "0.0.30"
   resolved "https://registry.yarnpkg.com/@types/through/-/through-0.0.30.tgz#e0e42ce77e897bd6aead6f6ea62aeb135b8a3895"
   integrity sha512-FvnCJljyxhPM3gkRgWmxmDZyAQSiBQQWLI0A0VFL0K7W1oRUrPJSqNO0NvTnLkBcotdlp3lKvaT0JrnyRDkzOg==
   dependencies:
     "@types/node" "*"
-
-"@types/yawn-yaml@1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@types/yawn-yaml/-/yawn-yaml-1.4.0.tgz#15e1c5722c9253d6da6a927d85ba34b2f34a3a02"
-  integrity sha512-9mfVO9Po29PF6lH24v3+5BCBXhnH+o3r9I6xRzU+AECT1cdlR/mNqk6NK2kTFGyo0vt8o4isjpq3V5iG3VmvFQ==
 
 "@typescript-eslint/eslint-plugin@4.7.0":
   version "4.7.0"
@@ -1143,7 +1136,7 @@ js-tokens@^4.0.0:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
 
-js-yaml@3.14.0, js-yaml@^3.13.1, js-yaml@^3.14.0, js-yaml@^3.4.2:
+js-yaml@3.14.0, js-yaml@^3.13.1, js-yaml@^3.14.0:
   version "3.14.0"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.14.0.tgz#a7a34170f26a21bb162424d8adacb4113a69e482"
   integrity sha512-/4IbIeHcD9VMHFqDR/gQ7EdZdLimOvW2DdcxFjdyyZ9NsbS+ccrXqVWDtab/lRl5AlUqmpBx8EhPaWR+OtY17A==
@@ -1198,7 +1191,7 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
-lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20:
+lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20:
   version "4.17.20"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
   integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
@@ -1915,11 +1908,6 @@ y18n@^4.0.0:
   resolved "https://registry.yarnpkg.com/y18n/-/y18n-4.0.0.tgz#95ef94f85ecc81d007c264e190a120f0a3c8566b"
   integrity sha512-r9S/ZyXu/Xu9q1tYlpsLIsa3EeLXXk0VwlxqTcFRfg9EhMW+17kbt9G0NrgCmhGb5vT2hyhJZLfDGx+7+5Uj/w==
 
-yaml-js@^0.1.3:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/yaml-js/-/yaml-js-0.1.5.tgz#a01369010b3558d8aaed2394615dfd0780fd8fac"
-  integrity sha1-oBNpAQs1WNiq7SOUYV39B4D9j6w=
-
 yargs-parser@13.1.2, yargs-parser@^13.1.2:
   version "13.1.2"
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-13.1.2.tgz#130f09702ebaeef2650d54ce6e3e5706f7a4fb38"
@@ -1953,15 +1941,6 @@ yargs@13.3.2:
     which-module "^2.0.0"
     y18n "^4.0.0"
     yargs-parser "^13.1.2"
-
-yawn-yaml@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/yawn-yaml/-/yawn-yaml-1.5.0.tgz#95fba7544d5375fce3dc84514f12218ed0d2ebcb"
-  integrity sha512-sH2zX9K1QiWhWh9U19pye660qlzrEAd5c4ebw/6lqz17LZw7xYi7nqXlBoVLVtc2FZFXDKiJIsvVcKGYbLVyFQ==
-  dependencies:
-    js-yaml "^3.4.2"
-    lodash "^4.17.11"
-    yaml-js "^0.1.3"
 
 yn@3.1.1:
   version "3.1.1"

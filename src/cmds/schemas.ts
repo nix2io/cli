@@ -6,26 +6,25 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-// CLI packages
+import {
+    CommandContext,
+    FieldType,
+    Obj,
+    Schema,
+    SchemaType,
+    Service,
+    relationshipParser,
+} from '@nix2/service-core';
+import { ERRORS, NONE } from '../constants';
+import { prettyPrint, titleCase } from '../util';
+
 import { CommanderStatic } from 'commander';
+import { getService } from '../service';
+
 import inquirer = require('inquirer');
 import colors = require('colors');
 import Table = require('cli-table');
 import pluralize = require('pluralize');
-// From service core
-import {
-    Schema,
-    Service,
-    FieldType,
-    Obj,
-    SchemaType,
-    CommandContext,
-    relationshipParser,
-} from '@nix2/service-core';
-// CLI Specific imports
-import { getService } from '../service';
-import { ERRORS, NONE } from '../constants';
-import { prettyPrint, titleCase } from '../util';
 
 const displaySchemas = (options: Obj): void => {
     const serviceContext = getService(options);

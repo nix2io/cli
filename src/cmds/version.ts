@@ -5,11 +5,11 @@
  * Copyright: 2020 Nix² Technologies
  * Author: Max Koon (maxk@nix2.io)
  */
-import { CommanderStatic } from 'commander';
-import colors = require('colors');
+import * as colors from 'colors';
 
-import { getService } from '../service';
+import { CommanderStatic } from 'commander';
 import { ERRORS } from '../constants';
+import { getService } from '../service';
 
 export default (program: CommanderStatic): void => {
     program

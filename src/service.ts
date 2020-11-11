@@ -7,14 +7,15 @@
  */
 
 import {
-    ServiceCore,
+    ExecutionContext,
     Obj,
     Service,
-    ExecutionContext,
+    ServiceCore,
 } from '@nix2/service-core';
+
 import { PLUGIN_PATH } from './constants';
-import { user } from './user';
 import { getServiceFilePath } from './util';
+import { user } from './user';
 
 export const serviceCore = new ServiceCore({
     pluginsDirectory: PLUGIN_PATH,
@@ -39,7 +40,7 @@ export const getService = (
         getServiceFilePath(options, overwriteDir),
         user,
     );
-    return serviceCore.getServiceContext(executionContext);
+    return serviceCore.getService(executionContext);
 };
 
 export const services = serviceCore.serviceTypes;

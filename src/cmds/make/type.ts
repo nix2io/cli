@@ -6,9 +6,12 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 import * as commander from 'commander';
-import { getServiceContext } from '../../service';
+
+import { OptionalKind, Project, PropertyDeclarationStructure } from 'ts-morph';
+
+import { getService } from '../../service';
+
 import colors = require('colors');
-import { Project, OptionalKind, PropertyDeclarationStructure } from 'ts-morph';
 import path = require('path');
 
 export default (make: commander.Command): void => {
@@ -16,7 +19,7 @@ export default (make: commander.Command): void => {
         .description('make a type')
         .action((schemaIdentifier: string, options) => {
             // make sure there is a service context
-            const serviceContext = getServiceContext(options);
+            const serviceContext = getService(options);
             if (serviceContext == null)
                 return console.error(colors.red('No service context found'));
             // get the specified schema

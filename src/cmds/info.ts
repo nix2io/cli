@@ -6,14 +6,17 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { CommanderStatic } from 'commander';
-import { formatString, getRootOptions } from '../util';
-import { VERSION, SERVICE_DISPLAY_TEMPLATE, SYMBOLS } from '../constants';
-import { getServiceContext } from '../service';
+import * as colors from 'colors';
+
+import { SERVICE_DISPLAY_TEMPLATE, SYMBOLS, VERSION } from '../constants';
 import { authed, user } from '../user';
-import colors = require('colors');
+import { formatString, getRootOptions } from '../util';
+
+import { CommanderStatic } from 'commander';
+import { getService } from '../service';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const friendlyTime = require('friendly-time');
+
 
 export default (program: CommanderStatic): void => {
     program
@@ -37,7 +40,7 @@ export default (program: CommanderStatic): void => {
             }
             // get the service
             try {
-                const service = getServiceContext(options);
+                const service = getService(options);
                 if (service == null) {
                     console.log(colors.grey('No service in this directory'));
                     return;

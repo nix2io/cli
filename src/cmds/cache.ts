@@ -6,10 +6,11 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
+import * as colors from 'colors';
+import * as ora from 'ora';
+
 import { CommanderStatic } from 'commander';
 import cache from '../cache';
-import colors = require('colors');
-import ora = require('ora');
 
 export default (program: CommanderStatic): void => {
     const cacheCommand = program
