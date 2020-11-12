@@ -65,6 +65,7 @@ export default (program: CommanderStatic): void => {
         .description('initiali ze a service')
         .option('-y, --yes', 'skip the confirm message')
         .action(async (serviceType: string, options) => {
+            if (services.length == 0) return console.error(ERRORS.NO_SERVICES);
             // check if a service context exists
             if (getService(options) != null)
                 return console.error(ERRORS.SERVICE_EXISTS);

@@ -7,8 +7,9 @@
  */
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../package.json');
-import * as path from 'path';
+
 import * as colors from 'colors';
+import * as path from 'path';
 // package version
 export const VERSION = version;
 
@@ -49,6 +50,8 @@ export const SYMBOLS = {
 
 export const NONE = colors.grey('none');
 
+export const NPR_URL = 'https://raw.githubusercontent.com/nix2io/npr/main/npr';
+
 // info template
 export const SERVICE_DISPLAY_TEMPLATE = `
 ${SYMBOLS.PAPER} Local data ${colors.grey(`from ${SERVICE_FILE_NAME}`)}
@@ -68,6 +71,8 @@ export const ERRORS = {
     SERVICE_EXISTS: colors.red(
         `${SERVICE_FILE_NAME} already exists in this directory`,
     ),
+    NO_SERVICES:
+        'There are no services installed.\nPlease visit https://github.com/nix2io/cli#plugins',
     NO_SERVICE_EXISTS: `${SERVICE_FILE_NAME} does not exist in this directory`,
     SERVICE_NOT_OF_TYPESCRIPT: `The service is not a Typescript service`,
     PACKAGE_EXISTS: 'package.json already exists in this directory',
