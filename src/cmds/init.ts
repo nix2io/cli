@@ -93,13 +93,15 @@ export default (program: CommanderStatic): void => {
                           {},
                           ...Object.keys(initialData).map((k: string) => ({
                               [k]: {
-                                  type: 'input',
-                                  message: titleCase(k),
-                                  name: k,
-                                  default:
-                                      initialData[
-                                          <keyof InitializeServiceDataType>k
-                                      ],
+                                  prompt: {
+                                      type: 'input',
+                                      message: titleCase(k),
+                                      name: k,
+                                      default:
+                                          initialData[
+                                              <keyof InitializeServiceDataType>k
+                                          ],
+                                  },
                               },
                           })),
                       ),
