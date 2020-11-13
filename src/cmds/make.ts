@@ -1,12 +1,14 @@
+import { Service } from '@nix2/service-core';
+import { CommanderStatic } from 'commander';
+
 import * as commander from 'commander';
 import colors = require('colors');
-import { getService } from '../../service';
-import { ERRORS, SYMBOLS } from '../../constants';
+import { getService, serviceCore } from '../service';
+import { ERRORS, SYMBOLS } from '../constants';
 import { join } from 'path';
 import inquirer = require('inquirer');
 import { existsSync } from 'fs';
 import ora = require('ora');
-import { Service } from '@nix2/service-core';
 
 export const makeCommand = (
     make: commander.Command,
@@ -91,4 +93,19 @@ export const makeCommand = (
                     createFile();
                 });
         });
+};
+
+export default (program: CommanderStatic): void => {
+    const make = program
+        .command('make')
+        .alias('mk')
+        .description('make things related to your service');
+    const createdCommands: Set<string> = new Set();
+    for (const plugin of serviceCore.plugins) {
+        for (const command of plugin.getMakeFiles()) {
+            if (createdCommands.has(command.name)) continue;
+            makeCommand(make, command.name, command.file, command.method);
+            createdCommands.add(command.name);
+        }
+    }
 };
