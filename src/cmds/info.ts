@@ -17,7 +17,6 @@ import { getService } from '../service';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const friendlyTime = require('friendly-time');
 
-
 export default (program: CommanderStatic): void => {
     program
         .command('info')
