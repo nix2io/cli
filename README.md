@@ -18,7 +18,7 @@
 All you need is to install is node
 
 ```sh
-$ npm i -g @nix2/nix-cli
+$ yarn add global @nix2/nix-cli
 ```
 
 ## Usage
@@ -30,26 +30,39 @@ When running the command with no arguments, it will default to `dev info`.
 
 ### Table of Contents
 
--   [Auth](#)
--   [Init](#)
--   [Info](#info)
--   [Make](#)
--   [Database](#)
-    -   [Auth](#)
-    -   [List](#)
-    -   [Create](#)
-    -   [Link](#)
--   [Schemas](#)
-    -   [List](#)
-    -   [Add](#)
-    -   [Remove](#)
--   [Authors](#)
-    -   [List](#)
-    -   [Add](#)
-    -   [Remove](#)
--   [Version](#version)
--   [Environment](#environment)
--   [Cache](#cache)
+-   [Installation](#installation)
+-   [Usage](#usage)
+    -   [Table of Contents](#table-of-contents)
+    -   [Commands](#commands)
+    -   [Auth](#auth)
+    -   [Init](#init)
+    -   [Info](#info)
+    -   [Make](#make)
+    -   [Database](#database)
+        -   [Auth](#auth-1)
+        -   [List](#list)
+        -   [Create](#create)
+        -   [Link](#link)
+    -   [Schemas](#schemas)
+        -   [List](#list-1)
+        -   [Add](#add)
+        -   [Remove](#remove)
+    -   [Authors](#authors)
+        -   [List](#list-2)
+        -   [Add](#add-1)
+        -   [Remove](#remove-1)
+    -   [Plugins](#plugins)
+        -   [List](#list-3)
+        -   [Remote](#remote)
+        -   [Add](#add-2)
+        -   [Remove](#remove-2)
+        -   [Update](#update)
+    -   [Environment](#environment)
+        -   [List](#list-4)
+        -   [Switch Environments](#switch-environments)
+    -   [Version](#version)
+    -   [Cache](#cache)
+        -   [Clear](#clear)
 
 ### Commands
 
@@ -75,6 +88,40 @@ Commands:
   help [command]            display help for command
 ```
 
+### Auth
+
+Authenticate the CLI user.
+
+> **_NOTE_** This is currently WIP so it is a mock authentication.
+
+### Init
+
+Initialize a service.
+
+The init command needs to be provided a service type. If there is no service provided as the agument, it will prompt the user to select all the valid service types from a list.
+
+Here are the two ways you can initialize.
+
+```sh
+
+$ dev init
+? Select the type
+> typescript
+  graphql
+
+$ dev init graphql
+
+```
+
+After selecting the service type, it will prompt you on filling in details for the service. Each service has different initialize data but there are four options that all are asked for, no matter the service type.
+
+|     Name      | Description                  |            Default            |
+| :-----------: | ---------------------------- | :---------------------------: |
+| `identifier`  | Service Identifier           | Taken from the directory name |
+|    `label`    | Service Label (for humans)   |   Taken from the service ID   |
+| `description` | Service Description          |      `"A Nix² Service"`       |
+| `userLeadDev` | Makes the user the `leadDev` |            `true`             |
+
 ### Info
 
 The info command will give you basic info on your current Service Context.
@@ -90,6 +137,96 @@ local data from service.yaml
 |  v1.0.0  -  1 dev
 |
 ```
+
+### Make
+
+The `make` command allows a developer to make certain services that are supported by a service. The access to files that can be created with `make` depends on your plugin configuration. Each service has different files that can be created with `make` but there are still some files that are avaliable with all plugins.
+
+|    Name     |     File     | Description            |
+| :---------: | :----------: | ---------------------- |
+|  `readme`   | `README.md`  | Creates a README file. |
+| `gitignore` | `.gitignore` | Creates a .gitignore   |
+
+### Database
+
+The database command or `db`, allows a developer to create, modify, deploy, maintain, and retire a service's database.
+
+Nix2 uses [FaunaDB](https://fauna.com/) for databases.
+
+#### Auth
+
+Authenticates yourself with FaunaDB.
+
+#### List
+
+Lists all the Nix2 databases.
+
+#### Create
+
+Creates a service database.
+
+#### Link
+
+Links a service with a database.
+
+### Schemas
+
+Functionality for controlling service schemas.
+
+#### List
+
+Lists basic info for the service's schemas.
+
+A shortcut for this command is `dev schemas`
+
+```sh
+$ dev schemas list
+
+Displaying 1 schema
+┌──────┬───────┬─────────────┐
+│ ID   │ Label │ Description │
+├──────┼───────┼─────────────┤
+│ user │ User  │ A Serv User │
+└──────┴───────┴─────────────┘
+```
+
+#### Add
+
+Add schemas by their ID.
+
+```sh
+$ dev schemas add user
+
+⚠  About to write to service.yaml
+
+identifier: 'user'
+label: 'User'
+pluralName: 'users'
+fields:
+
+? Proceed with adding schema? Yes
+✔ Schema user added
+```
+
+#### Remove
+
+Remove schemas by their id.
+
+```sh
+$ dev schemas remove user
+
+⚠  About to write to service.yaml
+
+identifier: 'user'
+label: 'User'
+pluralName: 'users'
+fields:
+
+? Proceed with removing user? Yes
+✔ Schema user removed
+```
+
+You can also use the `-y` flag to skip the confirmation screen.
 
 ### Authors
 
@@ -183,6 +320,56 @@ $ dev authors remove m@x.com
 ```
 
 You can also use the `-y` flag to skip the confirmation screen.
+
+### Plugins
+
+Plugins were added in version [1.1.0](https://github.com/nix2io/cli/releases/v1.1.0), and enhances the scalability of the CLI, and allow for core functions to be separate from the services.
+
+You can manage plugins with the `plugin` command.
+
+
+#### List
+
+```sh
+$ dev plugins list
+
+----------
+graphql
+typescript
+----------
+```
+
+#### Add
+
+```sh
+$ dev plugins add typescript
+
+✓ Installed typescript
+```
+
+#### Remove
+
+```sh
+$ dev plugins remove typescript
+
+✓ Removed typescript
+```
+
+#### Update
+
+```sh
+$ dev plugins update *
+
+✓ Updated typescript
+✓ Updated graphql
+```
+
+
+#### NPR
+
+The Nix Plugin Registry is the container of all plugin information. Information including names, descriptions, and versions.
+
+The NPR runs on the [npr repository](https://github.com/nix2io/npr). It functions completely with github actions. 
 
 ### Environment
 
