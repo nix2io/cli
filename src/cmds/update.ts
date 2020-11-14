@@ -18,7 +18,7 @@ export default (program: CommanderStatic): void => {
         .description('update the cli')
         .action(async () => {
             const spinner = ora('Updating CLI').start();
-            await asyncExec(`yarn add global ${PACKAGE_NAME}`).catch((err) => {
+            await asyncExec(`npm i -g ${PACKAGE_NAME}`).catch((err) => {
                 spinner.fail(err.message);
             });
             spinner.succeed('Updated the CLI');

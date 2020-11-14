@@ -18,7 +18,7 @@
 All you need is to install is node
 
 ```sh
-$ yarn add global @nix2/nix-cli
+$ npm i -g @nix2/nix-cli
 ```
 
 ## Usage
@@ -30,40 +30,40 @@ When running the command with no arguments, it will default to `dev info`.
 
 ### Table of Contents
 
--   [Installation](#installation)
--   [Usage](#usage)
-    -   [Table of Contents](#table-of-contents)
-    -   [Commands](#commands)
-    -   [Auth](#auth)
-    -   [Init](#init)
-    -   [Info](#info)
-    -   [Make](#make)
-    -   [Database](#database)
-        -   [Auth](#auth-1)
-        -   [List](#list)
-        -   [Create](#create)
-        -   [Link](#link)
-    -   [Schemas](#schemas)
-        -   [List](#list-1)
-        -   [Add](#add)
-        -   [Remove](#remove)
-    -   [Authors](#authors)
-        -   [List](#list-2)
-        -   [Add](#add-1)
-        -   [Remove](#remove-1)
-    -   [Plugins](#plugins)
-        -   [List](#list-3)
-        -   [Remote](#remote)
-        -   [Add](#add-2)
-        -   [Remove](#remove-2)
-        -   [Update](#update)
-    -   [Environment](#environment)
-        -   [List](#list-4)
-        -   [Switch Environments](#switch-environments)
-    -   [Version](#version)
-    -   [Update](#update-1)
-    -   [Cache](#cache)
-        -   [Clear](#clear)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Table of Contents](#table-of-contents)
+  - [Commands](#commands)
+  - [Auth](#auth)
+  - [Init](#init)
+  - [Info](#info)
+  - [Make](#make)
+  - [Database](#database)
+    - [Auth](#auth-1)
+    - [List](#list)
+    - [Create](#create)
+    - [Link](#link)
+  - [Schemas](#schemas)
+    - [List](#list-1)
+    - [Add](#add)
+    - [Remove](#remove)
+  - [Authors](#authors)
+    - [List](#list-2)
+    - [Add](#add-1)
+    - [Remove](#remove-1)
+  - [Plugins](#plugins)
+    - [List](#list-3)
+    - [Add](#add-2)
+    - [Remove](#remove-2)
+    - [Update](#update)
+    - [NPR](#npr)
+  - [Environment](#environment)
+    - [List](#list-4)
+    - [Switch Environments](#switch-environments)
+  - [Version](#version)
+  - [Update](#update-1)
+  - [Cache](#cache)
+    - [Clear](#clear)
 
 ### Commands
 
@@ -328,7 +328,6 @@ Plugins were added in version [1.1.0](https://github.com/nix2io/cli/releases/v1.
 
 You can manage plugins with the `plugin` command.
 
-
 #### List
 
 ```sh
@@ -365,12 +364,11 @@ $ dev plugins update *
 ✓ Updated graphql
 ```
 
-
 #### NPR
 
 The Nix Plugin Registry is the container of all plugin information. Information including names, descriptions, and versions.
 
-The NPR runs on the [npr repository](https://github.com/nix2io/npr). It functions completely with github actions. 
+The NPR runs on the [npr repository](https://github.com/nix2io/npr). It functions completely with github actions.
 
 ### Environment
 
