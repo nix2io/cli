@@ -102,16 +102,26 @@ const downloadPlugin = async (pluginName: string): Promise<boolean> => {
     return true;
 };
 
-const installPlugin = async (pluginPath: string): Promise<boolean> => {
-    await asyncExec(`yarn --cwd ${pluginPath}`).catch((err) => {
+const runYarnCommand = async (pluginPath: string, command = '') => {
+    await asyncExec(`yarn --cwd ${pluginPath} ${command}`).catch((err) => {
         throw err;
     });
     return true;
 };
 
+const installPlugin = async (pluginPath: string): Promise<boolean> => {
+    return runYarnCommand(pluginPath);
+};
+
+const compilePlugin = async (pluginPath: string): Promise<boolean> => {
+    return runYarnCommand(pluginPath, 'tsc');
+};
+
 const addPlugin = async (pluginName: string) => {
+    const pluginPath = join(PLUGIN_PATH, `service-plugin-${pluginName}`);
     await downloadPlugin(pluginName);
-    await installPlugin(join(PLUGIN_PATH, `service-plugin-${pluginName}`));
+    await installPlugin(pluginPath);
+    await compilePlugin(pluginPath);
 };
 
 const removePlugin = async (pluginName: string) => {
@@ -133,12 +143,16 @@ const updatePlugin = async (pluginName: string) => {
     // Check for the plugins existance.
     if (!existsSync(pluginPath)) throw new PluginNotFoundError(pluginName);
     // Try to do a git pull from the plugin repo
-    const ok = await pullPlugin(pluginPath).catch((err) => {
+    let ok = await pullPlugin(pluginPath).catch((err) => {
         throw new Error(err.message);
     });
     if (!ok) return;
     // Try to install the plugin with yarn.
-    await installPlugin(pluginPath).catch((err) => {
+    ok = await installPlugin(pluginPath).catch((err) => {
+        throw new Error(err.message);
+    });
+    if (!ok) return;
+    await compilePlugin(pluginPath).catch((err) => {
         throw new Error(err.message);
     });
 };
