@@ -9,14 +9,20 @@
 import * as colors from 'colors';
 import * as ora from 'ora';
 
-import { NPR_URL, PLUGIN_PATH, SYMBOLS } from '../constants';
+import { NPR_URL, PLUGIN_PATH } from '../constants';
+import { deleteDirectoryRecursive, list } from '../util';
 
 import Axios from 'axios';
 import { CommanderStatic } from 'commander';
-import { execSync } from 'child_process';
+import { PluginNotFoundError } from '@nix2/service-core';
+import { exec } from 'child_process';
+import { existsSync } from 'fs';
 import { join } from 'path';
-import { list } from '../util';
+import { promisify } from 'util';
 import { serviceCore } from '../service';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const Spinnies = require('spinnies');
 
 interface RemotePlugin {
     url: string;
@@ -24,6 +30,8 @@ interface RemotePlugin {
     description: string;
     version: string;
 }
+
+const asyncExec = promisify(exec);
 
 const listPlugins = () => {
     if (serviceCore.plugins.length == 0)
@@ -68,7 +76,7 @@ const listRemotePlugins = async () => {
     const spinner = ora('Loading Plugin Registry').start();
     const response = await Axios.get(NPR_URL)
         .catch((err) => {
-            console.error(err);
+            spinner.fail(err);
             throw err;
         })
         .finally(() => {
@@ -84,43 +92,84 @@ const listRemotePlugins = async () => {
     );
 };
 
-const downloadPlugin = async (pluginName: string): Promise<null | string> => {
+const downloadPlugin = async (pluginName: string): Promise<boolean> => {
     const repoName = `service-plugin-${pluginName}`;
     const pluginRepoUrl = `https://github.com/nix2io/${repoName}.git`;
     const pluginPath = join(PLUGIN_PATH, repoName);
-    try {
-        execSync(`git clone ${pluginRepoUrl} ${pluginPath}`, {
-            stdio: 'pipe',
-        });
-        return null;
-    } catch (err) {
-        const REPO_NOT_FOUND = err.message.includes('Repository not found');
-        const NO_INTERNET = false;
-        let errorMsg: string;
-        if (REPO_NOT_FOUND) {
-            errorMsg = `Plugin: '${pluginName}' was not found`;
-        } else if (NO_INTERNET) {
-            errorMsg = `No internet connection`;
+    await asyncExec(`git clone ${pluginRepoUrl} ${pluginPath}`).catch((err) => {
+        if (err.message.includes('Repository not found')) {
+            throw new PluginNotFoundError(pluginName);
         } else {
-            console.error(err);
-            errorMsg = err.message;
+            throw err;
         }
-        return errorMsg;
-    }
+    });
+    return true;
+};
+
+const installPlugin = async (pluginPath: string): Promise<boolean> => {
+    await asyncExec(`yarn --cwd ${pluginPath}`).catch((err) => {
+        throw err;
+    });
+    return true;
 };
 
 const addPlugin = async (pluginName: string) => {
-    const repoName = `service-plugin-${pluginName}`;
-    const pluginPath = join(PLUGIN_PATH, repoName);
-    const spinner = ora('Downloading Plugin').start();
-    const downloaded = await downloadPlugin(pluginName);
-    spinner.stop();
-    if (downloaded != null) return console.error(colors.red(downloaded));
-    spinner.text = 'Installing Plugin';
-    spinner.start();
-    execSync(`yarn --cwd ${pluginPath}`, { stdio: 'pipe' });
-    spinner.stop();
-    console.log(colors.green(`${SYMBOLS.CHECK} Installed '${pluginName}'`));
+    await downloadPlugin(pluginName);
+    await installPlugin(join(PLUGIN_PATH, `service-plugin-${pluginName}`));
+};
+
+const removePlugin = async (pluginName: string) => {
+    const pluginPath = join(PLUGIN_PATH, `service-plugin-${pluginName}`);
+    // Check if the plugin exists
+    if (!existsSync(pluginPath)) throw new PluginNotFoundError(pluginName);
+    deleteDirectoryRecursive(pluginPath);
+};
+
+const pullPlugin = async (pluginPath: string): Promise<boolean> => {
+    await asyncExec(`git -C ${pluginPath} pull`).catch((err) => {
+        throw err;
+    });
+    return true;
+};
+
+const updatePlugin = async (pluginName: string) => {
+    const pluginPath = join(PLUGIN_PATH, `service-plugin-${pluginName}`);
+    // Check for the plugins existance.
+    if (!existsSync(pluginPath)) throw new PluginNotFoundError(pluginName);
+    // Try to do a git pull from the plugin repo
+    const ok = await pullPlugin(pluginPath).catch((err) => {
+        throw new Error(err.message);
+    });
+    if (!ok) return;
+    // Try to install the plugin with yarn.
+    await installPlugin(pluginPath).catch((err) => {
+        throw new Error(err.message);
+    });
+};
+
+const applyToPlugins = (
+    plugins: string[],
+    method: (_: string) => Promise<void>,
+    before: string,
+    after: string,
+) => {
+    const spinnies = new Spinnies();
+    for (const pluginName of plugins) {
+        const spinnerName = `${pluginName}-spinner`;
+        spinnies.add(spinnerName, {
+            text: `${before} ${pluginName}`,
+            spinnerColor: 'cyan',
+        });
+        method(pluginName)
+            .then(() => {
+                spinnies.succeed(spinnerName, {
+                    text: `${after} ${pluginName}`,
+                });
+            })
+            .catch((err: Error) => {
+                spinnies.fail(spinnerName, { text: err.message });
+            });
+    }
 };
 
 export default (program: CommanderStatic): void => {
@@ -141,9 +190,23 @@ export default (program: CommanderStatic): void => {
         .action(listRemotePlugins);
 
     pluginCommand
-        .command('add <pluginName>') // TODO: allow for multiple plugins to be added
-        .description('adds a plugin')
-        .action((pluginName: string) => {
-            addPlugin(pluginName);
+        .command('add <plugins...>')
+        .description('adds plugins')
+        .action(async (plugins: string[]) => {
+            applyToPlugins(plugins, addPlugin, 'Adding', 'Installed');
+        });
+
+    pluginCommand
+        .command('remove <plugins...>')
+        .description('remove a plugin')
+        .action(async (plugins: string[]) => {
+            applyToPlugins(plugins, removePlugin, 'Removing', 'Removed');
+        });
+
+    pluginCommand
+        .command('update <plugins...>')
+        .description('updates plugins')
+        .action(async (plugins: string[]) => {
+            applyToPlugins(plugins, updatePlugin, 'Updating', 'Updated');
         });
 };

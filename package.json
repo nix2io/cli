@@ -7,7 +7,7 @@
     "author": "Max Koon <maxk@nix2.io>",
     "license": "CC-BY-1.0",
     "dependencies": {
-        "@nix2/service-core": "1.0.9",
+        "@nix2/service-core": "1.0.10",
         "axios": "^0.21.0",
         "cli-table": "^0.3.1",
         "commander": "^6.1.0",
@@ -17,6 +17,7 @@
         "js-yaml": "^3.14.0",
         "ora": "^5.1.0",
         "pluralize": "^8.0.0",
+        "spinnies": "^0.5.1",
         "ts-morph": "^8.1.2"
     },
     "devDependencies": {

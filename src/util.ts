@@ -1,5 +1,6 @@
-import path = require('path');
-import colors = require('colors');
+import * as path from 'path';
+import * as fs from 'fs';
+import * as colors from 'colors';
 
 import { Obj, Any } from '@nix2/service-core';
 
@@ -97,4 +98,20 @@ export const list = (lines: string[]): void => {
     console.log(border);
     lines.forEach((line) => console.log(line));
     console.log(border);
+};
+
+export const deleteDirectoryRecursive = (dirPath: string): void => {
+    if (fs.existsSync(dirPath)) {
+        fs.readdirSync(dirPath).forEach((file: string, _) => {
+            const curPath = path.join(dirPath, file);
+            if (fs.lstatSync(curPath).isDirectory()) {
+                // recurse
+                deleteDirectoryRecursive(curPath);
+            } else {
+                // delete file
+                fs.unlinkSync(curPath);
+            }
+        });
+        fs.rmdirSync(dirPath);
+    }
 };
