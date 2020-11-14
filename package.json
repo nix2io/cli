@@ -8,7 +8,6 @@
     "license": "CC-BY-1.0",
     "dependencies": {
         "@nix2/service-core": "1.0.11",
-        "@types/semver": "^7.3.4",
         "axios": "^0.21.0",
         "cli-table": "^0.3.1",
         "commander": "^6.1.0",
@@ -31,6 +30,7 @@
         "@types/mocha": "8.0.4",
         "@types/node": "14.14.7",
         "@types/pluralize": "0.0.29",
+        "@types/semver": "^7.3.4",
         "@typescript-eslint/eslint-plugin": "4.7.0",
         "@typescript-eslint/parser": "4.7.0",
         "eslint": "7.13.0",
