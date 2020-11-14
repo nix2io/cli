@@ -1,14 +1,13 @@
 {
     "name": "@nix2/nix-cli",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "Command line interface for common tasks for Nix2 Infrastructure",
     "main": "./dist/index.js",
     "repository": "git@github.com:nix2io/cli.git",
     "author": "Max Koon <maxk@nix2.io>",
     "license": "CC-BY-1.0",
     "dependencies": {
-        "@nix2/nix-cli": "^1.1.0",
-        "@nix2/service-core": "1.0.10",
+        "@nix2/service-core": "1.0.11",
         "@types/semver": "^7.3.4",
         "axios": "^0.21.0",
         "cli-table": "^0.3.1",
