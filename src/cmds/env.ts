@@ -6,18 +6,20 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { CommanderStatic } from 'commander';
+import * as colors from 'colors';
+
 import {
     getAvailableEnvironments,
     readCurrentEnvironmentName,
     writeCurrentEnvironmentName,
 } from '../environments';
-import * as colors from 'colors';
-import { SYMBOLS } from '../constants';
-import { getServiceContext } from '../service';
-import { ServiceContext } from '../classes';
 
-const listAvailableEnvironments = (serviceContext: ServiceContext | null) => {
+import { CommanderStatic } from 'commander';
+import { SYMBOLS } from '../constants';
+import { Service } from '@nix2/service-core';
+import { getService } from '../service';
+
+const listAvailableEnvironments = (serviceContext: Service | null) => {
     const line = colors.grey('------------');
     console.log(line);
     for (const env of getAvailableEnvironments()) {
@@ -36,13 +38,13 @@ export default (program: CommanderStatic): void => {
         .command('env [envName]')
         .description('manage your working environment')
         .action((envName: string | null, options) => {
-            const serviceContext = getServiceContext(options);
+            const serviceContext = getService(options);
             if (envName == null || envName == 'list')
                 return listAvailableEnvironments(serviceContext);
             try {
                 writeCurrentEnvironmentName(envName);
                 if (serviceContext != null) {
-                    serviceContext.environment.createDotEnv();
+                    serviceContext.environmentManager.createDotEnv();
                 }
                 console.log(
                     colors.green(

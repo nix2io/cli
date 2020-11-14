@@ -7,9 +7,9 @@
  */
 
 import { CommanderStatic } from 'commander';
+import { SYMBOLS } from '../constants';
 import config from '../config';
 import inquirer = require('inquirer');
-import { SYMBOLS } from '../constants';
 import colors = require('colors');
 
 export default (program: CommanderStatic): void => {

@@ -6,32 +6,18 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { CommanderStatic } from 'commander';
-import { getRootOptions, prettyPrint } from '../util';
-import { ERRORS, NONE } from '../constants';
-import cache from '../cache';
-import { getServiceContext } from '../service';
-import inquirer = require('inquirer');
-import colors = require('colors');
-import Table = require('cli-table');
-import { Obj } from '../types';
+import * as colors from 'colors';
+import * as inquirer from 'inquirer';
 
-// const getAuthorData = (authorData: { [key: string]: any; }, callback: Function) => {
-//     const cachedAuthors = cache.get('authors');
-//     const email = authorData.email;
-//     if (Object.keys(cachedAuthors).indexOf(email) != -1) {
-//         const cachedAuthor = cachedAuthors[email]
-//         authorData = {
-//             email: authorData.email || cachedAuthor.email,
-//             name: authorData.name || cachedAuthor.name || null,
-//             publicEmail: authorData.publicEmail || cachedAuthor.publicEmail || null,
-//             url: authorData.url || cachedAuthor.url || null,
-//             alert: authorData.alert || cachedAuthor.alert || null,
-//             flags: authorData.flags || cachedAuthor.flags
-//         };
-//     }
-//     callback(authorData);
-// }
+import { ERRORS, NONE } from '../constants';
+import { getRootOptions, prettyPrint } from '../util';
+
+import { CommanderStatic } from 'commander';
+import { Obj } from '@nix2/service-core';
+import cache from '../cache';
+import { getService } from '../service';
+
+import Table = require('cli-table');
 
 const createAuthorObject = (
     email: string,
@@ -59,7 +45,7 @@ const createAuthorObject = (
 };
 
 const displayAuthors = (options: Obj): void => {
-    const serviceContext = getServiceContext(options);
+    const serviceContext = getService(options);
     if (serviceContext == null) {
         console.error(colors.red('No service context'));
         return;
@@ -117,7 +103,7 @@ export default (program: CommanderStatic): void => {
         .option('-y, --yes', 'skip the confirmation screen')
         .action((email: string, options) => {
             // check if there is a service context
-            const serviceContext = getServiceContext(options);
+            const serviceContext = getService(options);
             if (serviceContext == null)
                 return console.error(colors.red('No service context'));
             const confirmAdd = options.yes;
@@ -202,7 +188,7 @@ export default (program: CommanderStatic): void => {
         .option('-y, --yes', 'skip the confirmation screen')
         .action((email: string, options) => {
             // check if there is a service context
-            const serviceContext = getServiceContext(options);
+            const serviceContext = getService(options);
             if (serviceContext == null)
                 return console.error(colors.red('No service context'));
             const confirmRemove = options.yes;

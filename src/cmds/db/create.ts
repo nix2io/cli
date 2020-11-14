@@ -1,3 +1,4 @@
+import * as colors from 'colors';
 /*
  * File: create.ts
  * Created: 10/11/2020 13:03:00
@@ -6,17 +7,19 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 import * as commander from 'commander';
-import ora = require('ora');
-import * as colors from 'colors';
-import { getClient, createDatabase } from '../../db';
-import { getServiceContext } from '../../service';
+
 import { ERRORS, SYMBOLS } from '../../constants';
+import { createDatabase, getClient } from '../../db';
+
+import { getService } from '../../service';
+
+import ora = require('ora');
 
 export default (db: commander.Command): void => {
     db.command('create')
         .description('creates a database for the service')
         .action(async (options) => {
-            const serviceContext = getServiceContext(options);
+            const serviceContext = getService(options);
             if (serviceContext == null)
                 return console.error(ERRORS.NO_SERVICE_EXISTS);
             const client = await getClient();

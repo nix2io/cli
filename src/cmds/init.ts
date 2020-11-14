@@ -5,18 +5,22 @@
  * Copyright: 2020 Nix² Technologies
  * Author: Max Koon (maxk@nix2.io)
  */
-
-import { CommanderStatic } from 'commander';
-import { prettyPrint, getServiceContextPath } from '../util';
-import inquirer = require('inquirer');
-import { ERRORS, SERVICE_FILE_NAME, SYMBOLS } from '../constants';
-import { getServiceClassFromType, getServiceContext } from '../service';
-import { user } from '../user';
-import yaml = require('js-yaml');
+// Node packages
 import fs = require('fs');
 import path = require('path');
-import colors = require('colors');
-import { SERVICE_TYPE_MAP, VALID_SERVICE_TYPES } from '../classes/services';
+
+import * as colors from 'colors';
+import * as inquirer from 'inquirer';
+
+import { ERRORS, SERVICE_FILE_NAME, SYMBOLS } from '../constants';
+import { getService, serviceCore, services } from '../service';
+import { getServicePath, prettyPrint, titleCase } from '../util';
+
+// import { Service } from '@nix2/service-core';
+import { InitializeServiceDataType } from '@nix2/service-core';
+import { CommanderStatic } from 'commander';
+import { safeDump } from 'js-yaml';
+import { user } from '../user';
 
 const inquireServiceType = async (): Promise<string> => {
     return inquirer
@@ -25,9 +29,7 @@ const inquireServiceType = async (): Promise<string> => {
                 type: 'list',
                 name: 'type',
                 message: 'Select service type',
-                choices: Object.values(SERVICE_TYPE_MAP).map(
-                    (service: unknown) => (<VALID_SERVICE_TYPES>service).NAME,
-                ),
+                choices: Object.values(services).map((service) => service.NAME),
             },
         ])
         .then((data) => {
@@ -57,29 +59,22 @@ const inquireServiceData = async (
         });
 };
 
-const getServiceClassFromTypeOrNull = (type: string) => {
-    try {
-        return getServiceClassFromType(type);
-    } catch (err) {
-        return null;
-    }
-};
-
 export default (program: CommanderStatic): void => {
     program
         .command('init [serviceType]')
-        .description('initialize a service')
+        .description('initiali ze a service')
         .option('-y, --yes', 'skip the confirm message')
         .action(async (serviceType: string, options) => {
+            if (services.length == 0) return console.error(ERRORS.NO_SERVICES);
             // check if a service context exists
-            if (getServiceContext(options) != null)
+            if (getService(options) != null)
                 return console.error(ERRORS.SERVICE_EXISTS);
             const skipConfirm = options.yes;
             // error if the --yes flag is true and there is no type
             if (skipConfirm && !serviceType)
                 return console.error(colors.red('No service type provided'));
             // prompt the user for the type if none given
-            const serviceClass = getServiceClassFromTypeOrNull(
+            const serviceClass = serviceCore.getServiceClassFromType(
                 serviceType || (await inquireServiceType()),
             );
             // give an error if the class is not found
@@ -89,29 +84,42 @@ export default (program: CommanderStatic): void => {
                 );
             }
             // get the initial data from the selected class
-            const initialData = serviceClass.getInitializeData(options, user);
+            const identifier = path.basename(getServicePath(options));
+            const initialData = serviceClass.makeInitialData(identifier, user);
             const data = skipConfirm
-                ? Object.assign(
-                      {},
-                      ...Object.keys(initialData).map((k: string) => ({
-                          [k]: initialData[k].value,
-                      })),
-                  )
-                : await inquireServiceData(initialData);
+                ? initialData
+                : <InitializeServiceDataType>(<unknown>await inquireServiceData(
+                      Object.assign(
+                          {},
+                          ...Object.keys(initialData).map((k: string) => ({
+                              [k]: {
+                                  prompt: {
+                                      type: 'input',
+                                      message: titleCase(k),
+                                      name: k,
+                                      default:
+                                          initialData[
+                                              <keyof InitializeServiceDataType>k
+                                          ],
+                                  },
+                              },
+                          })),
+                      ),
+                  ));
             const serviceObject = serviceClass.makeObject(data, user);
             // define the initialize logic
             const initialize = () => {
                 const servicePath = path.join(
-                    getServiceContextPath(options),
+                    getServicePath(options),
                     SERVICE_FILE_NAME,
                 );
-                fs.writeFileSync(servicePath, yaml.safeDump(serviceObject));
+                fs.writeFileSync(servicePath, safeDump(serviceObject));
                 console.log(
                     colors.green(`${SYMBOLS.CHECK} Service initialized`),
                 );
                 console.log('Running post init logic');
                 // create the new instance
-                const service = getServiceContext(options);
+                const service = getService(options);
                 service?.postInit();
             };
             // initialize without confirmation

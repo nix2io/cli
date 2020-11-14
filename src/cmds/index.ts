@@ -13,6 +13,7 @@ export { default as make } from './make';
 export { default as db } from './db';
 export { default as schemas } from './schemas';
 export { default as authors } from './authors';
+export { default as plugins } from './plugins';
 export { default as version } from './version';
 export { default as env } from './env';
 export { default as cache } from './cache';
