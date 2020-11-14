@@ -6,6 +6,7 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
+import { Any } from '@nix2/service-core';
 import { CACHE_PATH } from './constants';
 import fs = require('fs');
 import path = require('path');
@@ -54,10 +55,11 @@ class Cache {
      * // get the contents of the authors cache
      * cache.makePath('authors') // {authors: [...]}
      * @param   {name}               name Name of the cached file.
+     * @param   {any}                def Default value if none is returned.
      * @returns {Record<string, unknown>} The returned object.
      */
-    get(name: string): Record<string, unknown> {
-        if (!this.exists(name)) return {};
+    get(name: string, def: any = {}): Record<string, unknown> {
+        if (!this.exists(name)) return def;
         try {
             return JSON.parse(fs.readFileSync(this.makePath(name), 'utf-8'));
         } catch (err) {

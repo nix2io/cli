@@ -5,6 +5,8 @@ import * as colors from 'colors';
 import { Obj, Any } from '@nix2/service-core';
 
 import { SERVICE_FILE_NAME } from './constants';
+import { promisify } from 'util';
+import { exec } from 'child_process';
 
 export const getRootOptions = (options: Obj): Obj => {
     while (
@@ -115,3 +117,5 @@ export const deleteDirectoryRecursive = (dirPath: string): void => {
         fs.rmdirSync(dirPath);
     }
 };
+
+export const asyncExec = promisify(exec);

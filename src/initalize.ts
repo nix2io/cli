@@ -6,6 +6,10 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
+import * as colors from 'colors';
+// const path = require('path');
+import * as fs from 'fs';
+
 import {
     CACHE_PATH,
     CLI_PATH,
@@ -13,9 +17,8 @@ import {
     ERRORS,
     PLUGIN_PATH,
 } from './constants';
-import colors = require('colors');
-// const path = require('path');
-import fs = require('fs');
+
+import { checkForUpdates } from './updateChecker';
 
 const createDir = () => {
     try {
@@ -50,6 +53,7 @@ const createPluginDir = () => {
 };
 
 const initalize = () => {
+    checkForUpdates();
     // if the main dir does not exist, also create the cache and config
     if (!fs.existsSync(CLI_PATH)) {
         createDir();

@@ -6,12 +6,14 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { version } = require('../package.json');
+const { version, name } = require('../package.json');
 
 import * as colors from 'colors';
 import * as path from 'path';
 // package version
 export const VERSION = version;
+// package name
+export const PACKAGE_NAME = name;
 
 // file name for the service structure
 export const SERVICE_FILE_NAME = 'service.yaml';
@@ -51,6 +53,11 @@ export const SYMBOLS = {
 export const NONE = colors.grey('none');
 
 export const NPR_URL = 'https://raw.githubusercontent.com/nix2io/npr/main/npr';
+
+export const PACKAGE_URL =
+    'https://raw.githubusercontent.com/nix2io/cli/master/package.json';
+
+export const REFRESH_VERSION_INTERVAL = 1000 * 60 * 60 * 24; // Refresh 24 hours
 
 // info template
 export const SERVICE_DISPLAY_TEMPLATE = `

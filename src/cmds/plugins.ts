@@ -10,15 +10,13 @@ import * as colors from 'colors';
 import * as ora from 'ora';
 
 import { NPR_URL, PLUGIN_PATH } from '../constants';
-import { deleteDirectoryRecursive, list } from '../util';
+import { asyncExec, deleteDirectoryRecursive, list } from '../util';
 
 import Axios from 'axios';
 import { CommanderStatic } from 'commander';
 import { PluginNotFoundError } from '@nix2/service-core';
-import { exec } from 'child_process';
 import { existsSync } from 'fs';
 import { join } from 'path';
-import { promisify } from 'util';
 import { serviceCore } from '../service';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -30,8 +28,6 @@ interface RemotePlugin {
     description: string;
     version: string;
 }
-
-const asyncExec = promisify(exec);
 
 const listPlugins = () => {
     if (serviceCore.plugins.length == 0)

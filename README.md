@@ -61,6 +61,7 @@ When running the command with no arguments, it will default to `dev info`.
         -   [List](#list-4)
         -   [Switch Environments](#switch-environments)
     -   [Version](#version)
+    -   [Update](#update-1)
     -   [Cache](#cache)
         -   [Clear](#clear)
 
@@ -423,6 +424,17 @@ You can also bump with `patch`, `minor`, or `major`.
 $ dev version minor
 
 Updated version to 2.1.0
+```
+
+### Update
+
+Updates the CLI with yarn.
+
+```sh
+
+$ dev update
+
+✔ Updated the CLI
 ```
 
 ### Cache

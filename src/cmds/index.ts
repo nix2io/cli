@@ -17,3 +17,4 @@ export { default as plugins } from './plugins';
 export { default as version } from './version';
 export { default as env } from './env';
 export { default as cache } from './cache';
+export { default as update } from './update';
