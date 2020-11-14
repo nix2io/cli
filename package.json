@@ -45,8 +45,7 @@
         "test-format": "prettier --check ./src/**",
         "test": "mocha -r mocha-steps -r ts-node/register tests/**",
         "lint": "eslint src/**",
-        "prepublish": "tsc",
-        "publish": "npm publish"
+        "prepublish": "tsc"
     },
     "bin": {
         "nix-cli": "./dist/index.js"
