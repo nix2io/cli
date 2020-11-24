@@ -6,7 +6,6 @@
  * Author: Max Koon (maxk@nix2.io)
  */
 
-import { Any } from '@nix2/service-core';
 import { CACHE_PATH } from './constants';
 import fs = require('fs');
 import path = require('path');
