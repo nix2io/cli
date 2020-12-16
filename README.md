@@ -15,7 +15,8 @@
 
 ## Installation
 
-All you need is to install is node
+First install JavaScript Node and NPM.
+Then the package may be installed using the following command:
 
 ```sh
 $ npm i -g @nix2/nix-cli
