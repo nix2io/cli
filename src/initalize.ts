@@ -54,11 +54,12 @@ const createPluginDir = () => {
 
 const initalize = () => {
     checkForUpdates();
-    // if the main dir does not exist, also create the cache and config
+    // if the main dir does not exist, also create the cache, plugins dir, and config
     if (!fs.existsSync(CLI_PATH)) {
         createDir();
         createCacheDir();
         createConfig();
+        createPluginDir();
         return;
     }
     // create the cache dir
