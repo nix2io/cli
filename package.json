@@ -20,12 +20,12 @@
         "ora": "^5.1.0",
         "pluralize": "^8.0.0",
         "semver": "^7.3.2",
-        "spinnies": "^0.5.1"
+        "spinnies": "^0.5.1",
+        "@types/colors": "1.2.1"
     },
     "devDependencies": {
         "@nix2/prettier-config": "^1.0.2",
         "@types/cli-table": "0.3.0",
-        "@types/colors": "1.2.1",
         "@types/inquirer": "7.3.1",
         "@types/js-yaml": "3.12.5",
         "@types/mocha": "8.0.4",
