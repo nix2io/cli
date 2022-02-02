@@ -12,7 +12,7 @@
         "axios": "^0.21.0",
         "cli-table": "^0.3.1",
         "commander": "^6.1.0",
-        "faunadb": "^3.0.1",
+        "faunadb": "^4.5.0",
         "friendly-time": "^1.1.1",
         "global": "^4.4.0",
         "inquirer": "^7.3.3",
